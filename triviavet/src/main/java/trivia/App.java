@@ -1,5 +1,7 @@
 package trivia;
 
+import java.util.List;
+
 import static spark.Spark.get;
 import static spark.Spark.post;
 
@@ -30,7 +32,37 @@ public class App
         return "hello" + req.params(":name");
       });
 
-      post("/users", (req, res) -> {
+     
+
+      post("/loadquestion", (req, res) -> {
+      	Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+
+
+      	Question question = new Question();
+      	question.set("question", bodyParams.get("question"));
+      	question.saveIt();
+
+      	res.type("application/json");
+
+      	return question.toJson(true);
+
+      });
+
+      post("/loadanswer", (req, res) -> {
+      	Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+
+
+      	Answer answer = new Answer();
+      	answer.set("answer", bodyParams.get("answer"));
+      	answer.saveIt();
+
+      	res.type("application/json");
+
+      	return answer.toJson(true);
+
+      });
+
+	  post("/users", (req, res) -> {
         Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 
         User user = new User();
@@ -42,5 +74,17 @@ public class App
 
         return user.toJson(true);
       });
+       get("/showusers", (req, res) -> {
+      	List<User> users = User.where("id > 0");
+      	String resp = "";
+      	for (User u : users) {
+      		resp +="Id: " + u.get("id")+", ";
+      		resp +="Username: " + u.get("username")+", ";
+      		resp +="Password(falla de seguridad? donde?): " + u.get("password")+"\n";
+
+      	}
+      	return resp;
+      });
+       
     }
 }
