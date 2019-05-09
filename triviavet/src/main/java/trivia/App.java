@@ -32,6 +32,20 @@ public class App
         return "hello" + req.params(":name");
       });
 
+      get("/questions", (req,res) -> {
+        List<Question> questions = Question.findAll();
+        String resp ="";
+        for (Question q : questions) {
+          resp +="Id: " + q.get("id")+", ";
+          resp +="Question: " + q.get("description")+", ";
+          List<Option> options = Option.where("question_id = " + q.get("id"));
+          for (Option o:options){
+            resp += "Answer: " + o.get("description");
+          }
+          resp += "\n";
+        }
+        return resp;
+      });
 
 
       post("/loadquestion", (req, res) -> {
@@ -45,9 +59,11 @@ public class App
         option.set("description",bodyParams.get("description1"));
         option.set("correct",bodyParams.get("correct1"));
         option.saveIt();
-        option.set("description",bodyParams.get("description2"));
-        option.set("correct",bodyParams.get("correct2"));
-        option.saveIt();
+        Option option2 = new Option();
+        option2.set("question_id",question.get("id"));
+        option2.set("description",bodyParams.get("description2"));
+        option2.set("correct",bodyParams.get("correct2"));
+        option2.saveIt();
       	res.type("application/json");
 
       	return question.toJson(true);
