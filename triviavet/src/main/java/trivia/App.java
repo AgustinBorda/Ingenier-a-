@@ -37,13 +37,17 @@ public class App
       post("/loadquestion", (req, res) -> {
       	Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 
-        int id;
       	Question question = new Question();
       	question.set("description", bodyParams.get("description"));
-        id = question.get("id");
       	question.saveIt();
-        Option option = new Option;
-        option.set()
+        Option option = new Option();
+        option.set("question_id",question.get("id"));
+        option.set("description",bodyParams.get("description1"));
+        option.set("correct",bodyParams.get("correct1"));
+        option.saveIt();
+        option.set("description",bodyParams.get("description2"));
+        option.set("correct",bodyParams.get("correct2"));
+        option.saveIt();
       	res.type("application/json");
 
       	return question.toJson(true);
