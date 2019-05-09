@@ -32,7 +32,7 @@ public class App
         return "hello" + req.params(":name");
       });
 
-     
+
 
       post("/loadquestion", (req, res) -> {
       	Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
@@ -74,7 +74,10 @@ public class App
 
         return user.toJson(true);
       });
-       get("/showusers", (req, res) -> {
+
+
+
+       get("/users", (req, res) -> {
       	List<User> users = User.where("id > 0");
       	String resp = "";
       	for (User u : users) {
@@ -85,6 +88,6 @@ public class App
       	}
       	return resp;
       });
-       
+
     }
 }
