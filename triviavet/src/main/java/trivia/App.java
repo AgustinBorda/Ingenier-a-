@@ -37,30 +37,19 @@ public class App
       post("/loadquestion", (req, res) -> {
       	Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 
-
+        int id;
       	Question question = new Question();
-      	question.set("question", bodyParams.get("question"));
+      	question.set("description", bodyParams.get("description"));
+        id = question.get("id");
       	question.saveIt();
-
+        Option option = new Option;
+        option.set()
       	res.type("application/json");
 
       	return question.toJson(true);
 
       });
 
-      post("/loadanswer", (req, res) -> {
-      	Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
-
-
-      	Answer answer = new Answer();
-      	answer.set("answer", bodyParams.get("answer"));
-      	answer.saveIt();
-
-      	res.type("application/json");
-
-      	return answer.toJson(true);
-
-      });
 
 	  post("/users", (req, res) -> {
         Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
@@ -68,6 +57,7 @@ public class App
         User user = new User();
         user.set("username", bodyParams.get("username"));
         user.set("password", bodyParams.get("password"));
+        user.set("admin", bodyParams.get("admin"));
         user.saveIt();
 
         res.type("application/json");
@@ -78,7 +68,7 @@ public class App
 
 
        get("/users", (req, res) -> {
-      	List<User> users = User.where("id > 0");
+      	List<User> users = User.findAll();
       	String resp = "";
       	for (User u : users) {
       		resp +="Id: " + u.get("id")+", ";
