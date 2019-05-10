@@ -83,5 +83,27 @@ public class App
       	return resp;
       });
 
+       post("/usersdelete", (req,res) -> {
+          List<User> users = User.findAll();
+          for(User u : users){
+          	u.delete();
+          }
+          return "Todos los usuario eliminados";
+       });
+
+       post("/userdelete", (req , res ) -> {
+       Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+       List<User> usuarios = User.where("username = ?", bodyParams.get("username"));
+       User usuario = usuarios.get(0);
+       if(usuario != null){
+       	 usuario.delete();
+       	 res.type("application/json");
+       	 return "se ha borrado";
+       }else{
+       	return "Nose encontro usuario para borrar";
+       }
+
+       });
+
     }
 }
