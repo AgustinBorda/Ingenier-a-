@@ -73,16 +73,19 @@ public class App
 
 	  post("/users", (req, res) -> {
         Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
-
-        User user = new User();
-        user.set("username", bodyParams.get("username"));
-        user.set("password", bodyParams.get("password"));
-        user.set("admin", bodyParams.get("admin"));
-        user.saveIt();
-
-        res.type("application/json");
-
-        return user.toJson(true);
+        List<User> aux = User.where("Username = "+ bodyParams.get("username"));
+        if (aux.size() == 0){
+          User user = new User();
+          user.set("username", bodyParams.get("username"));
+          user.set("password", bodyParams.get("password"));
+          user.set("admin", bodyParams.get("admin"));
+          user.saveIt();
+          res.type("application/json");
+          return user.toJson(true);
+        }
+        else{
+          return "Usuario ya existente";
+        }
       });
 
 
