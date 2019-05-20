@@ -32,10 +32,10 @@ CREATE TABLE IF NOT EXISTS options (
   updated_at DATETIME
 );
 
-CREATE TABLE IF NOT EXISTS statistcs (
+CREATE TABLE IF NOT EXISTS userstatistcs (
   id int(11) NOT NULL auto_increment PRIMARY KEY,
-  user_id int(11) UNIQUE,
-  foreign key (user_id) references users (id),
+  user VARCHAR(56) UNIQUE,
+  foreign key (user) references users (username),
   points int(11) NOT NULL ,
   correctAnswer int NOT NULL,
   incorrectAnwer int NOT NULL
