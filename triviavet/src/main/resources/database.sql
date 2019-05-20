@@ -31,3 +31,12 @@ CREATE TABLE IF NOT EXISTS options (
   created_at DATETIME,
   updated_at DATETIME
 );
+
+CREATE TABLE IF NOT EXISTS statistcs (
+  id int(11) NOT NULL auto_increment PRIMARY KEY,
+  user_id int(11) UNIQUE,
+  foreign key (user_id) references users (id),
+  points int(11) NOT NULL ,
+  correctAnswer int NOT NULL,
+  incorrectAnwer int NOT NULL
+);
