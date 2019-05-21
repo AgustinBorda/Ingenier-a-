@@ -18,8 +18,15 @@ import trivia.BasicAuth;
 
 import com.google.gson.Gson;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Random;
+
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+
 
 class QuestionParam
 {
@@ -95,7 +102,13 @@ public class App
         return resp;
 
       });
-
+/*
+      get("/game", (req,res) ->{
+          Map<String, String> parameters = new HashMap<>();
+          UrlResponse resp = doRequest("GET","/question",parameters);
+          return resp;
+      });
+*/
       get("/questions", (req,res) -> {
         Base.open();
         List<Question> questions = Question.findAll();
@@ -131,7 +144,7 @@ public class App
         return resp;
       });
 
-     
+
 
 
        get("/users", (req, res) -> {
@@ -187,10 +200,13 @@ public class App
           List<Question> questions = Question.where("id = ?",bodyParams.get("id"));
           Question question = questions.get(0);
           question.set("active",false);
+          currentUser.set("points",Integer.parseInt((String)currentUser.get("points"))+1);
+          currentUser.set("correct_answer",Integer.parseInt((String)currentUser.get("correct_answer"))+1);
           Base.close();
           return "Correcto!\n";
         }
         else{
+          currentUser.set("incorrect_answer",Integer.parseInt((String)currentUser.get("incorrect_answer"))+1);
           Base.close();
           return "Incorrecto!\n";
         }
@@ -222,7 +238,7 @@ public class App
 
 
       post("/login", (req, res) -> {
-        if(!(currentUser.get("username") != null)){
+        if(currentUser.get("username") == null){
           Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
           Base.open();
           List<User> users = User.where("username = ? AND password = ?",bodyParams.get("username"),bodyParams.get("password"));
@@ -233,9 +249,9 @@ public class App
           else{
             User user = users.get(0);
             currentUser = user;
+            Base.close();
           }
         }
-        Base.close();
         res.type("application/json");
         return currentUser.toJson(true);
       });
