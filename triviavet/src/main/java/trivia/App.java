@@ -44,6 +44,7 @@ class OptionParam
 public class App
 {
   static User currentUser;
+  static Object preg_id;
 
     public static void main( String[] args )
     {
@@ -89,6 +90,7 @@ public class App
         List<Question> questions = Question.where("active = ?",true);
         Question question = questions.get(r.nextInt(questions.size()));
         List<Option> options = Option.where("question_id = ?", question.get("id"));
+        preg_id = question.get("id");
         String resp = "";
         resp +="Question: " + question.get("description")+", ";
         resp += "\n";
@@ -102,13 +104,12 @@ public class App
         return resp;
 
       });
-/*
-      get("/game", (req,res) ->{
-          Map<String, String> parameters = new HashMap<>();
-          UrlResponse resp = doRequest("GET","/question",parameters);
-          return resp;
-      });
-*/
+
+      /*get("/game", (req,res) ->{
+          return res.redirect("localhost:4567/question").toString();
+
+      });*/
+
       get("/questions", (req,res) -> {
         Base.open();
         List<Question> questions = Question.findAll();
@@ -193,13 +194,13 @@ public class App
         post("/answer", (req,res) -> {
         Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
         Base.open();
-        List<Option> options = Option.where("question_id = ?",bodyParams.get("id"));
+        List<Option> options = Option.where("question_id = ?",preg_id);
         int i = Integer.parseInt((String)bodyParams.get("answer"));
         Option option = options.get(i-1);
         List<UserStatistic> stats = UserStatistic.where("user = ?",currentUser.get("username"));
         UserStatistic stat = stats.get(0);
         if((boolean)option.get("correct")){
-          List<Question> questions = Question.where("id = ?",bodyParams.get("id"));
+          List<Question> questions = Question.where("id = ?",preg_id);
           Question question = questions.get(0);
           question.set("active",false);
           int j = (int)stat.get("points")+1;
