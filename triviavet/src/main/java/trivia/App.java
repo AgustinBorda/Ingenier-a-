@@ -111,6 +111,24 @@ public class App
         return resp;
       });
 
+
+
+      get("/statistics", (req,res) -> {
+       Base.open();
+        List<UserStatistic> estadisticas = UserStatistic.findAll();
+        String resp ="";
+        for (UserStatistic e : estadisticas) {
+          resp +="Id: " + e.get("id")+", ";
+          resp +="User: " + e.get("user")+", ";
+          resp +="Points: " + e.get("points")+", ";
+          resp +="Answer Correct: " + e.get("correct_answer")+", ";
+          resp +="Answer Incorrect: " + e.get("incorrect_answer")+", ";
+          resp += "\n";
+        }
+        Base.close();
+        return resp;
+      });
+
       post("/answer", (req,res) -> {
         Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
         Base.open();
