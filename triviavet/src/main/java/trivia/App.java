@@ -19,6 +19,7 @@ import trivia.BasicAuth;
 import com.google.gson.Gson;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.Random;
 
 class QuestionParam
 {
@@ -77,8 +78,9 @@ public class App
 
       get("/question", (req,res) -> {
         Base.open();
+        Random r = new Random();
         List<Question> questions = Question.where("active = ?",true);
-        Question question = questions.get(0);
+        Question question = questions.get(r.nextInt(questions.size()));
         List<Option> options = Option.where("question_id = ?", question.get("id"));
         String resp = "";
         resp +="Question: " + question.get("description")+", ";
