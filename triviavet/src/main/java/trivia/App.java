@@ -53,7 +53,7 @@ public class App
           halt(401);
         }
 
-        currentUser = BasicAuth.getUser(headerToken);
+        //currentUser = BasicAuth.getUser(headerToken);
 
         Base.close();
         });
@@ -75,9 +75,9 @@ public class App
       });
 
 
-      get("/question/:id", (req,res) -> {
+      get("/question", (req,res) -> {
         Base.open();
-        List<Question> questions = Question.where("id = ?",req.params(":id"));
+        List<Question> questions = Question.where("active = ?",true);
         Question question = questions.get(0);
         List<Option> options = Option.where("question_id = ?", question.get("id"));
         String resp = "";
@@ -136,6 +136,9 @@ public class App
         int i = Integer.parseInt((String)bodyParams.get("answer"));
         Option option = options.get(i-1);
         if((boolean)option.get("correct")){
+          List<Question> questions = Question.where("id = ?",bodyParams.get("id"));
+          Question question = questions.get(0);
+          question.set("active",false);
           Base.close();
           return "Correcto!\n";
         }
@@ -148,31 +151,51 @@ public class App
       });
 
         post("/questions", (req, res) -> {
-          Base.open();
-          QuestionParam bodyParams = new Gson().fromJson(req.body(), QuestionParam.class);
-
-          Question question = new Question();
-          question.set("description", bodyParams.description);
-          question.save();
-
-          for(OptionParam item: bodyParams.options) {
-            Option option = new Option();
-            option.set("description", item.description).set("correct", item.correct);
-            question.add(option);
+          if((boolean)currentUser.get("admin")){
+            Base.open();
+            QuestionParam bodyParams = new Gson().fromJson(req.body(), QuestionParam.class);
+            Question question = new Question();
+            question.set("description", bodyParams.description);
+            question.set("active",true);
+            question.save();
+            for(OptionParam item: bodyParams.options) {
+              Option option = new Option();
+              option.set("description", item.description).set("correct", item.correct);
+              question.add(option);
+            }
+            Base.close();
+            return question;
           }
-
-          Base.close();
-          return question;
+          else{
+            return "No tenes permiso para crear preguntas";
+          }
         });
 
 
 
       post("/login", (req, res) -> {
+        if(!(currentUser.get("username") != null)){
+          Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+          Base.open();
+          List<User> users = User.where("username = ? AND password = ?",bodyParams.get("username"),bodyParams.get("password"));
+          if(users.size() <= 0){
+            Base.close();
+            return "Usuario o clave incorrectas";
+          }
+          else{
+            User user = users.get(0);
+            currentUser = user;
+          }
+        }
+        Base.close();
         res.type("application/json");
-
-        // if there is currentUser is because headers are correct, so we only
-        // return the current user here
         return currentUser.toJson(true);
+      });
+
+      post("/logout", (req,res) -> {
+        currentUser = new User();
+        currentUser.set("admin",false);
+        return "Gracias, Vuelva Prontos";
       });
 
 

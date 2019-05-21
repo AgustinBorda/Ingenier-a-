@@ -74,9 +74,11 @@ public class UserIntegrationTest {
     public void canCreateUser() {
       String username = "Alan";
       String password = "Turing";
+      String admin = "0";
       Map<String, String> parameters = new HashMap<>();
       parameters.put("username", username);
       parameters.put("password", password);
+      parameters.put("admin",admin);
 
       UrlResponse response = doRequest("POST", "/users", parameters);
       Map<String, Object> jsonResponse = new Gson().fromJson(response.body, Map.class);

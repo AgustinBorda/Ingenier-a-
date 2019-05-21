@@ -6,8 +6,8 @@ use trivia_dev;
 CREATE TABLE IF NOT EXISTS users (
   id int(11) NOT NULL auto_increment PRIMARY KEY,
   username VARCHAR(56) NOT NULL UNIQUE,
-  password VARCHAR(56),
-  admin BOOLEAN,
+  password VARCHAR(56) NOT NULL,
+  admin BOOLEAN NOT NULL,
   created_at DATETIME,
   updated_at DATETIME
 );
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS questions (
   id int(11) NOT NULL auto_increment PRIMARY KEY,
   user_id int(11),
   description VARCHAR(255) NOT NULL UNIQUE,
-  active BOOLEAN,
+  active BOOLEAN NOT NULL,
   created_at DATETIME,
   updated_at DATETIME
 );
