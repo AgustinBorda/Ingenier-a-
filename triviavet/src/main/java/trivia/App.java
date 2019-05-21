@@ -129,7 +129,53 @@ public class App
         return resp;
       });
 
-      post("/answer", (req,res) -> {
+     
+
+
+       get("/users", (req, res) -> {
+        Base.open();
+      	List<User> users = User.findAll();
+      	String resp = "";
+      	for (User u : users) {
+      		resp +="Id: " + u.get("id")+", ";
+      		resp +="Username: " + u.get("username")+", ";
+      		resp +="Password(falla de seguridad? donde?): " + u.get("password")+"\n";
+
+      	}
+        Base.close();
+      	return resp;
+      });
+
+       post("/usersdelete", (req,res) -> {
+          Base.open();
+          List<User> users = User.findAll();
+          for(User u : users){
+          	u.delete();
+          }
+          Base.close();
+          return "Todos los usuario eliminados";
+       });
+
+       post("/userdelete", (req , res ) -> {
+        Base.open();
+       Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+       List<User> usuarios = User.where("username = ?", bodyParams.get("username"));
+       User usuario = usuarios.get(0);
+       if(usuario != null){
+       	 usuario.delete();
+       	 res.type("application/json");
+         Base.close();
+       	 return "se ha borrado";
+       }else{
+        Base.close();
+       	return "No se encontro usuario para borrar";
+       }
+
+       });
+
+
+
+        post("/answer", (req,res) -> {
         Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
         Base.open();
         List<Option> options = Option.where("question_id = ?",bodyParams.get("id"));
@@ -199,7 +245,7 @@ public class App
       });
 
 
-	  post("/users", (req, res) -> {
+    post("/users", (req, res) -> {
         Base.open();
         Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
         List<User> aux = User.where("Username = ?", bodyParams.get("username"));
@@ -225,48 +271,6 @@ public class App
         }
       });
 
-
-
-       get("/users", (req, res) -> {
-        Base.open();
-      	List<User> users = User.findAll();
-      	String resp = "";
-      	for (User u : users) {
-      		resp +="Id: " + u.get("id")+", ";
-      		resp +="Username: " + u.get("username")+", ";
-      		resp +="Password(falla de seguridad? donde?): " + u.get("password")+"\n";
-
-      	}
-        Base.close();
-      	return resp;
-      });
-
-       post("/usersdelete", (req,res) -> {
-          Base.open();
-          List<User> users = User.findAll();
-          for(User u : users){
-          	u.delete();
-          }
-          Base.close();
-          return "Todos los usuario eliminados";
-       });
-
-       post("/userdelete", (req , res ) -> {
-        Base.open();
-       Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
-       List<User> usuarios = User.where("username = ?", bodyParams.get("username"));
-       User usuario = usuarios.get(0);
-       if(usuario != null){
-       	 usuario.delete();
-       	 res.type("application/json");
-         Base.close();
-       	 return "se ha borrado";
-       }else{
-        Base.close();
-       	return "No se encontro usuario para borrar";
-       }
-
-       });
 
     }
 }
