@@ -196,17 +196,24 @@ public class App
         List<Option> options = Option.where("question_id = ?",bodyParams.get("id"));
         int i = Integer.parseInt((String)bodyParams.get("answer"));
         Option option = options.get(i-1);
+        List<UserStatistic> stats = UserStatistic.where("user = ?",currentUser.get("username"));
+        UserStatistic stat = stats.get(0);
         if((boolean)option.get("correct")){
           List<Question> questions = Question.where("id = ?",bodyParams.get("id"));
           Question question = questions.get(0);
           question.set("active",false);
-          currentUser.set("points",Integer.parseInt((String)currentUser.get("points"))+1);
-          currentUser.set("correct_answer",Integer.parseInt((String)currentUser.get("correct_answer"))+1);
+          int j = (int)stat.get("points")+1;
+          System.out.println(j);
+          stat.set("points",j);
+          j = (int)stat.get("correct_answer")+1;
+          stat.set("correct_answer",j);
+          stat.saveIt();
           Base.close();
           return "Correcto!\n";
         }
         else{
-          currentUser.set("incorrect_answer",Integer.parseInt((String)currentUser.get("incorrect_answer"))+1);
+          stat.set("incorrect_answer",(int)stat.get("incorrect_answer")+1);
+          stat.saveIt();
           Base.close();
           return "Incorrecto!\n";
         }
