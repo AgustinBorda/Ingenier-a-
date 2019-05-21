@@ -168,6 +168,12 @@ public class App
           user.set("password", bodyParams.get("password"));
           user.set("admin", bodyParams.get("admin"));
           user.saveIt();
+          UserStatistic stats = new UserStatistic();
+          stats.set("user", user.get("username"));
+          stats.set("points",0);
+          stats.set("correct_answer",0);
+          stats.set("incorrect_answer",0);
+          stats.saveIt();
           res.type("application/json");
           Base.close();
           return user.toJson(true);
