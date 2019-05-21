@@ -203,6 +203,7 @@ public class App
           List<Question> questions = Question.where("id = ?",preg_id);
           Question question = questions.get(0);
           question.set("active",false);
+          question.saveIt();
           int j = (int)stat.get("points")+1;
           System.out.println(j);
           stat.set("points",j);
@@ -249,6 +250,7 @@ public class App
         if(currentUser.get("username") == null){
           Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
           Base.open();
+          res.type("application/json");
           List<User> users = User.where("username = ? AND password = ?",bodyParams.get("username"),bodyParams.get("password"));
           if(users.size() <= 0){
             Base.close();
@@ -258,10 +260,10 @@ public class App
             User user = users.get(0);
             currentUser = user;
             Base.close();
+            return currentUser.toJson(true);
           }
         }
-        res.type("application/json");
-        return currentUser.toJson(true);
+        return "Ya hay un usuario cargado";
       });
 
       post("/logout", (req,res) -> {

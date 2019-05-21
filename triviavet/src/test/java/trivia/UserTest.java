@@ -44,9 +44,9 @@ public class UserTest{
   @Test
   public void validUsername(){
     User user1 = new User();
-    user1.set("username","");
+    user1.set("username",null);
     user1.set("password","1234");
     user1.saveIt();
-    assertEquals(user1.isValid(),true);
+    assertEquals(user1.isValid(),false);
   }
 }
