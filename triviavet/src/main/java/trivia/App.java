@@ -32,6 +32,7 @@ class QuestionParam
 {
   String description;
   ArrayList<OptionParam> options;
+
 }
 
 
@@ -39,6 +40,7 @@ class OptionParam
 {
   String description;
   Boolean correct;
+
 }
 
 public class App
