@@ -13,7 +13,7 @@ import axios from 'axios';
 
 export default class SignInScreen extends React.Component {
   static navigationOptions = {
-    title: 'Please sign in',
+    title: 'Create account',
   };
 
   constructor(props) {
@@ -27,7 +27,7 @@ export default class SignInScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}> Login! </Text>
+        <Text style={styles.welcome}> Create Acount </Text>
 
         <TextInput
           placeholder="Username"
@@ -44,23 +44,21 @@ export default class SignInScreen extends React.Component {
           value={this.state.password}
         />
 
-        <Button title="Sign in" onPress={this._signIn} />
+        <Button title="Sign in" onPress={this._signUp} />
 
-        <Button title="Create account" onPress={() => this.props.navigation.navigate('Create')} />
       </View>
     );
   }
-
-  _signIn = () => {
+  _signUp = () => {
     const { username, password } = this.state;
 
-    axios.post("http://192.168.0.170:4567/login", {
+    axios.post("http://192.168.0.170:4567/users", {
       username: username,
       password: password,
     }, {
       auth: {
-        username: username,
-        password: password
+        username: 'admin',
+        password: 'admin'
       }
     })
       .then(response => JSON.stringify(response))
@@ -78,7 +76,6 @@ export default class SignInScreen extends React.Component {
       alert("Networking Error");
     });
   };
-
 }
 
 const styles = StyleSheet.create({
