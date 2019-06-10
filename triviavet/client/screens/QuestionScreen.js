@@ -44,9 +44,9 @@ export default class SignInScreen extends React.Component {
   }
 
 
-  _getCorrect = async () => {
+  _getCorrect1 = async () => {
       axios.post("http://192.168.0.170:4567/answer", {
-        answer: this.state.option.toString()
+        answer: "1"
       },{
         headers:{'Authorization' : await AsyncStorage.getItem('userToken')}
       })
@@ -66,6 +66,71 @@ export default class SignInScreen extends React.Component {
       })
   }
 
+  _getCorrect2 = async () => {
+      axios.post("http://192.168.0.170:4567/answer", {
+        answer: "2"
+      },{
+        headers:{'Authorization' : await AsyncStorage.getItem('userToken')}
+      })
+      .then(response => JSON.parse(JSON.stringify(response)))
+      .then(response => {
+        // Handle the JWT response here
+        console.log(response.data);
+        alert(response.data.answer);
+        this.props.navigation.navigate('Play')
+      })
+      .catch((error) => {
+        if(error.toString().match(/500/)) {
+          alert("Error interno del servidor");
+          this.props.navigation.navigate('Play')
+        }
+        alert(error);
+      })
+  }
+
+  _getCorrect3 = async () => {
+      axios.post("http://192.168.0.170:4567/answer", {
+        answer: "3"
+      },{
+        headers:{'Authorization' : await AsyncStorage.getItem('userToken')}
+      })
+      .then(response => JSON.parse(JSON.stringify(response)))
+      .then(response => {
+        // Handle the JWT response here
+        console.log(response.data);
+        alert(response.data.answer);
+        this.props.navigation.navigate('Play')
+      })
+      .catch((error) => {
+        if(error.toString().match(/500/)) {
+          alert("Error interno del servidor");
+          this.props.navigation.navigate('Play')
+        }
+        alert(error);
+      })
+  }
+
+  _getCorrect4 = async () => {
+      axios.post("http://192.168.0.170:4567/answer", {
+        answer: "4"
+      },{
+        headers:{'Authorization' : await AsyncStorage.getItem('userToken')}
+      })
+      .then(response => JSON.parse(JSON.stringify(response)))
+      .then(response => {
+        // Handle the JWT response here
+        console.log(response.data);
+        alert(response.data.answer);
+        this.props.navigation.navigate('Play')
+      })
+      .catch((error) => {
+        if(error.toString().match(/500/)) {
+          alert("Error interno del servidor");
+          this.props.navigation.navigate('Play')
+        }
+        alert(error);
+      })
+  }
 
   render() {
     return (
@@ -73,16 +138,16 @@ export default class SignInScreen extends React.Component {
         <Text style={styles.question}>
           {this.state.question.description}
         </Text>
-        <Text style={styles.answer} onPress={async () =>{await this.setState({option: "1"})}}>
+        <Text style={styles.answer} onPress={this._getCorrect1}>
           {this.state.question.answer1}
         </Text>
-        <Text style={styles.answer} onPress={this.correct2}>
+        <Text style={styles.answer} onPress={this._getCorrect2}>
           {this.state.question.answer2}
         </Text>
-        <Text style={styles.answer} onPress={this.correct3}>
+        <Text style={styles.answer} onPress={this._getCorrect3}>
           {this.state.question.answer3}
         </Text >
-        <Text style={styles.answer} onPress={this.correct4}>
+        <Text style={styles.answer} onPress={this._getCorrect4}>
           {this.state.question.answer4}
         </Text>
         <Button
