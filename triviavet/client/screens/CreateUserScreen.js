@@ -61,15 +61,19 @@ export default class SignInScreen extends React.Component {
         password: 'admin'
       }
     })
-      .then(response => JSON.stringify(response))
+      .then(response => JSON.parse(JSON.stringify(response)))
       .then(response => {
         // Handle the JWT response here
-    //    AsyncStorage.setItem('userToken', response.data);
+        AsyncStorage.setItem('userToken', response.config.headers.Authorization);
         this.props.navigation.navigate('App');
       })
     .catch((error) => {
       if(error.toString().match(/401/)) {
-        alert("Username or Password incorrect");
+        alert("User already exists");
+        return;
+      }
+      if(error.toString().match(/403/)) {
+        alert("Invalid Username or password");
         return;
       }
 

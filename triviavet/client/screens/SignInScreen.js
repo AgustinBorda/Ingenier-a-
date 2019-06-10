@@ -63,10 +63,10 @@ export default class SignInScreen extends React.Component {
         password: password
       }
     })
-      .then(response => JSON.stringify(response))
+      .then(response => JSON.parse(JSON.stringify(response)))
       .then(response => {
         // Handle the JWT response here
-    //    AsyncStorage.setItem('userToken', response.data);
+        AsyncStorage.setItem('userToken', response.config.headers.Authorization);
         this.props.navigation.navigate('App');
       })
     .catch((error) => {
@@ -74,8 +74,7 @@ export default class SignInScreen extends React.Component {
         alert("Username or Password incorrect");
         return;
       }
-
-      alert("Networking Error");
+      alert(error);
     });
   };
 

@@ -26,7 +26,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-
+import org.javalite.activejdbc.Model;
+import org.json.JSONObject;
+import java.lang.Thread;
 
 class QuestionParam
 {
@@ -34,7 +36,6 @@ class QuestionParam
   ArrayList<OptionParam> options;
 
 }
-
 
 class OptionParam
 {
@@ -47,10 +48,14 @@ public class App
 {
   static User currentUser;
   static Object preg_id;
+  static Thread thread;
 
     public static void main( String[] args )
     {
       before((request, response) -> {
+        thread = new Thread();
+        thread.start();
+        thread.run();
         Base.open();
 
         String headerToken = (String) request.headers("Authorization");
@@ -60,17 +65,18 @@ public class App
           headerToken.isEmpty() ||
           !BasicAuth.authorize(headerToken)
         ) {
-          System.out.println("Falto poner el usuario");
-          halt(401);
+          halt(401,"Usuario o clave invalidos \n");
         }
 
-        //currentUser = BasicAuth.getUser(headerToken);
+        currentUser = BasicAuth.getUser(headerToken);
 
         Base.close();
         });
 
         after((request, response) -> {
           //Base.close();
+          thread.stop();
+          thread = null;
           response.header("Access-Control-Allow-Origin", "*");
           response.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
           response.header("Access-Control-Allow-Headers",
@@ -89,17 +95,15 @@ public class App
       get("/question", (req,res) -> {
         Base.open();
         Random r = new Random();
+        JSONObject resp = new JSONObject();
         List<Question> questions = Question.where("active = ?",true);
         Question question = questions.get(r.nextInt(questions.size()));
         List<Option> options = Option.where("question_id = ?", question.get("id"));
         preg_id = question.get("id");
-        String resp = "";
-        resp +="Question: " + question.get("description")+", ";
-        resp += "\n";
+        resp.put("description",question.get("description"));;
         int i = 1;
-        for(Option o : options){
-          resp += "Answer "+i+": " + o.get("description");
-          resp += "\n";
+       for(Option o : options){
+          resp.put("answer"+i, o.get("description"));
           i++;
         }
         Base.close();
@@ -150,7 +154,7 @@ public class App
 
 
 
-       get("/users", (req, res) -> {
+      get("/users", (req, res) -> {
         Base.open();
       	List<User> users = User.findAll();
       	String resp = "";
@@ -162,6 +166,23 @@ public class App
       	}
         Base.close();
       	return resp;
+      });
+
+      post("/admin", (req,res) -> {
+        if((boolean)currentUser.get("admin")){
+          Base.open();
+          Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+          User user = User.findFirst("username = ?",bodyParams.get("username"));
+          user.set("admin",true);
+          user.saveIt();
+          Base.close();
+          res.type("application/json");
+          return user.toJson(true);
+        }
+        else{
+          res.type("application/json");
+          return currentUser.toJson(true);
+        }
       });
 
        post("/usersdelete", (req,res) -> {
@@ -196,6 +217,7 @@ public class App
         post("/answer", (req,res) -> {
         Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
         Base.open();
+        JSONObject resp = new JSONObject();
         List<Option> options = Option.where("question_id = ?",preg_id);
         int i = Integer.parseInt((String)bodyParams.get("answer"));
         Option option = options.get(i-1);
@@ -213,13 +235,15 @@ public class App
           stat.set("correct_answer",j);
           stat.saveIt();
           Base.close();
-          return "Correcto!\n";
+          resp.put("answer","Correcto!");
+          return resp;
         }
         else{
           stat.set("incorrect_answer",(int)stat.get("incorrect_answer")+1);
           stat.saveIt();
           Base.close();
-          return "Incorrecto!\n";
+          resp.put("answer","Incorrecto!");
+          return resp;
         }
 
 
@@ -239,7 +263,7 @@ public class App
               question.add(option);
             }
             Base.close();
-            return question;
+            return question.toJson(true);
           }
           else{
             return "No tenes permiso para crear preguntas";
@@ -249,30 +273,9 @@ public class App
 
 
       post("/login", (req, res) -> {
-        if(currentUser.get("username") == null){
-          Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
-          Base.open();
-          res.type("application/json");
-          List<User> users = User.where("username = ? AND password = ?",bodyParams.get("username"),bodyParams.get("password"));
-          if(users.size() <= 0){
-            Base.close();
-            return "Usuario o clave incorrectas";
-          }
-          else{
-            User user = users.get(0);
-            currentUser = user;
-            Base.close();
-            return currentUser.toJson(true);
-          }
-        }
-        return "Ya hay un usuario cargado";
+        return currentUser.toJson(true);
       });
 
-      post("/logout", (req,res) -> {
-        currentUser = new User();
-        currentUser.set("admin",false);
-        return "Gracias, Vuelva Prontos";
-      });
 
 
     post("/users", (req, res) -> {
@@ -280,23 +283,31 @@ public class App
         Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
         List<User> aux = User.where("Username = ?", bodyParams.get("username"));
         if (aux.size() == 0){
-          User user = new User();
-          user.set("username", bodyParams.get("username"));
-          user.set("password", bodyParams.get("password"));
-          user.set("admin", bodyParams.get("admin"));
-          user.saveIt();
-          UserStatistic stats = new UserStatistic();
-          stats.set("user", user.get("username"));
-          stats.set("points",0);
-          stats.set("correct_answer",0);
-          stats.set("incorrect_answer",0);
-          stats.saveIt();
-          res.type("application/json");
-          Base.close();
-          return user.toJson(true);
+          if(((String)bodyParams.get("username")).length()>=1 && ((String)bodyParams.get("password")).length()>=1){
+            User user = new User();
+            user.set("username", bodyParams.get("username"));
+            user.set("password", bodyParams.get("password"));
+            user.set("admin", false);
+            user.saveIt();
+            UserStatistic stats = new UserStatistic();
+            stats.set("user", user.get("username"));
+            stats.set("points",0);
+            stats.set("correct_answer",0);
+            stats.set("incorrect_answer",0);
+            stats.saveIt();
+            res.type("application/json");
+            Base.close();
+            return user.toJson(true);
+          }
+          else{
+            Base.close();
+            halt(403,"Usuario o clave invalidos");
+            return "";
+          }
         }
         else{
           Base.close();
+          halt(401,"Usuario o clave invalidos \n");
           return "Usuario ya existente";
         }
       });

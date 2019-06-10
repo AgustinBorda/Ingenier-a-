@@ -52,10 +52,9 @@ export default class HomeScreen extends React.Component {
             </Text>
 
             <Button
-              onPress={this.onPressCategoryButton.bind(this, 'Anatomia')}
-              title="Anatomia"
+              onPress={() => this.props.navigation.navigate('Play')}
+              title="Jugar"
               color="#841584"
-              accessibilityLabel="Learn more about this button"
             />
 
             <Button
@@ -63,7 +62,7 @@ export default class HomeScreen extends React.Component {
               title="Dinosaurios"
               color="#a4f590"
               accessibilityLabel="Learn more about this button"
-            />            
+            />
           </View>
 
           <View style={styles.helpContainer}>
