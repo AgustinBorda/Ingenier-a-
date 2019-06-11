@@ -11,7 +11,7 @@ import java.util.List;
 public class UserTest{
   @BeforeClass
   public static void before(){
-    Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/trivia_test", "agustin", "agustin");
+    Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/trivia_test", "root", "root");
     System.out.println("UserTest setup");
     Base.openTransaction();
   }

@@ -33,6 +33,7 @@ import java.lang.Thread;
 class QuestionParam
 {
   String description;
+  String category;
   ArrayList<OptionParam> options;
 
 }
@@ -256,6 +257,7 @@ public class App
             Question question = new Question();
             question.set("description", bodyParams.description);
             question.set("active",true);
+            question.set("category",bodyParams.category);
             question.save();
             for(OptionParam item: bodyParams.options) {
               Option option = new Option();

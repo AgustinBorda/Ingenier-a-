@@ -12,15 +12,39 @@ CREATE TABLE IF NOT EXISTS users (
   updated_at DATETIME
 );
 
+
+CREATE TABLE IF NOT EXISTS user_statistics (
+  id int(11) NOT NULL auto_increment PRIMARY KEY,
+  user VARCHAR(56) UNIQUE,
+  foreign key (user) references users (username) ON DELETE CASCADE,
+  points int(11) NOT NULL ,
+  correct_answer int(11) NOT NULL,
+  incorrect_answer int(11) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS category (
+nombre VARCHAR(50) NOT NULL PRIMARY KEY UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS use_statistics_category(
+id int(11) NOT NULL auto_increment PRIMARY KEY,
+nombre VARCHAR(50), 
+user VARCHAR(56),
+points int(11),
+foreign key (nombre) references category (nombre),
+foreign key (user) references user_statistics (user)
+);
+
 CREATE TABLE IF NOT EXISTS questions (
   id int(11) NOT NULL auto_increment PRIMARY KEY,
   user_id int(11),
+  category VARCHAR(50),
   description VARCHAR(255) NOT NULL UNIQUE,
   active BOOLEAN NOT NULL,
   created_at DATETIME,
-  updated_at DATETIME
+  updated_at DATETIME,
+  foreign key (category) references category (nombre) ON DELETE CASCADE
 );
-
 
 CREATE TABLE IF NOT EXISTS options (
   id int(11) NOT NULL auto_increment PRIMARY KEY,
@@ -30,13 +54,4 @@ CREATE TABLE IF NOT EXISTS options (
   correct BOOLEAN,
   created_at DATETIME,
   updated_at DATETIME
-);
-
-CREATE TABLE IF NOT EXISTS user_statistics (
-  id int(11) NOT NULL auto_increment PRIMARY KEY,
-  user VARCHAR(56) UNIQUE,
-  foreign key (user) references users (username),
-  points int(11) NOT NULL ,
-  correct_answer int(11) NOT NULL,
-  incorrect_answer int(11) NOT NULL
 );
