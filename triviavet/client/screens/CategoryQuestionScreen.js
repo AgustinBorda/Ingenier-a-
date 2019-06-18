@@ -28,13 +28,15 @@ export default class SignInScreen extends React.Component {
   async componentWillMount () {
     const cat = await AsyncStorage.getItem('category');
     const token =  await AsyncStorage.getItem('userToken');
-    await axios.get("http://192.168.0.16:4567/question",{
+    await axios.post("http://192.168.0.16:4567/categoryquestion",{
+      category: cat
+    },{
       headers:{'Authorization' : token}
     })
     .then(response => JSON.parse(JSON.stringify(response)))
     .then(response => {
       // Handle the JWT response here
-    this.setState({question: response.data})
+      this.setState({question: response.data})
     })
     .catch((error) => {
       if(error.toString().match(/500/)) {
@@ -42,7 +44,7 @@ export default class SignInScreen extends React.Component {
         this.props.navigation.navigate('Play')
         return;
       }
-      alert(error);
+      console.log(error);
     });
   }
 

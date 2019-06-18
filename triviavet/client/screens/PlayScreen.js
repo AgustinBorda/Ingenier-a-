@@ -28,8 +28,8 @@ export default class SignInScreen extends React.Component {
       <View style={styles.container}>
         <Text style={styles.welcome}> Select a Category, or Random </Text>
         <Button
-          onPress={this.onPressCategoryButton.bind(this, 'Categoria 1')}
-          title="1"
+          onPress={this.onPressCategoryButton.bind(this, 'quimica')}
+          title="Quimica"
           color="#8B0000"
         />
         <Button
@@ -72,7 +72,8 @@ export default class SignInScreen extends React.Component {
     );
   }
   onPressCategoryButton = (category) => {
-    alert(category);
+    AsyncStorage.setItem('category',category);
+    this.props.navigation.navigate('CatQuestion')
   }
 
 }

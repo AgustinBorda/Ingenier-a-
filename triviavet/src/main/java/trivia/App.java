@@ -92,12 +92,35 @@ public class App
         return "hello" + req.params(":name");
       });
 
+      post("/categoryquestion", (req,res) -> {
+        Base.open();
+        Random r = new Random();
+        JSONObject resp = new JSONObject();
+        Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+        List<Question> questions;
+        System.out.println(bodyParams.get("category"));
+        questions = Question.where("active = ? AND category = ?",true,bodyParams.get("category"));
+        Question question = questions.get(r.nextInt(questions.size()));
+        List<Option> options = Option.where("question_id = ?", question.get("id"));
+        preg_id = question.get("id");
+        resp.put("description",question.get("description"));;
+        int i = 1;
+       for(Option o : options){
+          resp.put("answer"+i, o.get("description"));
+          i++;
+        }
+        Base.close();
+        return resp;
+
+      });
 
       get("/question", (req,res) -> {
         Base.open();
         Random r = new Random();
         JSONObject resp = new JSONObject();
-        List<Question> questions = Question.where("active = ?",true);
+        Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+        List<Question> questions;
+        questions = Question.where("active = ?",true);
         Question question = questions.get(r.nextInt(questions.size()));
         List<Option> options = Option.where("question_id = ?", question.get("id"));
         preg_id = question.get("id");
@@ -220,17 +243,20 @@ public class App
         Base.open();
         JSONObject resp = new JSONObject();
         List<Option> options = Option.where("question_id = ?",preg_id);
+        List<Question> pregs = Question.where("id = ?",preg_id);
+        Question preg = pregs.get(0);
         int i = Integer.parseInt((String)bodyParams.get("answer"));
         Option option = options.get(i-1);
-        List<UserStatistic> stats = UserStatistic.where("user = ?",currentUser.get("username"));
-        UserStatistic stat = stats.get(0);
+        System.out.println("aaaaaaa");
+        List<UseStatisticsCategory> stats = UseStatisticsCategory.where("user = ? AND nombre = ?",currentUser.get("username"),preg.get("category"));
+        UseStatisticsCategory stat = stats.get(0);
+        System.out.println("bbbbbb");
+        Base.close();
         if((boolean)option.get("correct")){
-          List<Question> questions = Question.where("id = ?",preg_id);
-          Question question = questions.get(0);
-          question.set("active",false);
-          question.saveIt();
+          Base.open();
+          preg.set("active",false);
+          preg.saveIt();
           int j = (int)stat.get("points")+1;
-          System.out.println(j);
           stat.set("points",j);
           j = (int)stat.get("correct_answer")+1;
           stat.set("correct_answer",j);
@@ -240,6 +266,7 @@ public class App
           return resp;
         }
         else{
+          Base.open();
           stat.set("incorrect_answer",(int)stat.get("incorrect_answer")+1);
           stat.saveIt();
           Base.close();
@@ -291,13 +318,16 @@ public class App
             user.set("password", bodyParams.get("password"));
             user.set("admin", false);
             user.saveIt();
-            UserStatistic stats = new UserStatistic();
-            stats.set("user", user.get("username"));
-            stats.set("points",0);
-            stats.set("correct_answer",0);
-            stats.set("incorrect_answer",0);
-            stats.saveIt();
-            res.type("application/json");
+            List<Category> cat = Category.findAll();
+            for (Category c: cat){
+              UseStatisticsCategory stats = new UseStatisticsCategory();
+              stats.set("user", user.get("username"));
+              stats.set("nombre",c.get("nombre"));
+              stats.set("points",0);
+              stats.set("correct_answer",0);
+              stats.set("incorrect_answer",0);
+              stats.saveIt();
+            }
             Base.close();
             return user.toJson(true);
           }

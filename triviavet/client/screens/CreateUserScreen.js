@@ -49,10 +49,10 @@ export default class SignInScreen extends React.Component {
       </View>
     );
   }
-  _signUp = () => {
+  _signUp = async () => {
     const { username, password } = this.state;
 
-    axios.post("http://192.168.0.170:4567/users", {
+    axios.post("http://192.168.0.16:4567/users", {
       username: username,
       password: password,
     }, {
