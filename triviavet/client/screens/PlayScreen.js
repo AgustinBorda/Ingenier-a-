@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 
-export default class SignInScreen extends React.Component {
+export default class PlayScreen extends React.Component {
   static navigationOptions = {
     title: '',
   };
@@ -33,28 +33,28 @@ export default class SignInScreen extends React.Component {
           color="#8B0000"
         />
         <Button
-          onPress={this.onPressCategoryButton.bind(this, 'Categoria 2')}
-          title="2"
+          onPress={this.onPressCategoryButton.bind(this, 'anatomia')}
+          title="Anatomia"
           color="#FF8C00"
         />
         <Button
-          onPress={this.onPressCategoryButton.bind(this, 'Categoria 3')}
-          title="3"
+          onPress={this.onPressCategoryButton.bind(this, 'cirugia')}
+          title="Cirugia"
           color="#9932CC"
         />
         <Button
-          onPress={this.onPressCategoryButton.bind(this, 'Categoria 4')}
-          title="4"
+          onPress={this.onPressCategoryButton.bind(this, 'farmacologia')}
+          title="Farmacologia"
           color="#008000"
         />
         <Button
-          onPress={this.onPressCategoryButton.bind(this, 'Categoria 5')}
-          title="5"
+          onPress={this.onPressCategoryButton.bind(this, 'grandes_animales')}
+          title="Grandes Animales"
           color="#4682B4"
         />
         <Button
-          onPress={this.onPressCategoryButton.bind(this, 'Categoria 6')}
-          title="6"
+          onPress={this.onPressCategoryButton.bind(this, 'pequenos_animales')}
+          title="Pequenos Animales"
           color="#FFC0CB"
         />
         <Button
@@ -73,7 +73,7 @@ export default class SignInScreen extends React.Component {
   }
   onPressCategoryButton = (category) => {
     AsyncStorage.setItem('category',category);
-    this.props.navigation.navigate('CatQuestion')
+    this.props.navigation.navigate('Question')
   }
 
 }

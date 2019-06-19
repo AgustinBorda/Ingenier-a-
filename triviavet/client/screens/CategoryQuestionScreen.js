@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 
-export default class SignInScreen extends React.Component {
+export default class nCategoryQuestionScreen extends React.Component {
   static navigationOptions = {
     title: '',
     category: AsyncStorage.getItem('category')

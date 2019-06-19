@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 
-export default class SignInScreen extends React.Component {
+export default class QuestionScreen extends React.Component {
   static navigationOptions = {
     title: '',
     category: AsyncStorage.getItem('category')
@@ -28,28 +28,50 @@ export default class SignInScreen extends React.Component {
   async componentWillMount () {
     const cat = await AsyncStorage.getItem('category');
     const token =  await AsyncStorage.getItem('userToken');
-    await axios.get("http://192.168.0.16:4567/question",{
-      headers:{'Authorization' : token}
-    })
-    .then(response => JSON.parse(JSON.stringify(response)))
-    .then(response => {
-      // Handle the JWT response here
-    this.setState({question: response.data})
-    })
-    .catch((error) => {
-      if(error.toString().match(/500/)) {
-        alert("No hay mas preguntas");
-        this.props.navigation.navigate('Play')
-        return;
-      }
-      alert(error);
-    });
+    if(cat===null){
+      await axios.get(API_HOST +"/question",{
+        headers:{'Authorization' : token}
+      })
+      .then(response => JSON.parse(JSON.stringify(response)))
+      .then(response => {
+        // Handle the JWT response here
+        this.setState({question: response.data})
+      })
+      .catch((error) => {
+        if(error.toString().match(/500/)) {
+          alert("No hay mas preguntas");
+          this.props.navigation.navigate('Play')
+          return;
+        }
+        alert(error);
+      });
+    }
+    else{
+      await axios.post(API_HOST +"/categoryquestion",{
+        category: cat
+      },{
+        headers:{'Authorization' : token}
+      })
+      .then(response => JSON.parse(JSON.stringify(response)))
+      .then(response => {
+        // Handle the JWT response here
+        this.setState({question: response.data})
+      })
+      .catch((error) => {
+        if(error.toString().match(/500/)) {
+          alert("No hay mas preguntas");
+          this.props.navigation.navigate('Play')
+          return;
+        }
+        console.log(error);
+      });
+    }
   }
 
 
 
   _getCorrect = async (res) => {
-      axios.post("http://192.168.0.16:4567/answer", {
+      axios.post(API_HOST +"/answer", {
         answer: res
       },{
         headers:{'Authorization' : await AsyncStorage.getItem('userToken')}
@@ -91,7 +113,7 @@ export default class SignInScreen extends React.Component {
         <Button
           onPress={() => this.props.navigation.navigate('Play')}
           title="<-"
-          color="#a4f590"
+          color="#000000"
           accessibilityLabel="Learn more about this button"
         />
 
@@ -104,7 +126,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#8080F0',
+    backgroundColor: '#FFFFFF',
   },
   question: {
     fontSize: 30,
@@ -113,7 +135,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   answer: {
-    fontSize: 15,
+    fontSize: 20,
     textAlign: 'center',
     margin: 20,
     backgroundColor: '#FFFFFF',

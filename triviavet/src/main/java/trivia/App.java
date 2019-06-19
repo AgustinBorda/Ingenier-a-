@@ -12,6 +12,7 @@ import static spark.Spark.halt;
 
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.DB;
+import org.javalite.activejdbc.DBException;
 
 import trivia.User;
 import trivia.BasicAuth;
@@ -28,7 +29,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import org.javalite.activejdbc.Model;
 import org.json.JSONObject;
-import java.lang.Thread;
+
 
 class QuestionParam
 {
@@ -49,15 +50,18 @@ public class App
 {
   static User currentUser;
   static Object preg_id;
-  static Thread thread;
 
     public static void main( String[] args )
     {
       before((request, response) -> {
-        thread = new Thread();
-        thread.start();
-        thread.run();
-        Base.open();
+        try{
+          Base.open();
+        }
+        catch(DBException e){
+          Base.close();
+          Base.open();
+        }
+
 
         String headerToken = (String) request.headers("Authorization");
 
@@ -71,13 +75,16 @@ public class App
 
         currentUser = BasicAuth.getUser(headerToken);
 
-        Base.close();
         });
 
         after((request, response) -> {
-          //Base.close();
-          thread.stop();
-          thread = null;
+          try{
+            Base.close();
+          }
+          catch(DBException e){
+            Base.open();
+            Base.close();
+          }
           response.header("Access-Control-Allow-Origin", "*");
           response.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
           response.header("Access-Control-Allow-Headers",
@@ -93,7 +100,6 @@ public class App
       });
 
       post("/categoryquestion", (req,res) -> {
-        Base.open();
         Random r = new Random();
         JSONObject resp = new JSONObject();
         Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
@@ -109,13 +115,11 @@ public class App
           resp.put("answer"+i, o.get("description"));
           i++;
         }
-        Base.close();
         return resp;
 
       });
 
       get("/question", (req,res) -> {
-        Base.open();
         Random r = new Random();
         JSONObject resp = new JSONObject();
         Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
@@ -130,7 +134,6 @@ public class App
           resp.put("answer"+i, o.get("description"));
           i++;
         }
-        Base.close();
         return resp;
 
       });
@@ -141,7 +144,6 @@ public class App
       });*/
 
       get("/questions", (req,res) -> {
-        Base.open();
         List<Question> questions = Question.findAll();
         String resp ="";
         for (Question q : questions) {
@@ -153,53 +155,32 @@ public class App
           }
           resp += "\n";
         }
-        Base.close();
         return resp;
       });
 
 
 
       get("/statistics", (req,res) -> {
-       Base.open();
-        List<UserStatistic> estadisticas = UserStatistic.findAll();
-        String resp ="";
-        for (UserStatistic e : estadisticas) {
-          resp +="Id: " + e.get("id")+", ";
-          resp +="User: " + e.get("user")+", ";
-          resp +="Points: " + e.get("points")+", ";
-          resp +="Answer Correct: " + e.get("correct_answer")+", ";
-          resp +="Answer Incorrect: " + e.get("incorrect_answer")+", ";
-          resp += "\n";
+        List<UseStatisticsCategory> estadisticas = UseStatisticsCategory.where("user = ?",currentUser.get("username"));
+        JSONObject resp = new JSONObject();
+        resp.put("User",currentUser.get("Username"));
+        int i = 0;
+        for (UseStatisticsCategory e : estadisticas) {
+          resp.put("cat"+i,e.get("nombre"));
+          resp.put("points"+i,e.get("points"));
+          resp.put("correct_answer"+i,e.get("correct_answer"));
+          resp.put("incorrect_answer"+i,e.get("incorrect_answer"));
+          i++;
         }
-        Base.close();
         return resp;
-      });
-
-
-
-
-      get("/users", (req, res) -> {
-        Base.open();
-      	List<User> users = User.findAll();
-      	String resp = "";
-      	for (User u : users) {
-      		resp +="Id: " + u.get("id")+", ";
-      		resp +="Username: " + u.get("username")+", ";
-      		resp +="Password(falla de seguridad? donde?): " + u.get("password")+"\n";
-
-      	}
-        Base.close();
-      	return resp;
       });
 
       post("/admin", (req,res) -> {
         if((boolean)currentUser.get("admin")){
-          Base.open();
           Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
           User user = User.findFirst("username = ?",bodyParams.get("username"));
           user.set("admin",true);
           user.saveIt();
-          Base.close();
           res.type("application/json");
           return user.toJson(true);
         }
@@ -210,27 +191,22 @@ public class App
       });
 
        post("/usersdelete", (req,res) -> {
-          Base.open();
           List<User> users = User.findAll();
           for(User u : users){
           	u.delete();
           }
-          Base.close();
           return "Todos los usuario eliminados";
        });
 
        post("/userdelete", (req , res ) -> {
-        Base.open();
        Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
        List<User> usuarios = User.where("username = ?", bodyParams.get("username"));
        User usuario = usuarios.get(0);
        if(usuario != null){
        	 usuario.delete();
        	 res.type("application/json");
-         Base.close();
        	 return "se ha borrado";
        }else{
-        Base.close();
        	return "No se encontro usuario para borrar";
        }
 
@@ -240,7 +216,6 @@ public class App
 
         post("/answer", (req,res) -> {
         Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
-        Base.open();
         JSONObject resp = new JSONObject();
         List<Option> options = Option.where("question_id = ?",preg_id);
         List<Question> pregs = Question.where("id = ?",preg_id);
@@ -251,9 +226,7 @@ public class App
         List<UseStatisticsCategory> stats = UseStatisticsCategory.where("user = ? AND nombre = ?",currentUser.get("username"),preg.get("category"));
         UseStatisticsCategory stat = stats.get(0);
         System.out.println("bbbbbb");
-        Base.close();
         if((boolean)option.get("correct")){
-          Base.open();
           preg.set("active",false);
           preg.saveIt();
           int j = (int)stat.get("points")+1;
@@ -261,15 +234,12 @@ public class App
           j = (int)stat.get("correct_answer")+1;
           stat.set("correct_answer",j);
           stat.saveIt();
-          Base.close();
           resp.put("answer","Correcto!");
           return resp;
         }
         else{
-          Base.open();
           stat.set("incorrect_answer",(int)stat.get("incorrect_answer")+1);
           stat.saveIt();
-          Base.close();
           resp.put("answer","Incorrecto!");
           return resp;
         }
@@ -279,7 +249,6 @@ public class App
 
         post("/questions", (req, res) -> {
           if((boolean)currentUser.get("admin")){
-            Base.open();
             QuestionParam bodyParams = new Gson().fromJson(req.body(), QuestionParam.class);
             Question question = new Question();
             question.set("description", bodyParams.description);
@@ -291,7 +260,6 @@ public class App
               option.set("description", item.description).set("correct", item.correct);
               question.add(option);
             }
-            Base.close();
             return question.toJson(true);
           }
           else{
@@ -308,7 +276,6 @@ public class App
 
 
     post("/users", (req, res) -> {
-        Base.open();
         Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
         List<User> aux = User.where("Username = ?", bodyParams.get("username"));
         if (aux.size() == 0){
@@ -328,17 +295,14 @@ public class App
               stats.set("incorrect_answer",0);
               stats.saveIt();
             }
-            Base.close();
             return user.toJson(true);
           }
           else{
-            Base.close();
             halt(403,"Usuario o clave invalidos");
             return "";
           }
         }
         else{
-          Base.close();
           halt(401,"Usuario o clave invalidos \n");
           return "Usuario ya existente";
         }
