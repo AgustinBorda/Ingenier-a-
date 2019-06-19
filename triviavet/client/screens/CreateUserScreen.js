@@ -52,7 +52,7 @@ export default class CreateUserScreen extends React.Component {
   _signUp = async () => {
     const { username, password } = this.state;
 
-    axios.post(API_HOST +"/users", {
+    axios.post("http://192.168.0.170:4567/users", {
       username: username,
       password: password,
     }, {

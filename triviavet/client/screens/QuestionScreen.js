@@ -29,7 +29,7 @@ export default class QuestionScreen extends React.Component {
     const cat = await AsyncStorage.getItem('category');
     const token =  await AsyncStorage.getItem('userToken');
     if(cat===null){
-      await axios.get(API_HOST +"/question",{
+      await axios.get("http://192.168.0.170:4567/question",{
         headers:{'Authorization' : token}
       })
       .then(response => JSON.parse(JSON.stringify(response)))
@@ -47,7 +47,7 @@ export default class QuestionScreen extends React.Component {
       });
     }
     else{
-      await axios.post(API_HOST +"/categoryquestion",{
+      await axios.post("http://192.168.0.170:4567/categoryquestion",{
         category: cat
       },{
         headers:{'Authorization' : token}
@@ -55,11 +55,13 @@ export default class QuestionScreen extends React.Component {
       .then(response => JSON.parse(JSON.stringify(response)))
       .then(response => {
         // Handle the JWT response here
+        AsyncStorage.removeItem("category");
         this.setState({question: response.data})
       })
       .catch((error) => {
         if(error.toString().match(/500/)) {
           alert("No hay mas preguntas");
+          AsyncStorage.removeItem("category");
           this.props.navigation.navigate('Play')
           return;
         }
@@ -71,7 +73,7 @@ export default class QuestionScreen extends React.Component {
 
 
   _getCorrect = async (res) => {
-      axios.post(API_HOST +"/answer", {
+      axios.post("http://192.168.0.170:4567/answer", {
         answer: res
       },{
         headers:{'Authorization' : await AsyncStorage.getItem('userToken')}
