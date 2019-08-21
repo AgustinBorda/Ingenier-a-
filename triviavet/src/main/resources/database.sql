@@ -1,4 +1,6 @@
 
+DROP DATABASE trivia_dev;
+
 CREATE DATABASE IF NOT EXISTS trivia_dev;
 
 use trivia_dev;
@@ -11,7 +13,6 @@ CREATE TABLE IF NOT EXISTS users (
   created_at DATETIME,
   updated_at DATETIME
 );
-
 
 CREATE TABLE IF NOT EXISTS categories (
 nombre VARCHAR(50) NOT NULL PRIMARY KEY UNIQUE
@@ -33,10 +34,15 @@ CREATE TABLE IF NOT EXISTS questions (
   user_id int(11),
   category VARCHAR(50),
   description VARCHAR(255) NOT NULL UNIQUE,
-  active BOOLEAN NOT NULL,
-  created_at DATETIME,
-  updated_at DATETIME,
   foreign key (category) references categories (nombre) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS user_questions (
+  user_id int(11) NOT NULL,
+  question_id int(11) NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+  FOREIGN KEY (question_id) REFERENCES questions (id) ON DELETE CASCADE,
+  PRIMARY KEY(user_id,question_id)
 );
 
 CREATE TABLE IF NOT EXISTS options (

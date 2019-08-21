@@ -104,8 +104,7 @@ public class App
         JSONObject resp = new JSONObject();
         Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
         List<Question> questions;
-        System.out.println(bodyParams.get("category"));
-        questions = Question.where("active = ? AND category = ?",true,bodyParams.get("category"));
+        questions = Question.findBySQL("SELECT * FROM question NATURAL JOIN (SELECT * FROM user_questions WHERE user_id = ?) WHERE category = ?",currentUser.get("id"),bodyParams.get("category"));
         Question question = questions.get(r.nextInt(questions.size()));
         List<Option> options = Option.where("question_id = ?", question.get("id"));
         preg_id = question.get("id");
@@ -124,7 +123,7 @@ public class App
         JSONObject resp = new JSONObject();
         Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
         List<Question> questions;
-        questions = Question.where("active = ?",true);
+        questions = Question.findBySQL("SELECT * FROM question NATURAL JOIN (SELECT * FROM user_questions WHERE user_id = ?)",currentUser.get("id"));
         Question question = questions.get(r.nextInt(questions.size()));
         List<Option> options = Option.where("question_id = ?", question.get("id"));
         preg_id = question.get("id");
@@ -137,28 +136,6 @@ public class App
         return resp;
 
       });
-
-      /*get("/game", (req,res) ->{
-          return res.redirect("localhost:4567/question").toString();
-
-      });*/
-
-      get("/questions", (req,res) -> {
-        List<Question> questions = Question.findAll();
-        String resp ="";
-        for (Question q : questions) {
-          resp +="Id: " + q.get("id")+", ";
-          resp +="Question: " + q.get("description")+", ";
-          List<Option> options = Option.where("question_id = ?", q.get("id"));
-          for (Option o:options){
-            resp += "Answer: " + o.get("description");
-          }
-          resp += "\n";
-        }
-        return resp;
-      });
-
-
 
       get("/statistics", (req,res) -> {
         List<UseStatisticsCategory> estadisticas = UseStatisticsCategory.where("user = ?",currentUser.get("username"));
@@ -218,17 +195,16 @@ public class App
         Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
         JSONObject resp = new JSONObject();
         List<Option> options = Option.where("question_id = ?",preg_id);
-        List<Question> pregs = Question.where("id = ?",preg_id);
-        Question preg = pregs.get(0);
+        List<Question> questions = Question.where("id = ?",preg_id);
+        Question question = questions.get(0);
         int i = Integer.parseInt((String)bodyParams.get("answer"));
         Option option = options.get(i-1);
-        System.out.println("aaaaaaa");
-        List<UseStatisticsCategory> stats = UseStatisticsCategory.where("user = ? AND nombre = ?",currentUser.get("username"),preg.get("category"));
+        List<UseStatisticsCategory> stats = UseStatisticsCategory.where("user = ? AND nombre = ?",currentUser.get("username"),question.get("category"));
         UseStatisticsCategory stat = stats.get(0);
-        System.out.println("bbbbbb");
         if((boolean)option.get("correct")){
-          preg.set("active",false);
-          preg.saveIt();
+          UserQuestions preg = new UserQuestions();
+          preg.set("user_id",currentUser.get("id"));
+          preg.set("question id",preg_id);
           int j = (int)stat.get("points")+1;
           stat.set("points",j);
           j = (int)stat.get("correct_answer")+1;
@@ -252,7 +228,6 @@ public class App
             QuestionParam bodyParams = new Gson().fromJson(req.body(), QuestionParam.class);
             Question question = new Question();
             question.set("description", bodyParams.description);
-            question.set("active",true);
             question.set("category",bodyParams.category);
             question.save();
             for(OptionParam item: bodyParams.options) {
