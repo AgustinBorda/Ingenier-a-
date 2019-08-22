@@ -104,7 +104,7 @@ public class App
         JSONObject resp = new JSONObject();
         Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
         List<Question> questions;
-        questions = Question.findBySQL("SELECT * FROM question NATURAL JOIN (SELECT * FROM user_questions WHERE user_id = ?) WHERE category = ?",currentUser.get("id"),bodyParams.get("category"));
+        questions = Question.findBySQL("SELECT * FROM question NOT IN (question NATURAL JOIN (SELECT question_id FROM user_questions WHERE user_id = ?)) WHERE category = ?",currentUser.get("id"),bodyParams.get("category"));
         Question question = questions.get(r.nextInt(questions.size()));
         List<Option> options = Option.where("question_id = ?", question.get("id"));
         preg_id = question.get("id");
@@ -123,7 +123,7 @@ public class App
         JSONObject resp = new JSONObject();
         Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
         List<Question> questions;
-        questions = Question.findBySQL("SELECT * FROM question NATURAL JOIN (SELECT * FROM user_questions WHERE user_id = ?)",currentUser.get("id"));
+        questions = Question.findBySQL("SELECT * FROM question NOT IN (question NATURAL JOIN (SELECT question_id FROM user_questions WHERE user_id = ?))",currentUser.get("id"));
         Question question = questions.get(r.nextInt(questions.size()));
         List<Option> options = Option.where("question_id = ?", question.get("id"));
         preg_id = question.get("id");
