@@ -1,7 +1,7 @@
-DROP DATABASE trivia_test;
-CREATE DATABASE IF NOT EXISTS trivia_test;
+#DROP DATABASE IF EXISTS trivia_test;
+#CREATE DATABASE IF NOT EXISTS trivia_test;
 
-use trivia_test;
+#use trivia_test;
 
 CREATE TABLE IF NOT EXISTS users (
   id int(11) NOT NULL auto_increment PRIMARY KEY,
