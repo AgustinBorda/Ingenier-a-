@@ -3,7 +3,7 @@ package trivia;
 import java.io.*;
 import java.util.Base64;
 
-import trivia.User;
+import trivia.models.User;
 
 public class BasicAuth {
   static Boolean authorize(String headerAuth) {

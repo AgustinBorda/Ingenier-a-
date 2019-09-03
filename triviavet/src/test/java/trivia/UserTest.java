@@ -1,17 +1,18 @@
 package trivia;
+
 import static org.junit.Assert.*;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import trivia.models.User;
+
 import org.javalite.activejdbc.Base;
-import org.javalite.activejdbc.DB;
 import java.util.List;
+
 public class UserTest{
   @BeforeClass
   public static void before(){
-    Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/trivia_test", "root", "root");
+    Base.open();
     System.out.println("UserTest setup");
     Base.openTransaction();
   }

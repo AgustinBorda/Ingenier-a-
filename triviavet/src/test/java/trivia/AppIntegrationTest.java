@@ -1,43 +1,26 @@
 package trivia;
 
 import org.javalite.activejdbc.Base;
-import org.javalite.activejdbc.DB;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static spark.Spark.after;
-import static spark.Spark.before;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.util.List;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Base64;
-
+import java.util.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import trivia.User;
+import trivia.models.User;
+import trivia.models.UserStatistic;
 import spark.utils.IOUtils;
-
 import spark.Spark;
-
 import java.io.OutputStreamWriter;
-
-import com.google.gson.Gson;
-
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 public class AppIntegrationTest {
 
@@ -47,11 +30,15 @@ public class AppIntegrationTest {
 
   @AfterClass
   public static void tearDown() {
-      Spark.stop();
+	  Base.open();
+	  assertTrue(User.findFirst("username = ? and password = ?", ADMIN_USERNAME,ADMIN_PASSWORD).delete());
+	  Base.close();
+	  Spark.stop();
   }
 
   @After
   public void clear() {
+	  
   }
 
 
@@ -62,24 +49,18 @@ public class AppIntegrationTest {
   @BeforeClass
   public static void setup() {
       App.main(null);
-
       Spark.awaitInitialization();
 
       // Create an admin user to log into system using Basic Auth before run the test
-      Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/trivia_dev", "root", "root");
+      Base.open();
       User u = new User();
       u.set("username", ADMIN_USERNAME);
       u.set("password", ADMIN_PASSWORD);
       u.set("admin","1");
-      u.saveIt();
+      
+      assertTrue(u.saveIt());
+      
       Base.close();
-      Map<String, Object> params = new HashMap<>();
-      params.put("description","preg1");
-      params.put("options","[{description:incorrecta, correct:false}, {description:incorrecta, correct:false}, {description:correcta, correct:true},{description:incorrecta, correct:false}]");
-      UrlResponse response = doRequest("POST", "/question", params);
-
-
-
   }
 
       private static UrlResponse doRequest(String requestMethod, String path, Map body) {
@@ -99,6 +80,7 @@ public class AppIntegrationTest {
         private String body;
         private int status;
       }
+      
       private static void getResponse(String requestMethod, String path, Map body, UrlResponse response)
               throws MalformedURLException, IOException, ProtocolException {
         URL url = new URL("http://localhost:" + PORT + path);

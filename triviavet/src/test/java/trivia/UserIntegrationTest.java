@@ -26,7 +26,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import trivia.User;
+import trivia.models.User;
 import spark.utils.IOUtils;
 
 import spark.Spark;
@@ -69,7 +69,7 @@ public class UserIntegrationTest {
         u.saveIt();
         Base.close();
     }
-
+ 
     @Test
     public void canCreateUser() {
       String username = "Alan";
