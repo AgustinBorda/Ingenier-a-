@@ -1,6 +1,4 @@
-package trivia;
-
-import trivia.models;
+package trivia.models;
 
 import org.javalite.activejdbc.Base;
 import org.junit.After;
@@ -28,7 +26,7 @@ public class UserQuestionsTest {
   @Test
   public void validatePrecenseOfuser_id(){
     UserQuestions UserQuestionsTest = new UserQuestions();
-    UserQuestionsTest.set("user_id", NULL);
+    UserQuestionsTest.set("user_id", null);
     assertEquals(UserQuestionsTest.isValid(), false);
   }
   
@@ -42,7 +40,7 @@ public class UserQuestionsTest {
   @Test
   public void validatePrecenseOfquestion_id(){
     UserQuestions userQuestionsTest = new UserQuestions();
-    userQuestionsTest.set("question_id", NULL);
+    userQuestionsTest.set("question_id", null);
     assertEquals(userQuestionsTest.isValid(), false);
   }
   

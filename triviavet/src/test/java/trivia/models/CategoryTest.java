@@ -1,6 +1,4 @@
-package trivia;
-
-import trivia.models;
+package trivia.models;
 
 import org.javalite.activejdbc.Base;
 import org.junit.After;

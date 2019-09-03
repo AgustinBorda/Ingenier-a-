@@ -1,6 +1,4 @@
-package trivia;
-
-import trivia.models;
+package trivia.models;
 
 import org.javalite.activejdbc.Base;
 import org.junit.After;
@@ -64,7 +62,7 @@ public class UserTest {
   @Test
   public void validatePrecenseOfadmin(){
     User userTest = new User();
-    userTest.set("admin", NULL);
+    userTest.set("admin", null);
     assertEquals(userTest.isValid(), false);
   }
   

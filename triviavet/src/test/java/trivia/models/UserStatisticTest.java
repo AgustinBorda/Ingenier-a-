@@ -1,6 +1,4 @@
-package trivia;
-
-import trivia.models;
+package trivia.models;
 
 import org.javalite.activejdbc.Base;
 import org.junit.After;
@@ -50,12 +48,12 @@ public class UserStatisticTest {
   @Test
   public void validatePrecenseOfpoints(){
     UserStatistic userStatistic = new UserStatistic();
-    userStatistic.set("points", NULL);
+    userStatistic.set("points", null);
     assertEquals(userStatistic.isValid(), false);
   }
   
   @Test
-  public void validatePrecenseOfSomethingInuser(){
+  public void validatePrecenseOfSomethingInpoints(){
     UserStatistic userStatistic = new UserStatistic();
     userStatistic.set("points", 10);
     assertEquals(userStatistic.isValid(), true);
@@ -64,12 +62,12 @@ public class UserStatisticTest {
   @Test
   public void validatePrecenseOfcorrect_answer(){
     UserStatistic userStatistic = new UserStatistic();
-    userStatistic.set("correct_answer", NULL);
+    userStatistic.set("correct_answer", null);
     assertEquals(userStatistic.isValid(), false);
   }
   
   @Test
-  public void validatePrecenseOfSomethingInuser(){
+  public void validatePrecenseOfSomethingIncorrect_answer(){
     UserStatistic userStatistic = new UserStatistic();
     userStatistic.set("correct_answer", 10);
     assertEquals(userStatistic.isValid(), true);
