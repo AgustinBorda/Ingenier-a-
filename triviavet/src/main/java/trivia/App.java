@@ -154,24 +154,19 @@ public class App {
 			}
 		});
 
-		post("/usersdelete", (req, res) -> {
-			List<User> users = User.findAll();
-			for (User u : users) {
-				u.delete();
-			}
-			return "Todos los usuario eliminados";
-		}); 
 
 		post("/userdelete", (req, res) -> {
 			Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 			User usuario = User.findFirst("username = ?", bodyParams.get("username"));
+			JSONObject resp = new JSONObject();
 			if (usuario != null) {
 				usuario.delete();
 				res.type("application/json");
-				return "se ha borrado";
+				resp.put("answer","Usuario Borrado");
 			} else {
-				return "No se encontro usuario para borrar";
+				resp.put("answer", "El usuario no existe");
 			}
+			return resp;
 		});
 
 		post("/answer", (req, res) -> {
@@ -183,7 +178,7 @@ public class App {
 			int i = Integer.parseInt((String) bodyParams.get("answer"));
 			Option option = options.get(i - 1);
 			List<UseStatisticsCategory> stats = UseStatisticsCategory.where("user = ? AND nombre = ?",
-					currentUser.get("username"), question.get("category"));
+			currentUser.get("username"), question.get("category"));
 			UseStatisticsCategory stat = stats.get(0);
 			if ((boolean) option.get("correct")) {
 				UserQuestions preg = new UserQuestions();
@@ -249,12 +244,12 @@ public class App {
 					}
 					return user.toJson(true);
 				} else {
-					halt(403, "Usuario o clave invalidos");
+					halt(403, "");
 					return "";
 				}
 			} else {
-				halt(401, "Usuario o clave invalidos \n");
-				return "Usuario ya existente";
+				halt(401, "");
+				return "";
 			}
 		});
 
