@@ -26,50 +26,36 @@ public class UserTest {
   @Test
   public void validatePrecenseOfusername(){
     User userTest = new User();
-    userTest.set("username", "");
+    userTest.set("password", "jose" , "admin", true);
     assertEquals(userTest.isValid(), false);
   }
   
   @Test
-  public void validatePrecenseOfSomethingInusername(){
+  public void validateUniqueUsername(){
+    assertTrue(new User().set("username", "jose", "password", "jose" , "admin", true).saveIt());
     User userTest = new User();
-    userTest.set("username", "jose");
-    assertEquals(userTest.isValid(), true);
-  }
-
-  @Test
-  public void validateUniqueLeague(){
-    assertTrue(new User().set("username", "jose").saveIt());
-    User userTest = new User();
-    userTest.set("username", "jose");
+    userTest.set("username", "jose", "password", "jose" , "admin", true);
     assertEquals(userTest.isValid(), false);
   }
 
   @Test
   public void validatePrecenseOfpassword(){
     User userTest = new User();
-    userTest.set("password", "");
+    userTest.set("username", "jose", "admin", true);
     assertEquals(userTest.isValid(), false);
   }
   
-  @Test
-  public void validatePrecenseOfSomethingInpassword(){
-    User userTest = new User();
-    userTest.set("password", "jose");
-    assertEquals(userTest.isValid(), true);
-  }
-
   @Test
   public void validatePrecenseOfadmin(){
     User userTest = new User();
-    userTest.set("admin", null);
+    userTest.set("username", "jose", "password", "jose");
     assertEquals(userTest.isValid(), false);
   }
   
   @Test
-  public void validatePrecenseOfSomethingInadmin(){
+  public void validatePrecenseOfSomethingIn(){
     User userTest = new User();
-    userTest.set("admin", true);
+    userTest.set("username", "jose", "password", "jose" , "admin", true);
     assertEquals(userTest.isValid(), true);
   }
 }

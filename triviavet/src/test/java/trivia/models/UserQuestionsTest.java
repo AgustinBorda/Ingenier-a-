@@ -1,3 +1,4 @@
+
 package trivia.models;
 
 import org.javalite.activejdbc.Base;
@@ -31,23 +32,16 @@ public class UserQuestionsTest {
   }
   
   @Test
-  public void validatePrecenseOfSomethingInuser_id(){
-    UserQuestions userQuestionsTest = new UserQuestions();
-    userQuestionsTest.set("user_id", 1);
-    assertEquals(userQuestionsTest.isValid(), true);
-  }
-
-  @Test
   public void validatePrecenseOfquestion_id(){
     UserQuestions userQuestionsTest = new UserQuestions();
-    userQuestionsTest.set("question_id", null);
+    userQuestionsTest.set("user_id", 1, "question_id", null);
     assertEquals(userQuestionsTest.isValid(), false);
   }
   
   @Test
-  public void validatePrecenseOfSomethingInquestion_id(){
+  public void validatePrecenseOfSomethingIn(){
     UserQuestions userQuestionsTest = new UserQuestions();
-    userQuestionsTest.set("question_id", 1);
+    userQuestionsTest.set("user_id", 1,"question_id", 1);
     assertEquals(userQuestionsTest.isValid(), true);
   }
 }

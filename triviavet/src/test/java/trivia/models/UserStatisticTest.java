@@ -26,50 +26,43 @@ public class UserStatisticTest {
   @Test
   public void validatePrecenseOfuser(){
     UserStatistic userStatistic = new UserStatistic();
-    userStatistic.set("user", "");
+    userStatistic.set("points", 5, "correct_answer", 10, "incorrect_answer", 3);
     assertEquals(userStatistic.isValid(), false);
   }
   
   @Test
-  public void validatePrecenseOfSomethingInuser(){
+  public void validateUniqueUser(){
+    assertTrue(new UserStatistic().set("user", "admin", "points", 5, "correct_answer", 10, "incorrect_answer", 3).saveIt());
     UserStatistic userStatistic = new UserStatistic();
-    userStatistic.set("user", "admin");
-    assertEquals(userStatistic.isValid(), true);
-  }
-
-  @Test
-  public void validateUniqueLeague(){
-    assertTrue(new UserStatistic().set("user", "admin").saveIt());
-    UserStatistic userStatistic = new UserStatistic();
-    userStatistic.set("user", "admin");
+    userStatistic.set("user", "admin", "points", 1, "correct_answer", 1, "incorrect_answer", 1);
     assertEquals(userStatistic.isValid(), false);
   }
 
   @Test
   public void validatePrecenseOfpoints(){
     UserStatistic userStatistic = new UserStatistic();
-    userStatistic.set("points", null);
+    userStatistic.set("user", "jose", "correct_answer", 10, "incorrect_answer", 3);
     assertEquals(userStatistic.isValid(), false);
   }
   
-  @Test
-  public void validatePrecenseOfSomethingInpoints(){
-    UserStatistic userStatistic = new UserStatistic();
-    userStatistic.set("points", 10);
-    assertEquals(userStatistic.isValid(), true);
-  }
-
   @Test
   public void validatePrecenseOfcorrect_answer(){
     UserStatistic userStatistic = new UserStatistic();
-    userStatistic.set("correct_answer", null);
+    userStatistic.set("user", "jose", "points", 5, "incorrect_answer", 3);
     assertEquals(userStatistic.isValid(), false);
   }
   
   @Test
-  public void validatePrecenseOfSomethingIncorrect_answer(){
+  public void validatePrecenseOfincorrect_answer(){
     UserStatistic userStatistic = new UserStatistic();
-    userStatistic.set("correct_answer", 10);
+    userStatistic.set("user", "jose", "points", 5, "correct_answer", 10);
+    assertEquals(userStatistic.isValid(), false);
+  }
+  
+  @Test
+  public void validatePrecenseOfSomethingIn(){
+    UserStatistic userStatistic = new UserStatistic();
+    userStatistic.set("user", "jose", "points", 5, "correct_answer", 10, "incorrect_answer", 3);
     assertEquals(userStatistic.isValid(), true);
   }
 }

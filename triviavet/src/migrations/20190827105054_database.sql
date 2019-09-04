@@ -19,12 +19,12 @@ nombre VARCHAR(50) NOT NULL PRIMARY KEY UNIQUE
 CREATE TABLE IF NOT EXISTS use_statistics_categories(
 id int(11) NOT NULL auto_increment PRIMARY KEY,
 nombre VARCHAR(50),
-user VARCHAR(56) ON DELETE CASCADE,
+user VARCHAR(56),
 points int(11) NOT NULL,
 correct_answer int(11) NOT NULL,
 incorrect_answer int(11) NOT NULL,
 foreign key (nombre) references categories (nombre),
-foreign key (user) references users (username)
+foreign key (user) references users (username) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS questions (

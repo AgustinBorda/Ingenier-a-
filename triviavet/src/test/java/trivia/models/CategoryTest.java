@@ -26,19 +26,19 @@ public class CategoryTest {
   @Test
   public void validatePrecenseOfnombre(){
     Category categoryTest = new Category();
-    categoryTest.set("nombre", "");
+    categoryTest.set("nombre", null);
     assertEquals(categoryTest.isValid(), false);
   }
   
   @Test
   public void validatePrecenseOfSomethingInNombre(){
     Category categoryTest = new Category();
-    categoryTest.set("nombre", "anatomia");
+    categoryTest.set("nombre", "fisica");
     assertEquals(categoryTest.isValid(), true);
   }
 
   @Test
-  public void validateUniqueLeague(){
+  public void validateUniqueCategory(){
     assertTrue(new Category().set("nombre", "fisica").saveIt());
     Category categoryTest = new Category();
     categoryTest.set("nombre", "fisica");
