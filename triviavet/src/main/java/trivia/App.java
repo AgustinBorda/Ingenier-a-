@@ -87,7 +87,7 @@ public class App {
 			List<Question> questions;
 			questions = Question.findBySQL(
 					"SELECT * FROM questions WHERE id NOT IN (SELECT id FROM questions NATURAL JOIN user_questions WHERE user_id = ?) AND category = ?",
-					currentUser.get("id"), bodyParams.get("category"));
+			currentUser.get("id"), bodyParams.get("category"));
 			Question question = questions.get(r.nextInt(questions.size()));
 			List<Option> options = Option.where("question_id = ?", question.get("id"));
 			preg_id = question.get("id");
@@ -109,7 +109,7 @@ public class App {
 			List<Question> questions;
 			questions = Question.findBySQL(
 					"SELECT * FROM questions WHERE id NOT IN (SELECT id FROM questions NATURAL JOIN user_questions WHERE user_id = ?)",
-					currentUser.get("id"));
+			currentUser.get("id"));
 			Question question = questions.get(r.nextInt(questions.size()));
 			List<Option> options = Option.where("question_id = ?", question.get("id"));
 			preg_id = question.get("id");
@@ -183,7 +183,8 @@ public class App {
 			if ((boolean) option.get("correct")) {
 				UserQuestions preg = new UserQuestions();
 				preg.set("user_id", currentUser.get("id"));
-				preg.set("question id", preg_id);
+				preg.set("question_id", preg_id);
+				preg.saveIt();
 				int j = (int) stat.get("points") + 1;
 				stat.set("points", j);
 				j = (int) stat.get("correct_answer") + 1;

@@ -27,10 +27,11 @@ export default class QuestionScreen extends React.Component {
 
   async componentWillMount () {
     const token =  await AsyncStorage.getItem('userToken')
-    await axios.get("http://192.168.0.170:4567/statistics",{
+    await axios.get(API_HOST+"/statistics",{
       headers:{'Authorization' : token}
-    })
-    .then(response => JSON.parse(JSON.stringify(response)))
+    .then(
+      response => JSON.parse(JSON.stringify(response)))
+  })
     .then(response => {
       // Handle the JWT response here
     this.setState({stats: response.data})
