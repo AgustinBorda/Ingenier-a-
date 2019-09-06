@@ -64,7 +64,7 @@ public class App {
 			User currentUser = User.findFirst("username = ?", bodyParams.get("username"));
 			questions = Question.findBySQL(
 					"SELECT * FROM questions WHERE id NOT IN (SELECT id FROM questions NATURAL JOIN user_questions WHERE user_id = ?) AND category = ?",
-					currentUser.get("id"), bodyParams.get("category"));
+			currentUser.get("id"), bodyParams.get("category"));
 			Question question = questions.get(r.nextInt(questions.size()));
 			List<Option> options = Option.where("question_id = ?", question.get("id"));
 			preg_id = question.get("id");
@@ -86,7 +86,7 @@ public class App {
 			User currentUser = User.findFirst("username = ?", bodyParams.get("username"));
 			questions = Question.findBySQL(
 					"SELECT * FROM questions WHERE id NOT IN (SELECT id FROM questions NATURAL JOIN user_questions WHERE user_id = ?)",
-					currentUser.get("id"));
+			currentUser.get("id"));
 			Question question = questions.get(r.nextInt(questions.size()));
 			List<Option> options = Option.where("question_id = ?", question.get("id"));
 			preg_id = question.get("id");
@@ -160,6 +160,7 @@ public class App {
 			UseStatisticsCategory stat = stats.get(0);
 			if ((boolean) option.get("correct")) {
 				UserQuestions preg = new UserQuestions();
+
 				User u = User.findFirst("username = ?", req.session().attribute("username"));
 				preg.set("user_id", u.get("id"));
 				preg.set("question id", preg_id);
