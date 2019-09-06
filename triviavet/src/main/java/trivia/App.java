@@ -1,22 +1,14 @@
 package trivia;
 
-import java.util.List;
-
-import static spark.Spark.get;
-import static spark.Spark.post;
-import static spark.Spark.options;
-
-import static spark.Spark.before;
-import static spark.Spark.after;
-import static spark.Spark.halt;
-
+import static spark.Spark.*;
 import org.javalite.activejdbc.Base;
-import org.javalite.activejdbc.DBException;
 
 import trivia.models.*;
 import trivia.BasicAuth;
 
 import com.google.gson.Gson;
+
+import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.Random;
@@ -33,39 +25,27 @@ class QuestionParam {
 class OptionParam {
 	String description;
 	Boolean correct;
-
 }
 
 public class App {
-	static User currentUser;
+
 	static Object preg_id;
 
 	public static void main(String[] args) {
 
 		before((request, response) -> {
-			try {
-				Base.open();
-			} catch (DBException e) {
-				Base.close();
-				Base.open();
-			}
-
+			if (!Base.hasConnection())
+				Base.open();				
 			String headerToken = (String) request.headers("Authorization");
-
-			if (headerToken == null || headerToken.isEmpty() || !BasicAuth.authorize(headerToken)) {
+			
+			if (headerToken == null || headerToken.isEmpty() || !BasicAuth.authorize(headerToken))
 				halt(401, "Usuario o clave invalidos \n");
-			}
-
-			currentUser = BasicAuth.getUser(headerToken);
 		});
 
 		after((request, response) -> {
-			try {
+			if(Base.hasConnection())
 				Base.close();
-			} catch (DBException e) {
-				Base.open();
-				Base.close();
-			}
+
 			response.header("Access-Control-Allow-Origin", "*");
 			response.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
 			response.header("Access-Control-Allow-Headers",
@@ -76,15 +56,12 @@ public class App {
 			return "OK";
 		});
 
-		get("/hello/:name", (req, res) -> {
-			return "hello" + req.params(":name");
-		});
-
-		post("/categoryquestion", (req, res) -> {
+		post("/categoryquestion", (req, res) -> {// its a get
 			Random r = new Random();
 			JSONObject resp = new JSONObject();
 			Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 			List<Question> questions;
+			User currentUser = User.findFirst("username = ?", bodyParams.get("username"));
 			questions = Question.findBySQL(
 					"SELECT * FROM questions WHERE id NOT IN (SELECT id FROM questions NATURAL JOIN user_questions WHERE user_id = ?) AND category = ?",
 			currentUser.get("id"), bodyParams.get("category"));
@@ -99,7 +76,6 @@ public class App {
 				i++;
 			}
 			return resp;
-
 		});
 
 		get("/question", (req, res) -> {
@@ -107,6 +83,7 @@ public class App {
 			JSONObject resp = new JSONObject();
 			Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 			List<Question> questions;
+			User currentUser = User.findFirst("username = ?", bodyParams.get("username"));
 			questions = Question.findBySQL(
 					"SELECT * FROM questions WHERE id NOT IN (SELECT id FROM questions NATURAL JOIN user_questions WHERE user_id = ?)",
 			currentUser.get("id"));
@@ -114,7 +91,7 @@ public class App {
 			List<Option> options = Option.where("question_id = ?", question.get("id"));
 			preg_id = question.get("id");
 			resp.put("description", question.get("description"));
-
+			
 			int i = 1;
 			for (Option o : options) {
 				resp.put("answer" + i, o.get("description"));
@@ -126,9 +103,9 @@ public class App {
 
 		get("/statistics", (req, res) -> {
 			List<UseStatisticsCategory> estadisticas = UseStatisticsCategory.where("user = ?",
-					currentUser.get("username"));
+					req.session().attribute("username"));
 			JSONObject resp = new JSONObject();
-			resp.put("User", currentUser.get("Username"));
+			resp.put("User", req.session().attribute("username").toString());
 			int i = 0;
 			for (UseStatisticsCategory e : estadisticas) {
 				resp.put("cat" + i, e.get("nombre"));
@@ -141,7 +118,7 @@ public class App {
 		});
 
 		post("/admin", (req, res) -> {
-			if ((boolean) currentUser.get("admin")) {
+			if ((boolean) req.session().attribute("admin")) {
 				Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 				User user = User.findFirst("username = ?", bodyParams.get("username"));
 				user.set("admin", true);
@@ -150,10 +127,11 @@ public class App {
 				return user.toJson(true);
 			} else {
 				res.type("application/json");
-				return currentUser.toJson(true);
+				User u = User.findFirst("username = ?", req.session().attribute("username"));
+				return u.toJson(true);
+				//why?
 			}
 		});
-
 
 		post("/userdelete", (req, res) -> {
 			Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
@@ -162,7 +140,7 @@ public class App {
 			if (usuario != null) {
 				usuario.delete();
 				res.type("application/json");
-				resp.put("answer","Usuario Borrado");
+				resp.put("answer", "Usuario Borrado");
 			} else {
 				resp.put("answer", "El usuario no existe");
 			}
@@ -178,12 +156,14 @@ public class App {
 			int i = Integer.parseInt((String) bodyParams.get("answer"));
 			Option option = options.get(i - 1);
 			List<UseStatisticsCategory> stats = UseStatisticsCategory.where("user = ? AND nombre = ?",
-			currentUser.get("username"), question.get("category"));
+					req.session().attribute("username"), question.get("category"));
 			UseStatisticsCategory stat = stats.get(0);
 			if ((boolean) option.get("correct")) {
 				UserQuestions preg = new UserQuestions();
-				preg.set("user_id", currentUser.get("id"));
-				preg.set("question_id", preg_id);
+
+				User u = User.findFirst("username = ?", req.session().attribute("username"));
+				preg.set("user_id", u.get("id"));
+				preg.set("question id", preg_id);
 				preg.saveIt();
 				int j = (int) stat.get("points") + 1;
 				stat.set("points", j);
@@ -201,58 +181,57 @@ public class App {
 		});
 
 		post("/questions", (req, res) -> {
-			if ((boolean) currentUser.get("admin")) {
-				QuestionParam bodyParams = new Gson().fromJson(req.body(), QuestionParam.class);
-				Question question = new Question();
-				question.set("description", bodyParams.description);
-				question.set("category", bodyParams.category);
-				question.save();
-				for (OptionParam item : bodyParams.options) {
-					Option option = new Option();
-					option.set("description", item.description).set("correct", item.correct);
-					question.add(option);
-				}
-				return question.toJson(true);
-			} else {
+			if (!(boolean) req.session().attribute("admin"))
 				return "No tenes permiso para crear preguntas";
+			QuestionParam bodyParams = new Gson().fromJson(req.body(), QuestionParam.class);
+			Question question = new Question();
+			question.set("description", bodyParams.description);
+			question.set("category", bodyParams.category);
+			question.save();
+			for (OptionParam item : bodyParams.options) {
+				Option option = new Option();
+				option.set("description", item.description).set("correct", item.correct);
+				question.add(option);
 			}
+			return question.toJson(true);
 		});
 
 		post("/login", (req, res) -> {
-			return currentUser.toJson(true);
+			Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class); // 0 seguridad
+			User u = User.findFirst("username = ? and password = ?", bodyParams.get("username"), bodyParams.get("password"));
+			if (u != null) {
+				req.session().attribute("username", u.get("username"));
+				req.session().attribute("admin", u.get("admin"));
+				System.out.println(req.session().attribute("username").toString());
+			}
+			return u.toJson(true); 
 		});
 
 		post("/users", (req, res) -> {
 			Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
-			List<User> aux = User.where("Username = ?", bodyParams.get("username"));
-			if (aux.size() == 0) {
-				if (((String) bodyParams.get("username")).length() >= 1
-						&& ((String) bodyParams.get("password")).length() >= 1) {
-					User user = new User();
-					user.set("username", bodyParams.get("username"));
-					user.set("password", bodyParams.get("password"));
-					user.set("admin", false);
-					user.saveIt();
-					List<Category> cat = Category.findAll();
-					for (Category c : cat) {
-						UseStatisticsCategory stats = new UseStatisticsCategory();
-						stats.set("user", user.get("username"));
-						stats.set("nombre", c.get("nombre"));
-						stats.set("points", 0);
-						stats.set("correct_answer", 0);
-						stats.set("incorrect_answer", 0);
-						stats.saveIt();
-					}
-					return user.toJson(true);
-				} else {
-					halt(403, "");
-					return "";
-				}
-			} else {
+			if (User.findFirst("Username = ?", bodyParams.get("username")) != null) {
 				halt(401, "");
 				return "";
 			}
+			if (((String) bodyParams.get("username")).length() == 0	|| ((String) bodyParams.get("password")).length() == 0) {
+				halt(403, "");
+				return "";
+			}
+			User user = new User();
+			user.set("username", bodyParams.get("username"),
+					 "password", bodyParams.get("password"),
+					 "admin", false).saveIt();
+			List<Category> cat = Category.findAll();
+			for (Category c : cat) {
+				UseStatisticsCategory stats = new UseStatisticsCategory();
+				stats.set("user", user.get("username"));
+				stats.set("nombre", c.get("nombre"));
+				stats.set("points", 0);
+				stats.set("correct_answer", 0);
+				stats.set("incorrect_answer", 0);
+				stats.saveIt();
+			}
+			return user.toJson(true);
 		});
-
 	}
 }

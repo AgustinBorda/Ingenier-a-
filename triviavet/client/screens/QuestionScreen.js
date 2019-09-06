@@ -30,6 +30,7 @@ export default class QuestionScreen extends React.Component {
     const token =  await AsyncStorage.getItem('userToken');
     if(cat===null){
       await axios.get(API_HOST+"question",{
+
         headers:{'Authorization' : token}
       })
       .then(response => JSON.parse(JSON.stringify(response)))
@@ -48,6 +49,7 @@ export default class QuestionScreen extends React.Component {
     }
     else{
       await axios.post(API_HOST+"/categoryquestion",{
+
         category: cat
       },{
         headers:{'Authorization' : token}

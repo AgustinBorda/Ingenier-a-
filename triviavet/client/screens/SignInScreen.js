@@ -1,4 +1,4 @@
-import React from 'react';
+ import React from 'react';
 import { API_HOST } from 'react-native-dotenv';
 import {
   AsyncStorage,
@@ -35,6 +35,7 @@ export default class SignInScreen extends React.Component {
           onChangeText={(value) => this.setState({ username: value })}
           value={this.state.username}
         />
+         <View style={{margin:20}} />
 
         <TextInput
           placeholder="Password"
@@ -45,7 +46,7 @@ export default class SignInScreen extends React.Component {
         />
 
         <Button title="Sign in" onPress={this._signIn} />
-
+         <View style={{margin:20}} />
         <Button title="Create account" onPress={() => this.props.navigation.navigate('Create')} />
       </View>
     );
@@ -53,6 +54,7 @@ export default class SignInScreen extends React.Component {
 
   _signIn = () => {
     const { username, password } = this.state;
+
 
     axios.post(API_HOST+"/login", {
       username: username,
