@@ -28,7 +28,7 @@ export default class nCategoryQuestionScreen extends React.Component {
   async componentWillMount () {
     const cat = await AsyncStorage.getItem('category');
     const token =  await AsyncStorage.getItem('userToken');
-    await axios.post("http://192.168.0.16:4567/categoryquestion",{
+    await axios.post("http://192.168.0.27:4567/categoryquestion",{
       category: cat
     },{
       headers:{'Authorization' : token}

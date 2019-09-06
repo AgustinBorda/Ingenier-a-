@@ -29,7 +29,7 @@ export default class QuestionScreen extends React.Component {
     const cat = await AsyncStorage.getItem('category');
     const token =  await AsyncStorage.getItem('userToken');
     if(cat===null){
-      await axios.get("http://192.168.0.170:4567/question",{
+      await axios.get("http://192.168.0.27:4567/question",{
         headers:{'Authorization' : token}
       })
       .then(response => JSON.parse(JSON.stringify(response)))
@@ -47,7 +47,7 @@ export default class QuestionScreen extends React.Component {
       });
     }
     else{
-      await axios.post("http://192.168.0.170:4567/categoryquestion",{
+      await axios.post("http://192.168.0.27:4567/categoryquestion",{
         category: cat
       },{
         headers:{'Authorization' : token}
@@ -73,7 +73,7 @@ export default class QuestionScreen extends React.Component {
 
 
   _getCorrect = async (res) => {
-      axios.post("http://192.168.0.170:4567/answer", {
+      axios.post("http://192.168.0.27:4567/answer", {
         answer: res
       },{
         headers:{'Authorization' : await AsyncStorage.getItem('userToken')}

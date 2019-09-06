@@ -32,9 +32,9 @@ public class UserTest {
   
   @Test
   public void validateUniqueUsername(){
-    assertTrue(new User().set("username", "jose", "password", "jose" , "admin", true).saveIt());
+    assertTrue(new User().set("username", "jose98523168541", "password", "jose98523168541" , "admin", true).saveIt());
     User userTest = new User();
-    userTest.set("username", "jose", "password", "jose" , "admin", true);
+    userTest.set("username", "jose98523168541", "password", "jose98523168541" , "admin", true);
     assertEquals(userTest.isValid(), false);
   }
 
@@ -55,7 +55,7 @@ public class UserTest {
   @Test
   public void validatePrecenseOfSomethingIn(){
     User userTest = new User();
-    userTest.set("username", "jose", "password", "jose" , "admin", true);
+    userTest.set("username", "jose98523168541", "password", "jose98523168541" , "admin", true);
     assertEquals(userTest.isValid(), true);
   }
 }
