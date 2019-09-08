@@ -22,6 +22,7 @@ export default class CreateUserScreen extends React.Component {
       username: '',
       password: ''
     }
+
   }
 
   render() {

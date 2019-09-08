@@ -33,16 +33,19 @@ public class App {
 
 	public static void main(String[] args) {
 
-		before((request, response) -> {
+		before("*",(request, response) -> {
 			if (!Base.hasConnection())
 				Base.open();				
+		});
+
+		
+		before("/loged/*",(request, response) -> {
 			String headerToken = (String) request.headers("Authorization");
-			
 			if (headerToken == null || headerToken.isEmpty() || !BasicAuth.authorize(headerToken))
 				halt(401, "Usuario o clave invalidos \n");
 		});
 
-		after((request, response) -> {
+		after("*",(request, response) -> {
 			if(Base.hasConnection())
 				Base.close();
 
@@ -56,7 +59,7 @@ public class App {
 			return "OK";
 		});
 
-		post("/categoryquestion", (req, res) -> {// its a get
+		post("/loged/categoryquestion", (req, res) -> {// its a get
 			Random r = new Random();
 			JSONObject resp = new JSONObject();
 			Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
@@ -78,7 +81,7 @@ public class App {
 			return resp;
 		});
 
-		get("/question", (req, res) -> {
+		get("/loged/question", (req, res) -> {
 			Random r = new Random();
 			JSONObject resp = new JSONObject();
 			Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
@@ -98,10 +101,9 @@ public class App {
 				i++;
 			}
 			return resp;
-
 		});
 
-		get("/statistics", (req, res) -> {
+		get("/loged/statistics", (req, res) -> {
 			List<UseStatisticsCategory> estadisticas = UseStatisticsCategory.where("user = ?",
 					req.session().attribute("username"));
 			JSONObject resp = new JSONObject();
@@ -117,7 +119,7 @@ public class App {
 			return resp;
 		});
 
-		post("/admin", (req, res) -> {
+		post("/loged/admin", (req, res) -> {
 			if ((boolean) req.session().attribute("admin")) {
 				Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 				User user = User.findFirst("username = ?", bodyParams.get("username"));
@@ -133,7 +135,7 @@ public class App {
 			}
 		});
 
-		post("/userdelete", (req, res) -> {
+		post("/loged/userdelete", (req, res) -> {
 			Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 			User usuario = User.findFirst("username = ?", bodyParams.get("username"));
 			JSONObject resp = new JSONObject();
@@ -147,7 +149,7 @@ public class App {
 			return resp;
 		});
 
-		post("/answer", (req, res) -> {
+		post("/loged/answer", (req, res) -> {
 			Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 			JSONObject resp = new JSONObject();
 			List<Option> options = Option.where("question_id = ?", preg_id);
@@ -180,7 +182,7 @@ public class App {
 			}
 		});
 
-		post("/questions", (req, res) -> {
+		post("/loged/questions", (req, res) -> {
 			if (!(boolean) req.session().attribute("admin"))
 				return "No tenes permiso para crear preguntas";
 			QuestionParam bodyParams = new Gson().fromJson(req.body(), QuestionParam.class);
@@ -202,9 +204,10 @@ public class App {
 			if (u != null) {
 				req.session().attribute("username", u.get("username"));
 				req.session().attribute("admin", u.get("admin"));
-				System.out.println(req.session().attribute("username").toString());
+				System.out.println("Loged: "+u.get("username"));
+				return true;
 			}
-			return u.toJson(true); 
+			return null; 
 		});
 
 		post("/users", (req, res) -> {
@@ -221,6 +224,7 @@ public class App {
 			user.set("username", bodyParams.get("username"),
 					 "password", bodyParams.get("password"),
 					 "admin", false).saveIt();
+			System.out.println("Registred: "+user.get("username"));
 			List<Category> cat = Category.findAll();
 			for (Category c : cat) {
 				UseStatisticsCategory stats = new UseStatisticsCategory();
@@ -232,6 +236,13 @@ public class App {
 				stats.saveIt();
 			}
 			return user.toJson(true);
+		});
+	
+		get("/category", (req, res) -> {
+			System.out.println("/category");
+			JSONObject resp = new JSONObject();
+			resp.put("categories", Category.findAll().collect("nombre").toArray());
+			return resp;
 		});
 	}
 }

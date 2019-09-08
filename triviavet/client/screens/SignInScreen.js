@@ -1,4 +1,4 @@
- import React from 'react';
+import React from 'react';
 import { API_HOST } from 'react-native-dotenv';
 import {
   AsyncStorage,
@@ -55,7 +55,6 @@ export default class SignInScreen extends React.Component {
   _signIn = () => {
     const { username, password } = this.state;
 
-
     axios.post(API_HOST+"/login", {
       username: username,
       password: password,
@@ -76,7 +75,7 @@ export default class SignInScreen extends React.Component {
         alert("Username or Password incorrect");
         return;
       }
-      alert(error);
+      alert(API_HOST+"/login \n"+error);
     });
   };
 
