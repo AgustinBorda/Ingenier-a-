@@ -42,13 +42,13 @@ export default class PlayScreen extends React.Component {
         <Text style={styles.welcome}> Select a Category, or Random </Text>
           <FlatList
             data={this.state.categories}
-            keyExtractor={(x, i) => i}
+            keyExtractor={(x, i) => i.toString()}
             renderItem={({item}) =>
               <Button
-                onPress={this.onPressCategoryButton.bind(this, {item})}
+                onPress={this.onPressCategoryButton.bind(this, Object.values({item}).toString())}
                 title={item}
                 color="#9932CC"
-                style={{margin:20}}
+                style={{margin:40}}
               />
 
             }
@@ -67,6 +67,7 @@ export default class PlayScreen extends React.Component {
     );
   }
   onPressCategoryButton = (category) => {
+    console.log("aaaaaa");
     AsyncStorage.setItem('category',category);
     this.props.navigation.navigate('Question')
   }

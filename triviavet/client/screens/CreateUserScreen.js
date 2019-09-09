@@ -58,8 +58,8 @@ export default class CreateUserScreen extends React.Component {
       password: password,
     }, {
       auth: {
-        username: 'admin',
-        password: 'admin'
+        username: username,
+        password: password
       }
     })
       .then(response => JSON.parse(JSON.stringify(response)))

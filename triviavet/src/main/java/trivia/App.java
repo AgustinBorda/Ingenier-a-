@@ -35,10 +35,10 @@ public class App {
 
 		before("*",(request, response) -> {
 			if (!Base.hasConnection())
-				Base.open();				
+				Base.open();
 		});
 
-		
+
 		before("/loged/*",(request, response) -> {
 			String headerToken = (String) request.headers("Authorization");
 			if (headerToken == null || headerToken.isEmpty() || !BasicAuth.authorize(headerToken))
@@ -98,7 +98,7 @@ public class App {
 			List<Option> options = Option.where("question_id = ?", question.get("id"));
 			preg_id = question.get("id");
 			resp.put("description", question.get("description"));
-			
+
 			int i = 1;
 			for (Option o : options) {
 				resp.put("answer" + i, o.get("description"));
@@ -212,7 +212,7 @@ public class App {
 				System.out.println("Loged: "+u.get("username"));
 				return true;
 			}
-			return null; 
+			return null;
 		});
 
 		post("/users", (req, res) -> {
@@ -245,9 +245,8 @@ public class App {
 			req.session().attribute("admin", user.get("admin"));
 			return user.toJson(true);
 		});
-	
+
 		get("/category", (req, res) -> {
-			System.out.println("/category");
 			JSONObject resp = new JSONObject();
 			resp.put("categories", Category.findAll().collect("nombre").toArray());
 			return resp;
