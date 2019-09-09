@@ -51,7 +51,7 @@ export default class nCategoryQuestionScreen extends React.Component {
 
 
   _getCorrect = async (res) => {
-      axios.post(API_HOST+"answer", {
+      axios.post(API_HOST+"/answer", {
         answer: res
       },{
         headers:{'Authorization' : await AsyncStorage.getItem('userToken')}

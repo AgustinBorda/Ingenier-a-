@@ -29,7 +29,7 @@ export default class QuestionScreen extends React.Component {
     const cat = await AsyncStorage.getItem('category');
     const token =  await AsyncStorage.getItem('userToken');
     if(cat===null){
-      await axios.get(API_HOST+"question",{
+      await axios.get(API_HOST+"/loged/question",{
 
         headers:{'Authorization' : token}
       })
@@ -48,7 +48,7 @@ export default class QuestionScreen extends React.Component {
       });
     }
     else{
-      await axios.post(API_HOST+"/categoryquestion",{
+      await axios.post(API_HOST+"/loged/categoryquestion",{
 
         category: cat
       },{
@@ -75,7 +75,7 @@ export default class QuestionScreen extends React.Component {
 
 
   _getCorrect = async (res) => {
-      axios.post(API_HOST+"/answer", {
+      axios.post(API_HOST+"/loged/answer", {
         answer: res
       },{
         headers:{'Authorization' : await AsyncStorage.getItem('userToken')}
