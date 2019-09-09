@@ -37,7 +37,6 @@ public class App {
 			if (!Base.hasConnection())
 				Base.open();				
 			String headerToken = (String) request.headers("Authorization");
-			
 			if (headerToken == null || headerToken.isEmpty() || !BasicAuth.authorize(headerToken))
 				halt(401, "Usuario o clave invalidos \n");
 		});
@@ -61,10 +60,12 @@ public class App {
 			JSONObject resp = new JSONObject();
 			Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 			List<Question> questions;
-			User currentUser = User.findFirst("username = ?", bodyParams.get("username"));
 			questions = Question.findBySQL(
-					"SELECT * FROM questions WHERE id NOT IN (SELECT id FROM questions NATURAL JOIN user_questions WHERE user_id = ?) AND category = ?",
-			currentUser.get("id"), bodyParams.get("category"));
+					"SELECT * FROM questions WHERE id "
+					+ "NOT IN (SELECT id FROM questions "
+					+ "INNER JOIN ((SELECT * FROM user_questions WHERE user_id = ?) as contestadas) "
+					+ "ON questions.id = contestadas.question_id) AND category = ?",
+					req.session().attribute("id").toString(), bodyParams.get("category"));
 			Question question = questions.get(r.nextInt(questions.size()));
 			List<Option> options = Option.where("question_id = ?", question.get("id"));
 			preg_id = question.get("id");
@@ -83,10 +84,12 @@ public class App {
 			JSONObject resp = new JSONObject();
 			Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 			List<Question> questions;
-			User currentUser = User.findFirst("username = ?", bodyParams.get("username"));
 			questions = Question.findBySQL(
-					"SELECT * FROM questions WHERE id NOT IN (SELECT id FROM questions NATURAL JOIN user_questions WHERE user_id = ?)",
-			currentUser.get("id"));
+					"SELECT * FROM questions WHERE id NOT IN "
+					+ "(SELECT id FROM questions INNER JOIN "
+					+ "((SELECT * FROM user_questions WHERE user_id = ?) as contestadas) "
+					+ "ON questions.id = contestadas.question_id)",
+					req.session().attribute("id").toString());
 			Question question = questions.get(r.nextInt(questions.size()));
 			List<Option> options = Option.where("question_id = ?", question.get("id"));
 			preg_id = question.get("id");
@@ -103,7 +106,7 @@ public class App {
 
 		get("/statistics", (req, res) -> {
 			List<UseStatisticsCategory> estadisticas = UseStatisticsCategory.where("user = ?",
-					req.session().attribute("username"));
+					req.session().attribute("username").toString());
 			JSONObject resp = new JSONObject();
 			resp.put("User", req.session().attribute("username").toString());
 			int i = 0;
@@ -156,14 +159,14 @@ public class App {
 			int i = Integer.parseInt((String) bodyParams.get("answer"));
 			Option option = options.get(i - 1);
 			List<UseStatisticsCategory> stats = UseStatisticsCategory.where("user = ? AND nombre = ?",
-					req.session().attribute("username"), question.get("category"));
+					req.session().attribute("username").toString(), question.get("category"));
 			UseStatisticsCategory stat = stats.get(0);
 			if ((boolean) option.get("correct")) {
 				UserQuestions preg = new UserQuestions();
 
-				User u = User.findFirst("username = ?", req.session().attribute("username"));
+				User u = User.findFirst("username = ?", req.session().attribute("username").toString());
 				preg.set("user_id", u.get("id"));
-				preg.set("question id", preg_id);
+				preg.set("question_id", preg_id);
 				preg.saveIt();
 				int j = (int) stat.get("points") + 1;
 				stat.set("points", j);
@@ -201,6 +204,7 @@ public class App {
 			User u = User.findFirst("username = ? and password = ?", bodyParams.get("username"), bodyParams.get("password"));
 			if (u != null) {
 				req.session().attribute("username", u.get("username"));
+				req.session().attribute("id",u.get("id"));
 				req.session().attribute("admin", u.get("admin"));
 				System.out.println(req.session().attribute("username").toString());
 			}
@@ -231,6 +235,9 @@ public class App {
 				stats.set("incorrect_answer", 0);
 				stats.saveIt();
 			}
+			req.session().attribute("username", user.get("username"));
+			req.session().attribute("id",user.get("id"));
+			req.session().attribute("admin", user.get("admin"));
 			return user.toJson(true);
 		});
 	}
