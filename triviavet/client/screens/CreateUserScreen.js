@@ -82,12 +82,14 @@ export default class CreateUserScreen extends React.Component {
     });
   };
 }
+//33ff9f color verdeagua
+//fff933 color amarillo
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#33ff9f',
   },
   welcome: {
     fontSize: 20,
@@ -100,6 +102,6 @@ const styles = StyleSheet.create({
     padding: 5,
     fontSize: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#4228F8'
+    borderBottomColor: '#fff933'
   }
 })
