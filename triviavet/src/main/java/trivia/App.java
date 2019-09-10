@@ -4,6 +4,7 @@ import static spark.Spark.*;
 import org.javalite.activejdbc.Base;
 
 import trivia.models.*;
+import trivia.structures.*;
 import trivia.BasicAuth;
 
 import com.google.gson.Gson;
@@ -14,18 +15,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import org.json.JSONObject;
-
-class QuestionParam {
-	String description;
-	String category;
-	ArrayList<OptionParam> options;
-
-}
-
-class OptionParam {
-	String description;
-	Boolean correct;
-}
 
 public class App {
 
