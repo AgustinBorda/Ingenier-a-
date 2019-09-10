@@ -3,4 +3,3 @@ triviavet/.expo/
 .*
 bin/
 triviavet/client/package-lock.json
-triviavet/client/.env
