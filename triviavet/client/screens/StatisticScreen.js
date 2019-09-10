@@ -28,10 +28,10 @@ export default class QuestionScreen extends React.Component {
   async componentWillMount () {
     const token =  await AsyncStorage.getItem('userToken')
     await axios.get(API_HOST+"/loged/statistics",{
-      headers:{'Authorization' : token}
+      headers:{'Authorization' : token}})
     .then(
-      response => JSON.parse(JSON.stringify(response)))
-  })
+      response => JSON.parse(JSON.stringify(response))
+    )
     .then(response => {
       // Handle the JWT response here
     this.setState({stats: response.data})
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#33ff90',
+    backgroundColor: '#00b7db',
   },
   title: {
     fontSize: 30,

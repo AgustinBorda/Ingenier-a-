@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#33ff9f',
+    backgroundColor: '#00b7db',
   },
   welcome: {
     fontSize: 20,
