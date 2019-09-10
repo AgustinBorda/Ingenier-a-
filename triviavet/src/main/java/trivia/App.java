@@ -97,6 +97,7 @@ public class App {
 		});
 
 		get("/loged/statistics", (req, res) -> {
+			System.out.println("/loged/statistics");
 			List<UseStatisticsCategory> estadisticas = UseStatisticsCategory.where("user = ?",
 					req.session().attribute("username").toString());
 			JSONObject resp = new JSONObject();
@@ -109,6 +110,8 @@ public class App {
 				resp.put("incorrect_answer" + i, e.get("incorrect_answer"));
 				i++;
 			}
+			System.out.println(resp);
+
 			return resp;
 		});
 
