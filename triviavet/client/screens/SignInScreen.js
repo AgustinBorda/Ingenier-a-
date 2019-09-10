@@ -1,4 +1,4 @@
-import React from 'react';
+ import React from 'react';
 import { API_HOST } from 'react-native-dotenv';
 import {
   AsyncStorage,
@@ -55,6 +55,7 @@ export default class SignInScreen extends React.Component {
   _signIn = () => {
     const { username, password } = this.state;
 
+
     axios.post(API_HOST+"/login", {
       username: username,
       password: password,
@@ -75,7 +76,7 @@ export default class SignInScreen extends React.Component {
         alert("Username or Password incorrect");
         return;
       }
-      alert(API_HOST+"/login \n"+error);
+      alert(API_HOST+"\n"+error);
     });
   };
 
@@ -85,7 +86,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#33ff90',
   },
   welcome: {
     fontSize: 20,
@@ -98,6 +99,6 @@ const styles = StyleSheet.create({
     padding: 5,
     fontSize: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#4228F8'
+    borderBottomColor: '#fff333'
   }
 })
