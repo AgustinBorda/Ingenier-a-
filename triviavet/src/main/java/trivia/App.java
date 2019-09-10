@@ -4,6 +4,7 @@ import static spark.Spark.*;
 import org.javalite.activejdbc.Base;
 
 import trivia.models.*;
+import trivia.routes.*;
 import trivia.structures.*;
 import trivia.BasicAuth;
 
@@ -11,7 +12,6 @@ import com.google.gson.Gson;
 
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 import java.util.Random;
 
 import org.json.JSONObject;
@@ -22,30 +22,14 @@ public class App {
 
 	public static void main(String[] args) {
 
-		before("*",(request, response) -> {
-			if (!Base.hasConnection())
-				Base.open();
-		});
+		before("*",Public.BaseOpen);
 
+		after("*", Public.BaseClose);
 
 		before("/loged/*",(request, response) -> {
 			String headerToken = (String) request.headers("Authorization");
 			if (headerToken == null || headerToken.isEmpty() || !BasicAuth.authorize(headerToken))
 				halt(401, "Usuario o clave invalidos \n");
-		});
-
-		after("*",(request, response) -> {
-			if(Base.hasConnection())
-				Base.close();
-
-			response.header("Access-Control-Allow-Origin", "*");
-			response.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
-			response.header("Access-Control-Allow-Headers",
-					"Content-Type,Authorization,X-Requested-With,Content-Length,Accept,Origin,");
-		});
-
-		options("/*", (request, response) -> {
-			return "OK";
 		});
 
 		post("/loged/categoryquestion", (req, res) -> {// its a get
