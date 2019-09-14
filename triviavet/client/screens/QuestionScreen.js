@@ -28,54 +28,32 @@ export default class QuestionScreen extends React.Component {
   async componentWillMount () {
     const cat = await AsyncStorage.getItem('category');
     const token =  await AsyncStorage.getItem('userToken');
-    if(cat===null){
-      await axios.get(API_HOST+"/loged/question",{
-
-        headers:{'Authorization' : token}
-      })
-      .then(response => JSON.parse(JSON.stringify(response)))
-      .then(response => {
-        // Handle the JWT response here
-        this.setState({question: response.data})
-      })
-      .catch((error) => {
-        if(error.toString().match(/500/)) {
-          alert("No hay mas preguntas");
-          this.props.navigation.navigate('Play')
-          return;
-        }
-        alert(error);
-      });
-    }
-    else{
-      await axios.post(API_HOST+"/loged/categoryquestion",{
-
-        category: cat
-      },{
-        headers:{'Authorization' : token}
-      })
-      .then(response => JSON.parse(JSON.stringify(response)))
-      .then(response => {
-        // Handle the JWT response here
+    await axios.post(API_HOST+"/logged/question",{
+      category: cat
+    },{
+      headers:{'Authorization' : token}
+    })
+    .then(response => JSON.parse(JSON.stringify(response)))
+    .then(response => {
+      // Handle the JWT response here
+      AsyncStorage.removeItem("category");
+      this.setState({question: response.data})
+    })
+    .catch((error) => {
+      if(error.toString().match(/500/)) {
+        alert("No hay mas preguntas");
         AsyncStorage.removeItem("category");
-        this.setState({question: response.data})
-      })
-      .catch((error) => {
-        if(error.toString().match(/500/)) {
-          alert("No hay mas preguntas");
-          AsyncStorage.removeItem("category");
-          this.props.navigation.navigate('Play')
-          return;
-        }
-        console.log(error);
-      });
-    }
+        this.props.navigation.navigate('Play')
+        return;
+      }
+      console.log(error);
+    });
   }
 
 
 
   _getCorrect = async (res) => {
-      axios.post(API_HOST+"/loged/answer", {
+      axios.post(API_HOST+"/logged/answer", {
         answer: res
       },{
         headers:{'Authorization' : await AsyncStorage.getItem('userToken')}

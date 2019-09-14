@@ -27,7 +27,7 @@ export default class QuestionScreen extends React.Component {
 
   async componentWillMount () {
     const token =  await AsyncStorage.getItem('userToken')
-    await axios.get(API_HOST+"/loged/statistics",{
+    await axios.get(API_HOST+"/logged/statistics",{
       headers:{'Authorization' : token}})
     .then(
       response => JSON.parse(JSON.stringify(response))

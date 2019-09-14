@@ -2,16 +2,7 @@ package trivia;
 
 import static spark.Spark.*;
 
-import trivia.models.*;
 import trivia.routes.*;
-import trivia.structures.*;
-
-import com.google.gson.Gson;
-import org.json.JSONObject;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 public class App {
 
@@ -21,27 +12,24 @@ public class App {
 
 		after("*", PublicRoutes.BaseClose);
 
-		before("/loged/*", PrivateRoutes.CheckSession);
+		before("/logged/*", PrivateRoutes.CheckSession);
 
-		post("/loged/categoryquestion", PrivateRoutes.PostCategoryQuestion);
+		post("/logged/question", PrivateRoutes.PostQuestion);
 
-		get("/loged/question", PrivateRoutes.GetQuestion);
+		get("/logged/statistics", PrivateRoutes.GetStatistics);
 
-		get("/loged/statistics", PrivateRoutes.GetStatistics);
+		post("/logged/admin", PrivateRoutes.PostAdmin);
 
-		post("/loged/admin", PrivateRoutes.PostAdmin);
+		post("/logged/userdelete", PrivateRoutes.PostUserDelete);
 
-		post("/loged/userdelete", PrivateRoutes.PostUserDelete);
+		post("/logged/answer", PrivateRoutes.PostAnswer);
 
-		post("/loged/answer", PrivateRoutes.PostAnswer);
-
-		post("/loged/questions", PrivateRoutes.PostQuestions);
+		post("/logged/questions", PrivateRoutes.PostQuestions);
 
 		post("/login", PublicRoutes.PostLogin);
 		
-		//rename?
 		post("/users", PublicRoutes.PostUsers);
 
-		get("/loged/category", PrivateRoutes.GetCategory);
+		get("/logged/category", PrivateRoutes.GetCategory);
 	}
 }
