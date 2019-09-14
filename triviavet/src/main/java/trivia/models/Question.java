@@ -31,21 +31,26 @@ public class Question extends Model {
 		Random r = new Random();
 		JSONObject resp = new JSONObject();
 		List<Question> questions;
-		if(bodyParams.get("category") == null) {
-		questions = Question.findBySQL(
-				"SELECT * FROM questions WHERE id "
-				+ "NOT IN (SELECT id FROM questions "
-				+ "INNER JOIN ((SELECT * FROM user_questions WHERE user_id = ?) as contestadas) "
-				+ "ON questions.id = contestadas.question_id)",
-				userId);
+		try {
+			if(bodyParams.get("category") == null) {
+				throw new NullPointerException();
+			}
+			else {
+				questions = Question.findBySQL(
+						"SELECT * FROM questions WHERE id "
+						+ "NOT IN (SELECT id FROM questions "
+						+ "INNER JOIN ((SELECT * FROM user_questions WHERE user_id = ?) as contestadas) "
+						+ "ON questions.id = contestadas.question_id) AND category = ?",
+						userId, bodyParams.get("category"));
+			}
 		}
-		else {
-		questions = Question.findBySQL(
-				"SELECT * FROM questions WHERE id "
-				+ "NOT IN (SELECT id FROM questions "
-				+ "INNER JOIN ((SELECT * FROM user_questions WHERE user_id = ?) as contestadas) "
-				+ "ON questions.id = contestadas.question_id) AND category = ?",
-				userId, bodyParams.get("category"));
+		catch(NullPointerException e) {
+			questions = Question.findBySQL(
+					"SELECT * FROM questions WHERE id "
+					+ "NOT IN (SELECT id FROM questions "
+					+ "INNER JOIN ((SELECT * FROM user_questions WHERE user_id = ?) as contestadas) "
+					+ "ON questions.id = contestadas.question_id)",
+					userId);
 		}
 		Question question = questions.get(r.nextInt(questions.size()));
 		List<Option> options = Option.where("question_id = ?", question.get("id"));
@@ -56,7 +61,7 @@ public class Question extends Model {
 			resp.put("answer" + i, o.get("description"));
 			i++;
 		}
-		Pair<JSONObject,String> answer = new Pair<JSONObject,String>(resp,question.get("question_id").toString());
+		Pair<JSONObject,String> answer = new Pair<JSONObject,String>(resp,question.get("id").toString());
 		return answer;
 		
 		

@@ -28,7 +28,7 @@ export default class QuestionScreen extends React.Component {
   async componentWillMount () {
     const cat = await AsyncStorage.getItem('category');
     const token =  await AsyncStorage.getItem('userToken');
-    await axios.post(API_HOST+"/logged/categoryquestion",{
+    await axios.post(API_HOST+"/logged/question",{
       category: cat
     },{
       headers:{'Authorization' : token}

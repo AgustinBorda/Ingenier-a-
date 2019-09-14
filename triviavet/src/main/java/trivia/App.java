@@ -33,6 +33,8 @@ public class App {
 
 		post("/logged/question", (req, res) -> {// its a get
 			Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+			System.out.println(bodyParams.get("category"));
+			System.out.println(req.session().attribute("id").toString());
 			Pair<JSONObject,String> answer = Question.getQuestion(bodyParams, req.session().attribute("id").toString());
 			req.session().attribute("preg_id",answer.getSecond());
 			return answer.getFirst();				
