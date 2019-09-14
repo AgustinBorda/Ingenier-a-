@@ -25,10 +25,13 @@ export default class PlayScreen extends React.Component {
   }
 
   fetchData = async () => {
-    await axios.get(API_HOST+"/category")
-                .then(({data}) => {
-                  this.setState({ categories: data.categories});
-                });
+    const token =  await AsyncStorage.getItem('userToken');
+    await axios.get(API_HOST+"/loged/category",{
+                headers:{'Authorization' : token}
+              })
+              .then(({data}) => {
+                this.setState({ categories: data.categories});
+              });
     };
 
   componentWillMount() {
