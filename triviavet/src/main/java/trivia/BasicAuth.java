@@ -7,12 +7,13 @@ import trivia.models.User;
 
 public class BasicAuth {
 
-	static Boolean authorize(String headerAuth) {
+	public static Boolean authorize(String headerAuth) {
 		final String[] creds = getCredentials(headerAuth);
 		System.out.println("Autorized: "+creds[0]);
 		return User.findFirst("username = ? AND password = ?", creds[0], creds[1]) != null;
 	}
-
+	
+	//Unused
 	static User getUser(String headerAuth) {
 		final String[] creds = getCredentials(headerAuth);
 		return User.findFirst("username = ?", creds[0]);
