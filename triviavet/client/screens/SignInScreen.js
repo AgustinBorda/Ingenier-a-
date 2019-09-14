@@ -1,4 +1,4 @@
-import React from 'react';
+ import React from 'react';
 import { API_HOST } from 'react-native-dotenv';
 import {
   AsyncStorage,
@@ -35,6 +35,7 @@ export default class SignInScreen extends React.Component {
           onChangeText={(value) => this.setState({ username: value })}
           value={this.state.username}
         />
+         <View style={{margin:20}} />
 
         <TextInput
           placeholder="Password"
@@ -45,7 +46,7 @@ export default class SignInScreen extends React.Component {
         />
 
         <Button title="Sign in" onPress={this._signIn} />
-
+         <View style={{margin:20}} />
         <Button title="Create account" onPress={() => this.props.navigation.navigate('Create')} />
       </View>
     );
@@ -54,7 +55,8 @@ export default class SignInScreen extends React.Component {
   _signIn = () => {
     const { username, password } = this.state;
 
-    axios.post("http://192.168.0.170:4567/login", {
+
+    axios.post(API_HOST+"/login", {
       username: username,
       password: password,
     }, {
@@ -74,7 +76,7 @@ export default class SignInScreen extends React.Component {
         alert("Username or Password incorrect");
         return;
       }
-      alert(error);
+      alert(API_HOST+"\n"+error);
     });
   };
 
@@ -84,7 +86,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#00b7db',
   },
   welcome: {
     fontSize: 20,
@@ -97,6 +99,6 @@ const styles = StyleSheet.create({
     padding: 5,
     fontSize: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#4228F8'
+    borderBottomColor: '#fff333'
   }
 })

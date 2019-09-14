@@ -8,6 +8,7 @@ import {
   Button,
   TouchableOpacity,
   StyleSheet,
+  FlatList,
 } from 'react-native';
 import axios from 'axios';
 
@@ -19,43 +20,41 @@ export default class PlayScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      category: ''
+      categories: []
     }
+  }
+
+  fetchData = async () => {
+    const token =  await AsyncStorage.getItem('userToken');
+    await axios.get(API_HOST+"/logged/category",{
+                headers:{'Authorization' : token}
+              })
+              .then(({data}) => {
+                this.setState({ categories: data.categories});
+              });
+    };
+
+  componentWillMount() {
+    this.fetchData();
   }
 
   render() {
     return (
       <View style={styles.container}>
+
         <Text style={styles.welcome}> Select a Category, or Random </Text>
-        <Button
-          onPress={this.onPressCategoryButton.bind(this, 'quimica')}
-          title="Quimica"
-          color="#8B0000"
-        />
-        <Button
-          onPress={this.onPressCategoryButton.bind(this, 'anatomia')}
-          title="Anatomia"
-          color="#FF8C00"
-        />
-        <Button
-          onPress={this.onPressCategoryButton.bind(this, 'cirugia')}
-          title="Cirugia"
-          color="#9932CC"
-        />
-        <Button
-          onPress={this.onPressCategoryButton.bind(this, 'farmacologia')}
-          title="Farmacologia"
-          color="#008000"
-        />
-        <Button
-          onPress={this.onPressCategoryButton.bind(this, 'grandes_animales')}
-          title="Grandes Animales"
-          color="#4682B4"
-        />
-        <Button
-          onPress={this.onPressCategoryButton.bind(this, 'pequenos_animales')}
-          title="Pequenos Animales"
-          color="#FFC0CB"
+          <FlatList
+            data={this.state.categories}
+            keyExtractor={(x, i) => i.toString()}
+            renderItem={({item}) =>
+              <Button
+                onPress={this.onPressCategoryButton.bind(this, Object.values({item}).toString())}
+                title={item}
+                color="#9932CC"
+                style={{margin:40}}
+              />
+
+            }
         />
         <Button
           onPress={() => this.props.navigation.navigate('Question')}
@@ -67,15 +66,14 @@ export default class PlayScreen extends React.Component {
           title="atras"
           color="#8B0000"
         />
-
       </View>
     );
   }
   onPressCategoryButton = (category) => {
+    console.log("aaaaaa");
     AsyncStorage.setItem('category',category);
     this.props.navigation.navigate('Question')
   }
-
 }
 const styles = StyleSheet.create({
   container: {

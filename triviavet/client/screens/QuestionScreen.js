@@ -28,52 +28,32 @@ export default class QuestionScreen extends React.Component {
   async componentWillMount () {
     const cat = await AsyncStorage.getItem('category');
     const token =  await AsyncStorage.getItem('userToken');
-    if(cat===null){
-      await axios.get("http://192.168.0.170:4567/question",{
-        headers:{'Authorization' : token}
-      })
-      .then(response => JSON.parse(JSON.stringify(response)))
-      .then(response => {
-        // Handle the JWT response here
-        this.setState({question: response.data})
-      })
-      .catch((error) => {
-        if(error.toString().match(/500/)) {
-          alert("No hay mas preguntas");
-          this.props.navigation.navigate('Play')
-          return;
-        }
-        alert(error);
-      });
-    }
-    else{
-      await axios.post("http://192.168.0.170:4567/categoryquestion",{
-        category: cat
-      },{
-        headers:{'Authorization' : token}
-      })
-      .then(response => JSON.parse(JSON.stringify(response)))
-      .then(response => {
-        // Handle the JWT response here
+    await axios.post(API_HOST+"/logged/question",{
+      category: cat
+    },{
+      headers:{'Authorization' : token}
+    })
+    .then(response => JSON.parse(JSON.stringify(response)))
+    .then(response => {
+      // Handle the JWT response here
+      AsyncStorage.removeItem("category");
+      this.setState({question: response.data})
+    })
+    .catch((error) => {
+      if(error.toString().match(/500/)) {
+        alert("No hay mas preguntas");
         AsyncStorage.removeItem("category");
-        this.setState({question: response.data})
-      })
-      .catch((error) => {
-        if(error.toString().match(/500/)) {
-          alert("No hay mas preguntas");
-          AsyncStorage.removeItem("category");
-          this.props.navigation.navigate('Play')
-          return;
-        }
-        console.log(error);
-      });
-    }
+        this.props.navigation.navigate('Play')
+        return;
+      }
+      console.log(error);
+    });
   }
 
 
 
   _getCorrect = async (res) => {
-      axios.post("http://192.168.0.170:4567/answer", {
+      axios.post(API_HOST+"/logged/answer", {
         answer: res
       },{
         headers:{'Authorization' : await AsyncStorage.getItem('userToken')}
@@ -81,13 +61,11 @@ export default class QuestionScreen extends React.Component {
       .then(response => JSON.parse(JSON.stringify(response)))
       .then(response => {
         // Handle the JWT response here
-        console.log(response.data);
         alert(response.data.answer);
         this.props.navigation.navigate('Play')
       })
       .catch((error) => {
         if(error.toString().match(/500/)) {
-          alert("Error interno del servidor");
           this.props.navigation.navigate('Play')
         }
         alert(error);
@@ -128,7 +106,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#00b7db',
   },
   question: {
     fontSize: 30,
@@ -148,6 +126,6 @@ const styles = StyleSheet.create({
     padding: 5,
     fontSize: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#4228F8'
+    borderBottomColor: '#fff933'
   }
 })

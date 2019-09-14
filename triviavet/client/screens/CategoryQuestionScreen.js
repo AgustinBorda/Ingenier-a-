@@ -28,7 +28,7 @@ export default class nCategoryQuestionScreen extends React.Component {
   async componentWillMount () {
     const cat = await AsyncStorage.getItem('category');
     const token =  await AsyncStorage.getItem('userToken');
-    await axios.post("http://192.168.0.16:4567/categoryquestion",{
+    await axios.post(API_HOST+"/categoryquestion",{
       category: cat
     },{
       headers:{'Authorization' : token}
@@ -51,7 +51,7 @@ export default class nCategoryQuestionScreen extends React.Component {
 
 
   _getCorrect = async (res) => {
-      axios.post("http://192.168.0.16:4567/answer", {
+      axios.post(API_HOST+"/answer", {
         answer: res
       },{
         headers:{'Authorization' : await AsyncStorage.getItem('userToken')}

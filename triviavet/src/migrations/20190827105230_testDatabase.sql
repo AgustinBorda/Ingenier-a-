@@ -14,7 +14,6 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS questions (
   id int(11) NOT NULL auto_increment PRIMARY KEY,
-  user_id int(11),
   description VARCHAR(255) NOT NULL UNIQUE,
   active BOOLEAN NOT NULL,
   created_at DATETIME,

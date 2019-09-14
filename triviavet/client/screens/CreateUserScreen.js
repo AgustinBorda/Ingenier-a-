@@ -22,6 +22,7 @@ export default class CreateUserScreen extends React.Component {
       username: '',
       password: ''
     }
+
   }
 
   render() {
@@ -52,13 +53,13 @@ export default class CreateUserScreen extends React.Component {
   _signUp = async () => {
     const { username, password } = this.state;
 
-    axios.post("http://192.168.0.170:4567/users", {
+    axios.post(API_HOST+"/users", {
       username: username,
       password: password,
     }, {
       auth: {
-        username: 'admin',
-        password: 'admin'
+        username: username,
+        password: password
       }
     })
       .then(response => JSON.parse(JSON.stringify(response)))
@@ -81,12 +82,14 @@ export default class CreateUserScreen extends React.Component {
     });
   };
 }
+//33ff9f color verdeagua
+//fff933 color amarillo
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#00b7db',
   },
   welcome: {
     fontSize: 20,
@@ -99,6 +102,6 @@ const styles = StyleSheet.create({
     padding: 5,
     fontSize: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#4228F8'
+    borderBottomColor: '#fff933'
   }
 })

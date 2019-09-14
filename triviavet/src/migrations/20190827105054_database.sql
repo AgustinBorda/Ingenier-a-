@@ -24,12 +24,11 @@ points int(11) NOT NULL,
 correct_answer int(11) NOT NULL,
 incorrect_answer int(11) NOT NULL,
 foreign key (nombre) references categories (nombre),
-foreign key (user) references users (username)
+foreign key (user) references users (username) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS questions (
   id int(11) NOT NULL auto_increment PRIMARY KEY,
-  user_id int(11),
   category VARCHAR(50),
   description VARCHAR(255) NOT NULL UNIQUE,
   foreign key (category) references categories (nombre) ON DELETE CASCADE
