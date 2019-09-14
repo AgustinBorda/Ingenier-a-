@@ -76,7 +76,7 @@ public class PrivateRoutes {
 		return question.toJson(true);
 	};
 
-	public static final Route PostStatistics = (req, res) -> {
+	public static final Route GetStatistics = (req, res) -> {
 		System.out.println("/loged/statistics");
 		return UseStatisticsCategory.getStatistics(req.session().attribute("username").toString());
 	};

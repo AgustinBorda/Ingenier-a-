@@ -26,7 +26,7 @@ export default class PlayScreen extends React.Component {
 
   fetchData = async () => {
     const token =  await AsyncStorage.getItem('userToken');
-    await axios.get(API_HOST+"/loged/category",{
+    await axios.get(API_HOST+"/logged/category",{
                 headers:{'Authorization' : token}
               })
               .then(({data}) => {
