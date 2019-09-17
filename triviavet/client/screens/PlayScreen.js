@@ -41,12 +41,15 @@ export default class PlayScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-
+      <View style={{margin:40}} />
         <Text style={styles.welcome}> Select a Category, or Random </Text>
+        <View style={{margin:40}} />
           <FlatList
             data={this.state.categories}
             keyExtractor={(x, i) => i.toString()}
+
             renderItem={({item}) =>
+
               <Button
                 onPress={this.onPressCategoryButton.bind(this, Object.values({item}).toString())}
                 title={item}
@@ -61,10 +64,12 @@ export default class PlayScreen extends React.Component {
           title="Random"
           color="#000000"
         />
+        <View style={{margin:20}} />
+
         <Button
           onPress={() => this.props.navigation.navigate('App')}
-          title="atras"
-          color="#8B0000"
+          title="back"
+         // color="#8B0000"
         />
       </View>
     );
@@ -79,7 +84,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#00b7db',
   },
   welcome: {
     fontSize: 20,

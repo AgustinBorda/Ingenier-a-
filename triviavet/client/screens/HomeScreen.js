@@ -24,7 +24,13 @@ export default class HomeScreen extends React.Component {
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
+            
+          <View style={{margin:40}} />
+
             <Image
+              
+
+
               source={
                 __DEV__
                   ? require('../assets/images/perritoo.png')
@@ -37,9 +43,8 @@ export default class HomeScreen extends React.Component {
           <View style={styles.getStartedContainer}>
             {this._maybeRenderDevelopmentModeWarning()}
 
-            <Text onPress={this._handleLogout} style={styles.logout}>
-              Logout
-            </Text>
+           
+            <View style={{margin:40}} />
 
             <Button
               onPress={() => this.props.navigation.navigate('Play')}
@@ -47,12 +52,19 @@ export default class HomeScreen extends React.Component {
               color="#841584"
             />
 
+            <View style={{margin:20}} />
+
+            <View style={{margin:40}} />
             <Button
               onPress={() => this.props.navigation.navigate('Statistic')}
               title="Estadisticas"
               color="#a4f590"
             />
           </View>
+          <View style={{margin:40}} />
+            <Text onPress={this._handleLogout} style={styles.logout}>
+              Logout
+            </Text>
 
         </ScrollView>
 
