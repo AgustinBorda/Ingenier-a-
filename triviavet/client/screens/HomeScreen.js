@@ -25,7 +25,7 @@ export default class HomeScreen extends React.Component {
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
             
-          <View style={{margin:40}} />
+          <View style={{margin:60}} />
 
             <Image
               
@@ -36,7 +36,7 @@ export default class HomeScreen extends React.Component {
                   ? require('../assets/images/perritoo.png')
                   : require('../assets/images/robot-prod.png')
               }
-              style={styles.welcomeImage}
+              style={{width:150,height:150}}
             />
           </View>
 
@@ -49,7 +49,7 @@ export default class HomeScreen extends React.Component {
             <Button
               onPress={() => this.props.navigation.navigate('Play')}
               title="Jugar"
-              color="#841584"
+              color="#5bf1e1"
             />
 
             <View style={{margin:20}} />
@@ -69,10 +69,10 @@ export default class HomeScreen extends React.Component {
         </ScrollView>
 
         <View style={styles.tabBarInfoContainer}>
-          <Text style={styles.tabBarInfoText}>This is a tab bar. You can edit it in:</Text>
+          <Text style={styles.tabBarInfoText}>Bienvenido, Valen.</Text>
 
           <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-            <MonoText style={styles.codeHighlightText}>navigation/MainTabNavigator.js</MonoText>
+            <MonoText style={styles.codeHighlightText}>Puntos : </MonoText>
           </View>
         </View>
       </View>
@@ -125,7 +125,7 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#00b7db',
+    backgroundColor: '#424949',
   },
   developmentModeText: {
     marginBottom: 20,

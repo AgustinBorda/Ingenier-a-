@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#00b7db',
+    backgroundColor: '#424949',
   },
   title: {
     fontSize: 30,
@@ -154,13 +154,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     margin: 20,
-    backgroundColor: '#00b7db',
+    backgroundColor: '#424949',
   },
   content: {
     fontSize: 15,
     textAlign: 'center',
     margin: 20,
-    backgroundColor: '#00b7db',
+    backgroundColor: '#424949',
   },
   input: {
     margin: 20,

@@ -47,13 +47,13 @@ export default class PlayScreen extends React.Component {
           <FlatList
             data={this.state.categories}
             keyExtractor={(x, i) => i.toString()}
-
+            ItemSeparatorComponent={this._renderSeparator}
             renderItem={({item}) =>
 
               <Button
                 onPress={this.onPressCategoryButton.bind(this, Object.values({item}).toString())}
                 title={item}
-                color="#9932CC"
+                color="#717d7e"
                 style={{margin:40}}
               />
 
@@ -69,22 +69,27 @@ export default class PlayScreen extends React.Component {
         <Button
           onPress={() => this.props.navigation.navigate('App')}
           title="back"
-         // color="#8B0000"
+          color="#717d7e"
         />
       </View>
     );
   }
   onPressCategoryButton = (category) => {
-    console.log("aaaaaa");
     AsyncStorage.setItem('category',category);
     this.props.navigation.navigate('Question')
   }
+
+  _renderSeparator() {
+    return (
+      <View style={styles.separator}/>
+    )
+  }  
 }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#00b7db',
+    backgroundColor: '#424949',
   },
   welcome: {
     fontSize: 20,
@@ -98,5 +103,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#4228F8'
+  },
+  separator: {
+    margin: 10
   }
 })
