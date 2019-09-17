@@ -46,6 +46,12 @@ export default class CreateUserScreen extends React.Component {
         />
 
         <Button title="Sign in" onPress={this._signUp} />
+        
+         <View style={{margin:20}} />
+        <Button
+          onPress={() => this.props.navigation.navigate('Auth')}
+          title="back"
+        />
 
       </View>
     );
@@ -77,8 +83,7 @@ export default class CreateUserScreen extends React.Component {
         alert("Invalid Username or password");
         return;
       }
-
-      alert("Networking Error");
+      alert(API_HOST+"\n"+error);
     });
   };
 }
