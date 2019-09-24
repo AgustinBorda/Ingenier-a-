@@ -36,7 +36,7 @@ export default class HomeScreen extends React.Component {
                   ? require('../assets/images/perritoo.png')
                   : require('../assets/images/robot-prod.png')
               }
-              style={{width:150,height:150}}
+              style={{width:200,height:200}}
             />
           </View>
 
@@ -52,24 +52,27 @@ export default class HomeScreen extends React.Component {
               color="#5bf1e1"
             />
 
-            <View style={{margin:20}} />
-
             <View style={{margin:40}} />
             <Button
               onPress={() => this.props.navigation.navigate('Statistic')}
               title="Estadisticas"
               color="#a4f590"
             />
+
+            <View style={{margin:20}} />
+            <Button onPress={() => this.props.navigation.navigate('Auth')}
+             title="log out"
+             color ="#e0e241"
+             />  
+
           </View>
-          <View style={{margin:40}} />
-            <Text onPress={this._handleLogout} style={styles.logout}>
-              Logout
-            </Text>
+  
+          
 
         </ScrollView>
 
         <View style={styles.tabBarInfoContainer}>
-          <Text style={styles.tabBarInfoText}>Bienvenido, Valen.</Text>
+          <Text style={styles.tabBarInfoText}>Bienvenido, user.</Text>
 
           <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
             <MonoText style={styles.codeHighlightText}>Puntos : </MonoText>
@@ -95,13 +98,6 @@ export default class HomeScreen extends React.Component {
           Learn more
         </Text>
       );
-
-     /* return (
-        <Text style={styles.developmentModeText}>
-          Development mode is enabled, your app will be slower but you can use useful development
-          tools. {learnMoreButton}
-        </Text>
-      );*/
     } else {
       return (
         <Text style={styles.developmentModeText}>
@@ -123,9 +119,10 @@ export default class HomeScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
-    backgroundColor: '#424949',
+    backgroundColor: '#48c9b0',
   },
   developmentModeText: {
     marginBottom: 20,

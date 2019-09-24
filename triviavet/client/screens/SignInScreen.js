@@ -27,7 +27,8 @@ export default class SignInScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}> Login! </Text>
+        <Text style={styles.welcome}> Login! 
+         </Text>
 
         <TextInput
           placeholder="Username"
@@ -46,11 +47,11 @@ export default class SignInScreen extends React.Component {
         />
 
         <Button title="Sign in" onPress={this._signIn} 
-          color = "#717d7e"
+          color = "#ebee2c"
         />
          <View style={{margin:20}} />
         <Button title="Create account" onPress={() => this.props.navigation.navigate('Create')} 
-          color = "#717d7e"
+          color = "#ebee2c"
         />
       </View>
     );
@@ -91,12 +92,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#424949',
+    backgroundColor: '#48c9b0',
   },
   welcome: {
     fontSize: 20,
     textAlign: 'center',
     margin: 10,
+    color:'#ffffff',
   },
   input: {
     margin: 15,

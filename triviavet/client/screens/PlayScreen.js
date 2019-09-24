@@ -53,7 +53,7 @@ export default class PlayScreen extends React.Component {
               <Button
                 onPress={this.onPressCategoryButton.bind(this, Object.values({item}).toString())}
                 title={item}
-                color="#717d7e"
+                color="#3498db"
                 style={{margin:40}}
               />
 
@@ -69,7 +69,7 @@ export default class PlayScreen extends React.Component {
         <Button
           onPress={() => this.props.navigation.navigate('App')}
           title="back"
-          color="#717d7e"
+          color="#ebee2c"
         />
       </View>
     );
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#424949',
+    backgroundColor: '#48c9b0',
   },
   welcome: {
     fontSize: 20,

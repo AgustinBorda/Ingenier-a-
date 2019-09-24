@@ -126,10 +126,9 @@ export default class QuestionScreen extends React.Component {
           <Text style={styles.content}>
             Respuestas Incorrectas: {this.state.stats.incorrect_answer5}
           </Text>
-          <Button
-            onPress={() => this.props.navigation.navigate('App')}
-            title="<-"
-            color="#000000"
+           
+          <Button  title="back" onPress={() => this.props.navigation.navigate('App')}
+            color="#ebee2c"
           />
         </ScrollView>
     </View>
@@ -142,7 +141,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#424949',
+    backgroundColor: '#48c9b0',
   },
   title: {
     fontSize: 30,
@@ -154,13 +153,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     margin: 20,
-    backgroundColor: '#424949',
+    backgroundColor: '#48c9b0',
   },
   content: {
     fontSize: 15,
     textAlign: 'center',
     margin: 20,
-    backgroundColor: '#424949',
+    backgroundColor: '#48c9b0',
   },
   input: {
     margin: 20,
