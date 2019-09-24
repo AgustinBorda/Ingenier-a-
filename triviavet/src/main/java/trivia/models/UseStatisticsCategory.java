@@ -40,16 +40,15 @@ public class UseStatisticsCategory extends Model {
 	}
 	
 	public int calculateLevel() {
-		double i = Question.where("category =?",this.get("nombre").toString()).size();
-		if(this.getInteger("correct_answer") > 0) {
-			i = this.getInteger("correct_answer")/i;
-			i = i*100;
-			i = i/10;
-			return (int) Math.round(i);	
+		int i = 0;
+		int j = 0;
+		int num = this.getInteger("correct_answer");
+		while(num >= i) {
+			i+=2;
+			num -= i;
+			j++;
 		}
-		else {
-			return 0;
-		}
+		return j;
 	}
 	
 	public void updateCorrectAnswer() {
