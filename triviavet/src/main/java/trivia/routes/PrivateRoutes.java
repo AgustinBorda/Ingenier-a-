@@ -26,25 +26,6 @@ public class PrivateRoutes {
 			halt(401, "Usuario o clave invalidos \n");
 	};
 
-	public static final Route PostQuestion = (req, res) -> {// its a get
-		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
-		Pair<JSONObject, String> answer = Question.getQuestion(bodyParams, req.session().attribute("id").toString());
-		req.session().attribute("preg_id", answer.getSecond());
-		return answer.getFirst();
-	};
-	public static final Route PostAdmin = (req, res) -> {
-		User user;
-		JSONObject resp = new JSONObject();
-		if ((boolean) req.session().attribute("admin")) {
-			Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
-			user = User.findFirst("username = ?", bodyParams.get("username"));
-			user.giveAdminPermissions();
-			resp.put("answer", "OK");
-		} else {
-			resp.put("answer", "permission denied");
-		}
-		return resp;
-	};
 
 	public static final Route PostUserDelete = (req, res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);

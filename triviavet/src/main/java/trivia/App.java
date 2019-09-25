@@ -14,11 +14,11 @@ public class App {
 
 		before("/logged/*", PrivateRoutes.CheckSession);
 
-		post("/logged/question", PrivateRoutes.PostQuestion);
+		post("/admin/question", AdminRoutes.PostQuestion);
 
 		get("/logged/statistics", PrivateRoutes.GetStatistics);
 
-		post("/logged/admin", PrivateRoutes.PostAdmin);
+		post("/admin/admin", AdminRoutes.PostAdmin);
 
 		post("/logged/userdelete", PrivateRoutes.PostUserDelete);
 
