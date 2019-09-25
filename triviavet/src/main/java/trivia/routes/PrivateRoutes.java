@@ -26,6 +26,12 @@ public class PrivateRoutes {
 			halt(401, "Usuario o clave invalidos \n");
 	};
 
+	public static final Route PostQuestion = (req, res) -> {// its a get
+		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+		Pair<JSONObject, String> answer = Question.getQuestion(bodyParams, req.session().attribute("id").toString());
+		req.session().attribute("preg_id", answer.getSecond());
+		return answer.getFirst();
+	};
 
 	public static final Route PostUserDelete = (req, res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
@@ -46,15 +52,6 @@ public class PrivateRoutes {
 		Question question = Question.getQuestion(req.session().attribute("preg_id").toString());
 		req.session().removeAttribute("preg_id");
 		return question.answerQuestion(bodyParams.get("answer").toString(), req.session().attribute("username"));
-	};
-
-	public static final Route PostQuestions = (req, res) -> {
-		if (!(boolean) req.session().attribute("admin"))
-			return "No tenes permiso para crear preguntas";
-		QuestionParam bodyParams = new Gson().fromJson(req.body(), QuestionParam.class);
-		Question question = new Question();
-		question.createQuestion(bodyParams);
-		return question.toJson(true);
 	};
 
 	public static final Route GetStatistics = (req, res) -> {

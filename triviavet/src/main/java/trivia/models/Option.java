@@ -10,7 +10,7 @@ public class Option extends Model{
 		validatePresenceOf("description").message("Please, provide your description");
 	}
 	
-	public static void createOptions(ArrayList<OptionParam> options,Question question) {
+	public static void setOptions(ArrayList<OptionParam> options,Question question) {
 		for (OptionParam item : options) {
 			Option option = new Option();
 			option.set("description", item.description).set("correct", item.correct);

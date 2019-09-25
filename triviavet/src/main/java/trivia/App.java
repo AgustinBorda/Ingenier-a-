@@ -13,18 +13,24 @@ public class App {
 		after("*", PublicRoutes.BaseClose);
 
 		before("/logged/*", PrivateRoutes.CheckSession);
+		
+		before("/admin/*",AdminRoutes.CheckAdmin);
 
-		post("/admin/question", AdminRoutes.PostQuestion);
+		post("/logged/question", PrivateRoutes.PostQuestion);
 
 		get("/logged/statistics", PrivateRoutes.GetStatistics);
 
-		post("/admin/admin", AdminRoutes.PostAdmin);
+		post("/admin/admin",AdminRoutes.PostAdmin);
 
 		post("/logged/userdelete", PrivateRoutes.PostUserDelete);
 
 		post("/logged/answer", PrivateRoutes.PostAnswer);
 
-		post("/logged/questions", PrivateRoutes.PostQuestions);
+		post("/admin/questions", AdminRoutes.CreateQuestions);
+		
+		post("/admin/removequestion", AdminRoutes.RemoveQuestions);
+		
+		post("/admin/modifyquestion", AdminRoutes.ModifyQuestions);
 
 		post("/login", PublicRoutes.PostLogin);
 		
