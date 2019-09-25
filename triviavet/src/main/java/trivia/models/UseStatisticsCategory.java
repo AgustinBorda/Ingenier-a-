@@ -33,9 +33,22 @@ public class UseStatisticsCategory extends Model {
 			resp.put("points" + i, e.get("points"));
 			resp.put("correct_answer" + i, e.get("correct_answer"));
 			resp.put("incorrect_answer" + i, e.get("incorrect_answer"));
+			resp.put("level" + i, e.calculateLevel());
 			i++;
 		}
 		return resp;		
+	}
+	
+	public int calculateLevel() {
+		int i = 0;
+		int j = 0;
+		int num = this.getInteger("correct_answer");
+		while(num >= i) {
+			i+=2;
+			num -= i;
+			j++;
+		}
+		return j;
 	}
 	
 	public void updateCorrectAnswer() {
