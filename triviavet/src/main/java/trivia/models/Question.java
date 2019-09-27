@@ -20,10 +20,10 @@ public class Question extends Model {
 		validateWith(new UniquenessValidator("description")).message("This description is already used.");
 	}
 	
-	public void createQuestion (QuestionParam bodyParams) {
+	public void setQuestion (QuestionParam bodyParams) {
 		this.set("description", bodyParams.description);
 		this.set("category", bodyParams.category);
-		Option.createOptions(bodyParams.options, this);
+		Option.setOptions(bodyParams.options, this);
 		this.saveIt();	
 	}
 	

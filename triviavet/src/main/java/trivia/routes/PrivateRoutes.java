@@ -32,19 +32,6 @@ public class PrivateRoutes {
 		req.session().attribute("preg_id", answer.getSecond());
 		return answer.getFirst();
 	};
-	public static final Route PostAdmin = (req, res) -> {
-		User user;
-		JSONObject resp = new JSONObject();
-		if ((boolean) req.session().attribute("admin")) {
-			Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
-			user = User.findFirst("username = ?", bodyParams.get("username"));
-			user.giveAdminPermissions();
-			resp.put("answer", "OK");
-		} else {
-			resp.put("answer", "permission denied");
-		}
-		return resp;
-	};
 
 	public static final Route PostUserDelete = (req, res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
@@ -65,15 +52,6 @@ public class PrivateRoutes {
 		Question question = Question.getQuestion(req.session().attribute("preg_id").toString());
 		req.session().removeAttribute("preg_id");
 		return question.answerQuestion(bodyParams.get("answer").toString(), req.session().attribute("username"));
-	};
-
-	public static final Route PostQuestions = (req, res) -> {
-		if (!(boolean) req.session().attribute("admin"))
-			return "No tenes permiso para crear preguntas";
-		QuestionParam bodyParams = new Gson().fromJson(req.body(), QuestionParam.class);
-		Question question = new Question();
-		question.createQuestion(bodyParams);
-		return question.toJson(true);
 	};
 
 	public static final Route GetStatistics = (req, res) -> {

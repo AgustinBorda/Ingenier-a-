@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS user_questions (
 CREATE TABLE IF NOT EXISTS options (
   id int(11) NOT NULL auto_increment PRIMARY KEY,
   question_id int(11) ,
-  foreign key (question_id) references questions (id),
+  foreign key (question_id) references questions (id) on delete cascade,
   description VARCHAR(255) NOT NULL ,
   correct BOOLEAN,
   created_at DATETIME,
