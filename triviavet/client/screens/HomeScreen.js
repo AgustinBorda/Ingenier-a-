@@ -25,7 +25,7 @@ export default class HomeScreen extends React.Component {
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
             
-          <View style={{margin:60}} />
+          <View style={{margin:40}} />
 
             <Image
               
@@ -43,8 +43,9 @@ export default class HomeScreen extends React.Component {
           <View style={styles.getStartedContainer}>
             {this._maybeRenderDevelopmentModeWarning()}
 
+          </View>
            
-            <View style={{margin:40}} />
+            <View style={{margin:60}} />
 
             <Button
               onPress={() => this.props.navigation.navigate('Play')}
@@ -52,7 +53,7 @@ export default class HomeScreen extends React.Component {
               color="#5bf1e1"
             />
 
-            <View style={{margin:40}} />
+            <View style={{margin:20}} />
             <Button
               onPress={() => this.props.navigation.navigate('Statistic')}
               title="Estadisticas"
@@ -65,7 +66,6 @@ export default class HomeScreen extends React.Component {
              color ="#e0e241"
              />  
 
-          </View>
   
           
 
@@ -75,8 +75,8 @@ export default class HomeScreen extends React.Component {
           <Text style={styles.tabBarInfoText}>Bienvenido, user.</Text>
 
           <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-            <MonoText style={styles.codeHighlightText}>Puntos : </MonoText>
-          </View>
+         
+        </View>
         </View>
       </View>
     );
@@ -131,6 +131,7 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     textAlign: 'center',
   },
+  
   contentContainer: {
     paddingTop: 30,
   },
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
     color: 'rgba(96,100,109, 0.8)',
   },
   codeHighlightContainer: {
-    backgroundColor: 'rgba(0,0,0,0.05)',
+    backgroundColor: '#48c9b0',
     borderRadius: 3,
     paddingHorizontal: 4,
   },
@@ -169,6 +170,7 @@ const styles = StyleSheet.create({
   },
   tabBarInfoContainer: {
     position: 'absolute',
+
     bottom: 0,
     left: 0,
     right: 0,
@@ -184,7 +186,7 @@ const styles = StyleSheet.create({
       },
     }),
     alignItems: 'center',
-    backgroundColor: '#fbfbfb',
+    backgroundColor: '#48c9b0',
     paddingVertical: 20,
   },
   tabBarInfoText: {

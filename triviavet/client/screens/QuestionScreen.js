@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#00b7db',
+    backgroundColor: '#48c9b0',
   },
   question: {
     fontSize: 30,
