@@ -2,13 +2,11 @@ package trivia.routes;
 
 import static spark.Spark.*;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import org.javalite.activejdbc.Base;
-import org.json.JSONObject;
 
+import org.json.JSONObject;
 import com.google.gson.Gson;
 
 import spark.*;

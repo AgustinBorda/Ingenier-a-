@@ -5,7 +5,7 @@ import java.util.List;
 import org.javalite.activejdbc.Model;
 import org.json.JSONObject;
 
-public class UseStatisticsCategory extends Model {
+public class UserStatisticsCategory extends Model {
 
 	static {
 		validatePresenceOf("points").message("Please, provide points");
@@ -13,22 +13,23 @@ public class UseStatisticsCategory extends Model {
 		validatePresenceOf("incorrect_answer").message("Please, provide incorrect_answer");
 	}
 	
-	public void createUserStatistic (User user, Category c) {
-		this.set("user", user.get("username"));
-		this.set("nombre", c.get("nombre"));
-		this.set("points", 0);
-		this.set("correct_answer", 0);
-		this.set("incorrect_answer", 0);
-		this.saveIt();
+	public static void createUserStatistic (User user, Category c) {
+		UserStatisticsCategory usc = new UserStatisticsCategory();
+		usc.set("user", user.get("username"));
+		usc.set("nombre", c.get("nombre"));
+		usc.set("points", 0);
+		usc.set("correct_answer", 0);
+		usc.set("incorrect_answer", 0);
+		usc.saveIt();
 	}
 	
 	public static JSONObject getStatistics(String username) {
-		List<UseStatisticsCategory> estadisticas = UseStatisticsCategory.where("user = ?",
+		List<UserStatisticsCategory> estadisticas = UserStatisticsCategory.where("user = ?",
 				username);
 		JSONObject resp = new JSONObject();
 		resp.put("User", username);
 		int i = 0;
-		for (UseStatisticsCategory e : estadisticas) {
+		for (UserStatisticsCategory e : estadisticas) {
 			resp.put("cat" + i, e.get("nombre"));
 			resp.put("points" + i, e.get("points"));
 			resp.put("correct_answer" + i, e.get("correct_answer"));
