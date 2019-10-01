@@ -1,3 +1,4 @@
+import * as Progress from 'react-native-progress'
 import React from 'react';
 import { API_HOST } from 'react-native-dotenv';
 import {
@@ -45,7 +46,25 @@ export default class QuestionScreen extends React.Component {
       alert(error);
     });
   }
+  componentDidMount(){
+    this.buscarlos();
+  }
+  buscarlos(){
+    let progressAnatomia=0.9;
+    let progressCirugia=0.7;
+    let progressFarmacologia=0.3;
+    let progressGrandes_Animales=0.6;
+    let progressPequeños_Animales=0.9;
+    let progressQuimica=0.1;
 
+    this.setState({progressAnatomia});
+    this.setState({progressCirugia});
+    this.setState({progressGrandes_Animales});
+    this.setState({progressPequeños_Animales});
+    this.setState({progressQuimica});
+    this.setState({progressFarmacologia});
+    
+   }
 
   render() {
     return (
@@ -54,78 +73,81 @@ export default class QuestionScreen extends React.Component {
           Estadisticas:
         </Text>
       <ScrollView>
+     
           <Text style={styles.cat}>
-          Anatomia
+          Anatomia:
           </Text>
-          <Text style={styles.content}>
-            Puntos: {this.state.stats.points0}
-          </Text>
-          <Text style={styles.content}>
-            Respuestas Correctas: {this.state.stats.correct_answer0}
-          </Text>
-          <Text style={styles.content}>
-            Respuestas Incorrectas: {this.state.stats.incorrect_answer0}
-          </Text>
+          
+          <Progress.Circle progress={this.state.progressAnatomia} size={120}
+           color="#3498db"
+           borderWidth={2}
+           showsText
+           unfilledColor="#7fcbfd"
+           endAngle={0.9}
+           />
+        
+          
+          
           <Text style={styles.cat}>
             Cirugia
           </Text>
-          <Text style={styles.content}>
-            Puntos: {this.state.stats.points1}
-          </Text>
-          <Text style={styles.content}>
-            Respuestas Correctas: {this.state.stats.correct_answer1}
-          </Text>
-          <Text style={styles.content}>
-            Respuestas Incorrectas: {this.state.stats.incorrect_answer1}
-          </Text>
+          <Progress.Circle progress={this.state.progressCirugia} size={120}
+           color="#3498db"
+           borderWidth={2}
+           showsText
+           unfilledColor="#7fcbfd"
+           endAngle={0.9}
+           />
+          
           <Text style={styles.cat}>
             Farmacologia
-          </Text>
-          <Text style={styles.content}>
-            Puntos: {this.state.stats.points2}
-          </Text>
-          <Text style={styles.content}>
-            Respuestas Correctas: {this.state.stats.correct_answer2}
-          </Text>
-          <Text style={styles.content}>
-            Respuestas Incorrectas: {this.state.stats.incorrect_answer2}
-          </Text>
+         </Text>
+          
+          <Progress.Circle progress={this.state.progressFarmacologia} size={120}
+           color="#3498db"
+           borderWidth={2}
+           showsText
+           unfilledColor="#7fcbfd"
+           endAngle={0.9}
+           />
+            
           <Text style={styles.cat}>
             Grandes Animales
           </Text>
-          <Text style={styles.content}>
-            Puntos: {this.state.stats.points3}
-          </Text>
-          <Text style={styles.content}>
-            Respuestas Correctas: {this.state.stats.correct_answer3}
-          </Text>
-          <Text style={styles.content}>
-            Respuestas Incorrectas: {this.state.stats.incorrect_answer3}
-          </Text>
+           <Progress.Circle progress={this.state.progressGrandes_Animales} size={120}
+           color="#3498db"
+           borderWidth={2}
+           showsText
+           unfilledColor="#7fcbfd"
+           endAngle={0.9}
+           />
+              
           <Text style={styles.cat}>
             Pequenos Animales
           </Text>
-          <Text style={styles.content}>
-          Puntos:  {this.state.stats.points4}
-          </Text>
-          <Text style={styles.content}>
-            Respuestas Correctas: {this.state.stats.correct_answer4}
-          </Text>
-          <Text style={styles.content}>
-            Respuestas Incorrectas: {this.state.stats.incorrect_answer4}
-          </Text>
+          
+          <Progress.Circle progress={this.state.progressPequeños_Animales} size={120}
+           color="#3498db"
+           borderWidth={2}
+           showsText
+           unfilledColor="#7fcbfd"
+           endAngle={0.9}
+           />
+        
+             
+
           <Text style={styles.cat}>
             Quimica
           </Text>
-          <Text style={styles.content}>
-          Puntos:  {this.state.stats.points5}
-          </Text>
-          <Text style={styles.content}>
-            Respuestas Correctas: {this.state.stats.correct_answer5}
-          </Text>
-          <Text style={styles.content}>
-            Respuestas Incorrectas: {this.state.stats.incorrect_answer5}
-          </Text>
+          
+          <Progress.Circle progress={this.state.progressQuimica} size={120}
+           color="#3498db"
+           borderWidth={2}
+           showsText
+           unfilledColor="#7fcbfd"
+           endAngle={0.9}
+           />
+         
            
           <Button  title="back" onPress={() => this.props.navigation.navigate('App')}
             color="#ebee2c"
