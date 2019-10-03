@@ -3,6 +3,7 @@ package trivia.models;
 import trivia.structures.Pair;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.javalite.activejdbc.Model;
@@ -25,32 +26,10 @@ public class Question extends Model {
 		this.saveIt();
 	}
 
-	public static Pair<JSONObject, String> getQuestion(String userId) {
+	public static Pair<JSONObject,String> getQuestion(Map<String,Object> bodyParams,String userId) {
 		Random r = new Random();
 		JSONObject resp = new JSONObject();
 		List<Question> questions;
-<<<<<<< Updated upstream
-		questions = Question.findBySQL("SELECT * FROM questions WHERE id " + "NOT IN (SELECT id FROM questions "
-				+ "INNER JOIN ((SELECT * FROM user_questions WHERE user_id = ?) as contestadas) "
-				+ "ON questions.id = contestadas.question_id)", userId);
-
-		Question question = questions.get(r.nextInt(questions.size()));
-		List<Option> options = Option.where("question_id = ?", question.get("id"));
-		resp.put("description", question.get("description"));
-
-		int i = 1;
-		for (Option o : options) {
-			resp.put("answer" + i, o.get("description"));
-			i++;
-		}
-		Pair<JSONObject, String> answer = new Pair<JSONObject, String>(resp, question.get("id").toString());
-		return answer;
-	}
-
-	public static Pair<JSONObject, String> getQuestion(String category, String userId) {
-		if (category == null) {
-			return getQuestion(userId);
-=======
 		try {
 			if(bodyParams.get("category") == null) {
 				throw new NullPointerException();
@@ -60,9 +39,7 @@ public class Question extends Model {
 						"SELECT * FROM questions WHERE id "
 						+ "NOT IN (SELECT id FROM questions "
 						+ "INNER JOIN ((SELECT * FROM user_questions WHERE user_id = ?) as contestadas) "
-						+ "ON questions.id = contestadas.question_id) AND category = ? "
-						+ "ORDER BY RAND() "
-						+ "LIMIT 1",
+						+ "ON questions.id = contestadas.question_id) AND category = ?",
 						userId, bodyParams.get("category"));
 			}
 		}
@@ -71,19 +48,9 @@ public class Question extends Model {
 					"SELECT * FROM questions WHERE id "
 					+ "NOT IN (SELECT id FROM questions "
 					+ "INNER JOIN ((SELECT * FROM user_questions WHERE user_id = ?) as contestadas) "
-					+ "ON questions.id = contestadas.question_id)"
-					+ "ORDER BY RAND() "
-					+ "LIMIT 1",
+					+ "ON questions.id = contestadas.question_id)",
 					userId);
->>>>>>> Stashed changes
 		}
-		Random r = new Random();
-		JSONObject resp = new JSONObject();
-		List<Question> questions;
-		questions = Question.findBySQL("SELECT * FROM questions WHERE id " + "NOT IN (SELECT id FROM questions "
-				+ "INNER JOIN ((SELECT * FROM user_questions WHERE user_id = ?) as contestadas) "
-				+ "ON questions.id = contestadas.question_id) AND category = ?", userId, category);
-
 		Question question = questions.get(r.nextInt(questions.size()));
 		List<Option> options = Option.where("question_id = ?", question.get("id"));
 		resp.put("description", question.get("description"));
@@ -93,10 +60,12 @@ public class Question extends Model {
 			resp.put("answer" + i, o.get("description"));
 			i++;
 		}
-		Pair<JSONObject, String> answer = new Pair<JSONObject, String>(resp, question.get("id").toString());
+		Pair<JSONObject,String> answer = new Pair<JSONObject,String>(resp,question.get("id").toString());
 		return answer;
+		
+		
 	}
-
+	
 	public JSONObject answerQuestion(String answer, String username) {
 		JSONObject resp = new JSONObject();
 		List<Option> options = Option.where("question_id = ?", this.get("id"));

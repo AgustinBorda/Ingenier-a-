@@ -23,7 +23,7 @@ public class PrivateRoutes {
 
 	public static final Route PostQuestion = (req, res) -> {// its a get
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
-		Pair<JSONObject, String> answer = Question.getQuestion(bodyParams.get("category").toString(), req.session().attribute("id").toString());
+		Pair<JSONObject, String> answer = Question.getQuestion(bodyParams, req.session().attribute("id").toString());
 		req.session().attribute("preg_id", answer.getSecond());
 		return answer.getFirst();
 	};
@@ -59,5 +59,5 @@ public class PrivateRoutes {
 		resp.put("categories", Category.findAll().collect("nombre").toArray());
 		return resp;
 	};
-
+	
 }
