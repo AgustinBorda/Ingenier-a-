@@ -16,18 +16,19 @@ import axios from 'axios';
 
 export default class QuestionScreen extends React.Component {
   static navigationOptions = {
-    title: '',
+    title: 'Estadisticas',
     category: AsyncStorage.getItem('category')
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      stats: []
+      stats: [],
+      perc: []
     }
   }
 
-  async componentWillMount () {
+  async componentDidMount () {
     const token =  await AsyncStorage.getItem('userToken')
     await axios.get(API_HOST+"/logged/statistics",{
       headers:{'Authorization' : token}})
@@ -36,6 +37,9 @@ export default class QuestionScreen extends React.Component {
     )
     .then(async ({data}) => {
       await this.setState({stats: data.statistics});
+      for(i=0;i<this.state.stats.length;i++){
+        this.state.perc.push(this.state.stats[i].correct_percentage);
+      }
     })
     .catch((error) => {
       if(error.toString().match(/500/)) {
@@ -47,38 +51,47 @@ export default class QuestionScreen extends React.Component {
     });
   }
 
+
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>
-          Estadisticas:
-        </Text>
       <ScrollView>
       <FlatList
         data={this.state.stats}
         keyExtractor={(x, i) => i.toString()}
         ItemSeparatorComponent={this._renderSeparator}
-        renderItem={({item}) =>
+        renderItem={({item,index}) =>
 
 
-          <Text style={styles.title}>
-          {item.cat}
-
-          <Progress.Circle progress={item.correct_percentage} size={120}
-          color="#3498db"
-          borderWidth={2}
-          showsText={true}
-          unfilledColor="#7fcbfd"
-          endAngle={0.9}
-          />
-          </Text>
-
-
+          <View style={styles.container}>
+            <Text style={styles.title}>
+              {item.cat}
+            </Text>
+            <Text style={styles.content}>
+              Respuestas correctas: {item.correct_answer}
+            </Text>
+              <Text style={styles.content}>
+              Respuestas incorrectas: {item.incorrect_answer}
+            </Text>
+            <Text style={styles.content}>
+              Respuestas totales: {item.correct_answer+item.incorrect_answer}
+            </Text>
+            <Text style={styles.content}>
+              Porcentaje total:
+            </Text>
+            <Progress.Circle progress={this.state.perc[index]} size={120}
+              color="#3498db"
+              borderWidth={2}
+              showsText={true}
+              unfilledColor="#7fcbfd"
+              endAngle={0.9}
+            />
+          </View>
         }
     />
 
 
-          <Button  title="back" onPress={() => this.props.navigation.navigate('App')}
+          <Button  title="Volver" onPress={() => this.props.navigation.navigate('App')}
             color="#ebee2c"
           />
         </ScrollView>
@@ -97,12 +110,12 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     backgroundColor: '#48c9b0',
+    alignItems: 'center',
   },
   title: {
     fontSize: 30,
     textAlign: 'center',
     margin: 20,
-    backgroundColor: '#FFFFFF',
   },
   cat: {
     fontSize: 20,
