@@ -2,15 +2,10 @@ package trivia.routes;
 
 import static spark.Spark.*;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Random;
-
-import org.javalite.activejdbc.Base;
 import org.json.JSONObject;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import spark.*;
 import trivia.BasicAuth;
@@ -32,19 +27,6 @@ public class PrivateRoutes {
 		req.session().attribute("preg_id", answer.getSecond());
 		return answer.getFirst();
 	};
-	public static final Route PostAdmin = (req, res) -> {
-		User user;
-		JSONObject resp = new JSONObject();
-		if ((boolean) req.session().attribute("admin")) {
-			Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
-			user = User.findFirst("username = ?", bodyParams.get("username"));
-			user.giveAdminPermissions();
-			resp.put("answer", "OK");
-		} else {
-			resp.put("answer", "permission denied");
-		}
-		return resp;
-	};
 
 	public static final Route PostUserDelete = (req, res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
@@ -62,23 +44,14 @@ public class PrivateRoutes {
 
 	public static final Route PostAnswer = (req, res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
-		Question question = Question.getQuestion(req.session().attribute("preg_id").toString());
+		Question question = Question.getQuestionById(req.session().attribute("preg_id").toString());
 		req.session().removeAttribute("preg_id");
 		return question.answerQuestion(bodyParams.get("answer").toString(), req.session().attribute("username"));
 	};
 
-	public static final Route PostQuestions = (req, res) -> {
-		if (!(boolean) req.session().attribute("admin"))
-			return "No tenes permiso para crear preguntas";
-		QuestionParam bodyParams = new Gson().fromJson(req.body(), QuestionParam.class);
-		Question question = new Question();
-		question.createQuestion(bodyParams);
-		return question.toJson(true);
-	};
-
 	public static final Route GetStatistics = (req, res) -> {
 		System.out.println("/loged/statistics");
-		return UseStatisticsCategory.getStatistics(req.session().attribute("username").toString());
+		return UserStatisticsCategory.getStatistics(req.session().attribute("username").toString());
 	};
 
 	public static final Route GetCategory = (req, res) -> {
@@ -86,5 +59,5 @@ public class PrivateRoutes {
 		resp.put("categories", Category.findAll().collect("nombre").toArray());
 		return resp;
 	};
-
+	
 }

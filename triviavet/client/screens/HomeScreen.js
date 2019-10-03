@@ -19,49 +19,65 @@ export default class HomeScreen extends React.Component {
     header: null,
   };
 
+
   render() {
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
+
+          <View style={{margin:40}} />
+
             <Image
+
+
+
               source={
                 __DEV__
                   ? require('../assets/images/perritoo.png')
                   : require('../assets/images/robot-prod.png')
               }
-              style={styles.welcomeImage}
+              style={{width:200,height:200}}
             />
           </View>
 
           <View style={styles.getStartedContainer}>
             {this._maybeRenderDevelopmentModeWarning()}
 
-            <Text onPress={this._handleLogout} style={styles.logout}>
-              Logout
-            </Text>
+          </View>
+
+            <View style={{margin:60}} />
 
             <Button
               onPress={() => this.props.navigation.navigate('Play')}
               title="Jugar"
-              color="#841584"
+              color="#5bf1e1"
             />
 
+            <View style={{margin:20}} />
             <Button
               onPress={() => this.props.navigation.navigate('Statistic')}
               title="Estadisticas"
               color="#a4f590"
             />
-          </View>
+
+            <View style={{margin:20}} />
+            <Button onPress={() => this.props.navigation.navigate('Auth')}
+             title="Salir"
+             color ="#e0e241"
+             />
+
+
+
 
         </ScrollView>
 
         <View style={styles.tabBarInfoContainer}>
-          <Text style={styles.tabBarInfoText}>This is a tab bar. You can edit it in:</Text>
+          <Text style={styles.tabBarInfoText}>Bienvenido.</Text>
 
           <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-            <MonoText style={styles.codeHighlightText}>navigation/MainTabNavigator.js</MonoText>
-          </View>
+
+        </View>
         </View>
       </View>
     );
@@ -83,13 +99,6 @@ export default class HomeScreen extends React.Component {
           Learn more
         </Text>
       );
-
-     /* return (
-        <Text style={styles.developmentModeText}>
-          Development mode is enabled, your app will be slower but you can use useful development
-          tools. {learnMoreButton}
-        </Text>
-      );*/
     } else {
       return (
         <Text style={styles.developmentModeText}>
@@ -111,9 +120,10 @@ export default class HomeScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
-    backgroundColor: '#00b7db',
+    backgroundColor: '#48c9b0',
   },
   developmentModeText: {
     marginBottom: 20,
@@ -122,6 +132,7 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     textAlign: 'center',
   },
+
   contentContainer: {
     paddingTop: 30,
   },
@@ -148,7 +159,7 @@ const styles = StyleSheet.create({
     color: 'rgba(96,100,109, 0.8)',
   },
   codeHighlightContainer: {
-    backgroundColor: 'rgba(0,0,0,0.05)',
+    backgroundColor: '#48c9b0',
     borderRadius: 3,
     paddingHorizontal: 4,
   },
@@ -160,6 +171,7 @@ const styles = StyleSheet.create({
   },
   tabBarInfoContainer: {
     position: 'absolute',
+
     bottom: 0,
     left: 0,
     right: 0,
@@ -175,7 +187,7 @@ const styles = StyleSheet.create({
       },
     }),
     alignItems: 'center',
-    backgroundColor: '#fbfbfb',
+    backgroundColor: '#48c9b0',
     paddingVertical: 20,
   },
   tabBarInfoText: {

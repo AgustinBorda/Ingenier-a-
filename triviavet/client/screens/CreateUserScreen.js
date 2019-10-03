@@ -45,7 +45,16 @@ export default class CreateUserScreen extends React.Component {
           value={this.state.password}
         />
 
-        <Button title="Sign in" onPress={this._signUp} />
+        <Button title="Sign in" onPress={this._signUp}
+         color = "#e0e241"
+        />
+
+         <View style={{margin:20}} />
+        <Button
+          onPress={() => this.props.navigation.navigate('Auth')}
+          title="back"
+           color = "#e0e241"
+        />
 
       </View>
     );
@@ -66,6 +75,7 @@ export default class CreateUserScreen extends React.Component {
       .then(response => {
         // Handle the JWT response here
         AsyncStorage.setItem('userToken', response.config.headers.Authorization);
+        AsyncStorage.setItem('username',username);
         this.props.navigation.navigate('App');
       })
     .catch((error) => {
@@ -77,24 +87,23 @@ export default class CreateUserScreen extends React.Component {
         alert("Invalid Username or password");
         return;
       }
-
-      alert("Networking Error");
+      alert(API_HOST+"\n"+error);
     });
   };
 }
-//33ff9f color verdeagua
-//fff933 color amarillo
+
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#00b7db',
+    backgroundColor: '#48c9b0',
   },
   welcome: {
     fontSize: 20,
     textAlign: 'center',
     margin: 10,
+    color:'#ffffff',
   },
   input: {
     margin: 15,
@@ -102,6 +111,6 @@ const styles = StyleSheet.create({
     padding: 5,
     fontSize: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#fff933'
+    borderBottomColor: '#eceef1'
   }
 })

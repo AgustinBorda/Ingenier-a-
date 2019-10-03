@@ -14,11 +14,15 @@ public class User extends Model {
 		validatePresenceOf("admin").message("Please, provide admin flag");
 	}
 	
-	public void createUser(Map<String,Object> bodyParams) {
-		this.set("username", bodyParams.get("username"),
+	public static User createUser(Map<String,Object> bodyParams) {
+		User u = new User();
+		u.set("username", bodyParams.get("username"),
 				 "password", bodyParams.get("password"),
 				 "admin", false).saveIt();
-		System.out.println("Registred: "+this.get("username"));
+		for (Model c : Category.findAll()) {
+			UserStatisticsCategory.createUserStatistic(u, (Category) c);
+		}
+		return u;
 	}
 	
 	public void giveAdminPermissions() {

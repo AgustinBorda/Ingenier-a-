@@ -6,7 +6,7 @@ Este es un proyecto utilizado para enseñar/aprender algunas herramientas en el 
 #### Integrantes
 * Agustin Borda.
 * Valentin Tobares.
-* Matias Angeli.
+* Nicolas D'Alessandro.
 
 #### Run
 ```Bash
@@ -20,6 +20,22 @@ En otra terminal
 	cd triviavet/client
 	npm install
 	expo-cli r
+```
+
+#### Database configuration
+
+	Create an archive named "database.properties" in ~/src/main/resources/ with the following content;
+
+```Java Properties
+	development.driver=com.mysql.jdbc.Driver
+	development.username=<username>
+	development.password=<password>
+	development.url=jdbc:mysql://localhost/trivia_dev
+
+	development.test.driver=com.mysql.jdbc.Driver
+	development.test.username=<username>
+	development.test.password=<password>
+	development.test.url=jdbc:mysql://localhost/trivia_test
 ```
 
 

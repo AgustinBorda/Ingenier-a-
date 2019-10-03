@@ -27,7 +27,8 @@ export default class SignInScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}> Login! </Text>
+        <Text style={styles.welcome}> Login!
+         </Text>
 
         <TextInput
           placeholder="Username"
@@ -45,9 +46,13 @@ export default class SignInScreen extends React.Component {
           value={this.state.password}
         />
 
-        <Button title="Sign in" onPress={this._signIn} />
+        <Button title="Sign in" onPress={this._signIn}
+          color = "#ebee2c"
+        />
          <View style={{margin:20}} />
-        <Button title="Create account" onPress={() => this.props.navigation.navigate('Create')} />
+        <Button title="Create account" onPress={() => this.props.navigation.navigate('Create')}
+          color = "#ebee2c"
+        />
       </View>
     );
   }
@@ -86,12 +91,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#00b7db',
+    backgroundColor: '#48c9b0',
   },
   welcome: {
     fontSize: 20,
     textAlign: 'center',
     margin: 10,
+    color:'#ffffff',
   },
   input: {
     margin: 15,
@@ -99,6 +105,6 @@ const styles = StyleSheet.create({
     padding: 5,
     fontSize: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#fff333'
+    borderBottomColor: '#eceef1'
   }
 })

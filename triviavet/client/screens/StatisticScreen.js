@@ -1,3 +1,4 @@
+import * as Progress from 'react-native-progress'
 import React from 'react';
 import { API_HOST } from 'react-native-dotenv';
 import {
@@ -9,32 +10,36 @@ import {
   Button,
   TouchableOpacity,
   StyleSheet,
+  FlatList,
 } from 'react-native';
 import axios from 'axios';
 
 export default class QuestionScreen extends React.Component {
   static navigationOptions = {
-    title: '',
+    title: 'Estadisticas',
     category: AsyncStorage.getItem('category')
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      stats: ""
+      stats: [],
+      perc: []
     }
   }
 
-  async componentWillMount () {
+  async componentDidMount () {
     const token =  await AsyncStorage.getItem('userToken')
     await axios.get(API_HOST+"/logged/statistics",{
       headers:{'Authorization' : token}})
     .then(
       response => JSON.parse(JSON.stringify(response))
     )
-    .then(response => {
-      // Handle the JWT response here
-    this.setState({stats: response.data})
+    .then(async ({data}) => {
+      await this.setState({stats: data.statistics});
+      for(i=0;i<this.state.stats.length;i++){
+        this.state.perc.push(this.state.stats[i].correct_percentage);
+      }
     })
     .catch((error) => {
       if(error.toString().match(/500/)) {
@@ -50,117 +55,79 @@ export default class QuestionScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>
-          Estadisticas:
-        </Text>
       <ScrollView>
-          <Text style={styles.cat}>
-          Anatomia
-          </Text>
-          <Text style={styles.content}>
-            Puntos: {this.state.stats.points0}
-          </Text>
-          <Text style={styles.content}>
-            Respuestas Correctas: {this.state.stats.correct_answer0}
-          </Text>
-          <Text style={styles.content}>
-            Respuestas Incorrectas: {this.state.stats.incorrect_answer0}
-          </Text>
-          <Text style={styles.cat}>
-            Cirugia
-          </Text>
-          <Text style={styles.content}>
-            Puntos: {this.state.stats.points1}
-          </Text>
-          <Text style={styles.content}>
-            Respuestas Correctas: {this.state.stats.correct_answer1}
-          </Text>
-          <Text style={styles.content}>
-            Respuestas Incorrectas: {this.state.stats.incorrect_answer1}
-          </Text>
-          <Text style={styles.cat}>
-            Farmacologia
-          </Text>
-          <Text style={styles.content}>
-            Puntos: {this.state.stats.points2}
-          </Text>
-          <Text style={styles.content}>
-            Respuestas Correctas: {this.state.stats.correct_answer2}
-          </Text>
-          <Text style={styles.content}>
-            Respuestas Incorrectas: {this.state.stats.incorrect_answer2}
-          </Text>
-          <Text style={styles.cat}>
-            Grandes Animales
-          </Text>
-          <Text style={styles.content}>
-            Puntos: {this.state.stats.points3}
-          </Text>
-          <Text style={styles.content}>
-            Respuestas Correctas: {this.state.stats.correct_answer3}
-          </Text>
-          <Text style={styles.content}>
-            Respuestas Incorrectas: {this.state.stats.incorrect_answer3}
-          </Text>
-          <Text style={styles.cat}>
-            Pequenos Animales
-          </Text>
-          <Text style={styles.content}>
-          Puntos:  {this.state.stats.points4}
-          </Text>
-          <Text style={styles.content}>
-            Respuestas Correctas: {this.state.stats.correct_answer4}
-          </Text>
-          <Text style={styles.content}>
-            Respuestas Incorrectas: {this.state.stats.incorrect_answer4}
-          </Text>
-          <Text style={styles.cat}>
-            Quimica
-          </Text>
-          <Text style={styles.content}>
-          Puntos:  {this.state.stats.points5}
-          </Text>
-          <Text style={styles.content}>
-            Respuestas Correctas: {this.state.stats.correct_answer5}
-          </Text>
-          <Text style={styles.content}>
-            Respuestas Incorrectas: {this.state.stats.incorrect_answer5}
-          </Text>
-          <Button
-            onPress={() => this.props.navigation.navigate('App')}
-            title="<-"
-            color="#000000"
+      <FlatList
+        data={this.state.stats}
+        keyExtractor={(x, i) => i.toString()}
+        ItemSeparatorComponent={this._renderSeparator}
+        renderItem={({item,index}) =>
+
+
+          <View style={styles.container}>
+            <Text style={styles.title}>
+              {item.cat}
+            </Text>
+            <Text style={styles.content}>
+              Respuestas correctas: {item.correct_answer}
+            </Text>
+              <Text style={styles.content}>
+              Respuestas incorrectas: {item.incorrect_answer}
+            </Text>
+            <Text style={styles.content}>
+              Respuestas totales: {item.correct_answer+item.incorrect_answer}
+            </Text>
+            <Text style={styles.content}>
+              Porcentaje total:
+            </Text>
+            <Progress.Circle progress={this.state.perc[index]} size={120}
+              color="#3498db"
+              borderWidth={2}
+              showsText={true}
+              unfilledColor="#7fcbfd"
+              endAngle={0.9}
+            />
+          </View>
+        }
+    />
+
+
+          <Button  title="Volver" onPress={() => this.props.navigation.navigate('App')}
+            color="#ebee2c"
           />
         </ScrollView>
     </View>
 
     );
   }
+  _renderSeparator() {
+    return (
+      <View style={styles.separator}/>
+    )
+  }
 
 }
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#00b7db',
+    backgroundColor: '#48c9b0',
+    alignItems: 'center',
   },
   title: {
     fontSize: 30,
     textAlign: 'center',
     margin: 20,
-    backgroundColor: '#FFFFFF',
   },
   cat: {
     fontSize: 20,
     textAlign: 'center',
     margin: 20,
-    backgroundColor: '#00b7db',
+    backgroundColor: '#48c9b0',
   },
   content: {
     fontSize: 15,
     textAlign: 'center',
     margin: 20,
-    backgroundColor: '#00b7db',
+    backgroundColor: '#48c9b0',
   },
   input: {
     margin: 20,
@@ -169,5 +136,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#4228F8'
+  },
+  separator: {
+    margin: 10
   }
 })

@@ -2,17 +2,13 @@ package trivia.routes;
 
 import static spark.Spark.halt;
 
-import java.util.List;
 import java.util.Map;
 
 import org.javalite.activejdbc.Base;
-import org.javalite.activejdbc.Model;
 
 import com.google.gson.Gson;
 
 import spark.*;
-import trivia.models.Category;
-import trivia.models.UseStatisticsCategory;
 import trivia.models.User;
 
 public class PublicRoutes {
@@ -34,16 +30,15 @@ public class PublicRoutes {
 
 	public static final Route PostLogin = (req, res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
-		User u = User.findFirst("username = ? and password = ?", bodyParams.get("username"),
+		User user = User.findFirst("username = ? and password = ?", bodyParams.get("username"),
 				bodyParams.get("password"));
-		if (u != null) {
-			req.session().attribute("username", u.get("username"));
-			req.session().attribute("id", u.get("id"));
-			req.session().attribute("admin", u.get("admin"));
-			System.out.println("Loged: " + u.get("username"));
+		if (user != null) {
+			loadSession(req, user);
+			System.out.println("Loged: " + user.get("username"));
 			return true;
 		}
-		return null;
+		res.status(401);
+		return true;
 	};
 
 	public static final Route PostUsers = (req, res) -> {
@@ -57,16 +52,16 @@ public class PublicRoutes {
 			halt(403, "");
 			return "";
 		}
-		User user = new User();
-		user.createUser(bodyParams);
+		User user = User.createUser(bodyParams);
 		System.out.println("Registred: " + user.get("username"));
-		for (Model c : Category.findAll()) {
-			UseStatisticsCategory stats = new UseStatisticsCategory();
-			stats.createUserStatistic(user, (Category) c);
-		}
+		
+		loadSession(req, user);
+		return user.toJson(true);
+	};
+	
+	private static void loadSession(Request req, User user) {
 		req.session().attribute("username", user.get("username"));
 		req.session().attribute("id", user.get("id"));
 		req.session().attribute("admin", user.get("admin"));
-		return user.toJson(true);
-	};
+	}
 }

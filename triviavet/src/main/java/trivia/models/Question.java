@@ -10,23 +10,22 @@ import org.javalite.activejdbc.Model;
 import org.javalite.activejdbc.validation.UniquenessValidator;
 import org.json.JSONObject;
 
-
 import trivia.structures.QuestionParam;
 
 public class Question extends Model {
 
-	static{
+	static {
 		validatePresenceOf("description").message("Please, provide description");
 		validateWith(new UniquenessValidator("description")).message("This description is already used.");
 	}
-	
-	public void createQuestion (QuestionParam bodyParams) {
+
+	public void setQuestion(QuestionParam bodyParams) {
 		this.set("description", bodyParams.description);
 		this.set("category", bodyParams.category);
-		Option.createOptions(bodyParams.options, this);
-		this.saveIt();	
+		Option.setOptions(bodyParams.options, this);
+		this.saveIt();
 	}
-	
+
 	public static Pair<JSONObject,String> getQuestion(Map<String,Object> bodyParams,String userId) {
 		Random r = new Random();
 		JSONObject resp = new JSONObject();
@@ -67,26 +66,25 @@ public class Question extends Model {
 		
 	}
 	
-	public JSONObject answerQuestion(String answer,String username) {
+	public JSONObject answerQuestion(String answer, String username) {
 		JSONObject resp = new JSONObject();
 		List<Option> options = Option.where("question_id = ?", this.get("id"));
 		int i = Integer.parseInt(answer);
 		Option option = options.get(i - 1);
-		UseStatisticsCategory stat = UseStatisticsCategory.findFirst("user = ? AND nombre = ?",
-				username, this.get("category"));
+		UserStatisticsCategory stat = UserStatisticsCategory.findFirst("user = ? AND nombre = ?", username,
+				this.get("category"));
 		if ((boolean) option.get("correct")) {
 			UserQuestions.createUserQuestion(username, this.get("id").toString());
 			stat.updateCorrectAnswer();
 			resp.put("answer", "Correcto!");
-		} 
-		else {
+		} else {
 			stat.updateIncorrecrAnswer();
 			resp.put("answer", "Incorrecto!");
 		}
 		return resp;
 	}
-	
-	public static Question getQuestion(String id) {
+
+	public static Question getQuestionById(String id) {
 		return Question.findFirst("id = ?", id);
 	}
 }

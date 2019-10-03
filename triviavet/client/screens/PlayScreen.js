@@ -41,16 +41,19 @@ export default class PlayScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-
+      <View style={{margin:20}} />
         <Text style={styles.welcome}> Select a Category, or Random </Text>
+        <View style={{margin:40}} />
           <FlatList
             data={this.state.categories}
             keyExtractor={(x, i) => i.toString()}
+            ItemSeparatorComponent={this._renderSeparator}
             renderItem={({item}) =>
+
               <Button
                 onPress={this.onPressCategoryButton.bind(this, Object.values({item}).toString())}
                 title={item}
-                color="#9932CC"
+                color="#3498db"
                 style={{margin:40}}
               />
 
@@ -61,25 +64,32 @@ export default class PlayScreen extends React.Component {
           title="Random"
           color="#000000"
         />
+        <View style={{margin:20}} />
+
         <Button
           onPress={() => this.props.navigation.navigate('App')}
-          title="atras"
-          color="#8B0000"
+          title="Volver"
+          color="#ebee2c"
         />
       </View>
     );
   }
   onPressCategoryButton = (category) => {
-    console.log("aaaaaa");
     AsyncStorage.setItem('category',category);
     this.props.navigation.navigate('Question')
+  }
+
+  _renderSeparator() {
+    return (
+      <View style={styles.separator}/>
+    )
   }
 }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#48c9b0',
   },
   welcome: {
     fontSize: 20,
@@ -93,5 +103,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#4228F8'
+  },
+  separator: {
+    margin: 10
   }
 })
