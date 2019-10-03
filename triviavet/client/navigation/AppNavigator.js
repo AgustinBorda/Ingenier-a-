@@ -1,7 +1,6 @@
 import { createSwitchNavigator, createStackNavigator, createAppContainer } from 'react-navigation';
 
 import HomeScreen from '../screens/HomeScreen';
-import OtherScreen from '../screens/OtherScreen';
 import SignInScreen from '../screens/SignInScreen';
 import AuthLoadingScreen from '../screens/AuthLoadingScreen';
 import CreateUserScreen from '../screens/CreateUserScreen';
@@ -9,7 +8,7 @@ import PlayScreen from '../screens/PlayScreen';
 import QuestionScreen from '../screens/QuestionScreen';
 import StatisticScreen from '../screens/StatisticScreen'
 
-const AppStack = createStackNavigator({ Home: HomeScreen, Other: OtherScreen });
+const AppStack = createStackNavigator({ Home: HomeScreen});
 const AuthStack = createStackNavigator({ SignIn: SignInScreen });
 const CreateStack = createStackNavigator({ CreateUser: CreateUserScreen })
 const PlayStack = createStackNavigator({ Play: PlayScreen})
