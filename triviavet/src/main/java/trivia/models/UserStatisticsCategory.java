@@ -1,9 +1,13 @@
 package trivia.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.javalite.activejdbc.LazyList;
 import org.javalite.activejdbc.Model;
 import org.json.JSONObject;
+
+import trivia.structures.StatisticContainer;
 
 public class UserStatisticsCategory extends Model {
 
@@ -28,15 +32,11 @@ public class UserStatisticsCategory extends Model {
 				username);
 		JSONObject resp = new JSONObject();
 		resp.put("User", username);
-		int i = 0;
+		List<JSONObject> stats = new ArrayList<JSONObject>();
 		for (UserStatisticsCategory e : estadisticas) {
-			resp.put("cat" + i, e.get("nombre"));
-			resp.put("points" + i, e.get("points"));
-			resp.put("correct_answer" + i, e.get("correct_answer"));
-			resp.put("incorrect_answer" + i, e.get("incorrect_answer"));
-			resp.put("level" + i, e.calculateLevel());
-			i++;
+			stats.add(new StatisticContainer(e).toJSON());			
 		}
+		resp.put("statistics", stats.toArray());
 		return resp;		
 	}
 	

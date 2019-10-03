@@ -29,6 +29,7 @@ public class Question extends Model {
 		Random r = new Random();
 		JSONObject resp = new JSONObject();
 		List<Question> questions;
+<<<<<<< Updated upstream
 		questions = Question.findBySQL("SELECT * FROM questions WHERE id " + "NOT IN (SELECT id FROM questions "
 				+ "INNER JOIN ((SELECT * FROM user_questions WHERE user_id = ?) as contestadas) "
 				+ "ON questions.id = contestadas.question_id)", userId);
@@ -49,6 +50,32 @@ public class Question extends Model {
 	public static Pair<JSONObject, String> getQuestion(String category, String userId) {
 		if (category == null) {
 			return getQuestion(userId);
+=======
+		try {
+			if(bodyParams.get("category") == null) {
+				throw new NullPointerException();
+			}
+			else {
+				questions = Question.findBySQL(
+						"SELECT * FROM questions WHERE id "
+						+ "NOT IN (SELECT id FROM questions "
+						+ "INNER JOIN ((SELECT * FROM user_questions WHERE user_id = ?) as contestadas) "
+						+ "ON questions.id = contestadas.question_id) AND category = ? "
+						+ "ORDER BY RAND() "
+						+ "LIMIT 1",
+						userId, bodyParams.get("category"));
+			}
+		}
+		catch(NullPointerException e) {
+			questions = Question.findBySQL(
+					"SELECT * FROM questions WHERE id "
+					+ "NOT IN (SELECT id FROM questions "
+					+ "INNER JOIN ((SELECT * FROM user_questions WHERE user_id = ?) as contestadas) "
+					+ "ON questions.id = contestadas.question_id)"
+					+ "ORDER BY RAND() "
+					+ "LIMIT 1",
+					userId);
+>>>>>>> Stashed changes
 		}
 		Random r = new Random();
 		JSONObject resp = new JSONObject();

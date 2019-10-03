@@ -10,6 +10,7 @@ import {
   Button,
   TouchableOpacity,
   StyleSheet,
+  FlatList,
 } from 'react-native';
 import axios from 'axios';
 
@@ -22,7 +23,7 @@ export default class QuestionScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      stats: ""
+      stats: []
     }
   }
 
@@ -33,9 +34,8 @@ export default class QuestionScreen extends React.Component {
     .then(
       response => JSON.parse(JSON.stringify(response))
     )
-    .then(response => {
-      // Handle the JWT response here
-    this.setState({stats: response.data})
+    .then(async ({data}) => {
+      await this.setState({stats: data.statistics});
     })
     .catch((error) => {
       if(error.toString().match(/500/)) {
@@ -46,25 +46,6 @@ export default class QuestionScreen extends React.Component {
       alert(error);
     });
   }
-  componentDidMount(){
-    this.buscarlos();
-  }
-  buscarlos(){
-    let progressAnatomia=0.9;
-    let progressCirugia=0.7;
-    let progressFarmacologia=0.3;
-    let progressGrandes_Animales=0.6;
-    let progressPequeños_Animales=0.9;
-    let progressQuimica=0.1;
-
-    this.setState({progressAnatomia});
-    this.setState({progressCirugia});
-    this.setState({progressGrandes_Animales});
-    this.setState({progressPequeños_Animales});
-    this.setState({progressQuimica});
-    this.setState({progressFarmacologia});
-    
-   }
 
   render() {
     return (
@@ -73,82 +54,30 @@ export default class QuestionScreen extends React.Component {
           Estadisticas:
         </Text>
       <ScrollView>
-     
-          <Text style={styles.cat}>
-          Anatomia:
-          </Text>
-          
-          <Progress.Circle progress={this.state.progressAnatomia} size={120}
-           color="#3498db"
-           borderWidth={2}
-           showsText
-           unfilledColor="#7fcbfd"
-           endAngle={0.9}
-           />
-        
-          
-          
-          <Text style={styles.cat}>
-            Cirugia
-          </Text>
-          <Progress.Circle progress={this.state.progressCirugia} size={120}
-           color="#3498db"
-           borderWidth={2}
-           showsText
-           unfilledColor="#7fcbfd"
-           endAngle={0.9}
-           />
-          
-          <Text style={styles.cat}>
-            Farmacologia
-         </Text>
-          
-          <Progress.Circle progress={this.state.progressFarmacologia} size={120}
-           color="#3498db"
-           borderWidth={2}
-           showsText
-           unfilledColor="#7fcbfd"
-           endAngle={0.9}
-           />
-            
-          <Text style={styles.cat}>
-            Grandes Animales
-          </Text>
-           <Progress.Circle progress={this.state.progressGrandes_Animales} size={120}
-           color="#3498db"
-           borderWidth={2}
-           showsText
-           unfilledColor="#7fcbfd"
-           endAngle={0.9}
-           />
-              
-          <Text style={styles.cat}>
-            Pequenos Animales
-          </Text>
-          
-          <Progress.Circle progress={this.state.progressPequeños_Animales} size={120}
-           color="#3498db"
-           borderWidth={2}
-           showsText
-           unfilledColor="#7fcbfd"
-           endAngle={0.9}
-           />
-        
-             
+      <FlatList
+        data={this.state.stats}
+        keyExtractor={(x, i) => i.toString()}
+        ItemSeparatorComponent={this._renderSeparator}
+        renderItem={({item}) =>
 
-          <Text style={styles.cat}>
-            Quimica
+
+          <Text style={styles.title}>
+          {item.cat}
+
+          <Progress.Circle progress={item.correct_percentage} size={120}
+          color="#3498db"
+          borderWidth={2}
+          showsText={true}
+          unfilledColor="#7fcbfd"
+          endAngle={0.9}
+          />
           </Text>
-          
-          <Progress.Circle progress={this.state.progressQuimica} size={120}
-           color="#3498db"
-           borderWidth={2}
-           showsText
-           unfilledColor="#7fcbfd"
-           endAngle={0.9}
-           />
-         
-           
+
+
+        }
+    />
+
+
           <Button  title="back" onPress={() => this.props.navigation.navigate('App')}
             color="#ebee2c"
           />
@@ -157,11 +86,15 @@ export default class QuestionScreen extends React.Component {
 
     );
   }
+  _renderSeparator() {
+    return (
+      <View style={styles.separator}/>
+    )
+  }
 
 }
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: 'center',
     backgroundColor: '#48c9b0',
   },
@@ -190,5 +123,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#4228F8'
+  },
+  separator: {
+    margin: 10
   }
 })
