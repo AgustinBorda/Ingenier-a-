@@ -41,7 +41,7 @@ export default class PlayScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-      <View style={{margin:40}} />
+      <View style={{margin:20}} />
         <Text style={styles.welcome}> Select a Category, or Random </Text>
         <View style={{margin:40}} />
           <FlatList
@@ -68,7 +68,7 @@ export default class PlayScreen extends React.Component {
 
         <Button
           onPress={() => this.props.navigation.navigate('App')}
-          title="back"
+          title="Volver"
           color="#ebee2c"
         />
       </View>
@@ -83,7 +83,7 @@ export default class PlayScreen extends React.Component {
     return (
       <View style={styles.separator}/>
     )
-  }  
+  }
 }
 const styles = StyleSheet.create({
   container: {
