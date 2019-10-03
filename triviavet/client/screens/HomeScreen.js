@@ -19,16 +19,17 @@ export default class HomeScreen extends React.Component {
     header: null,
   };
 
+
   render() {
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
-            
+
           <View style={{margin:40}} />
 
             <Image
-              
+
 
 
               source={
@@ -44,7 +45,7 @@ export default class HomeScreen extends React.Component {
             {this._maybeRenderDevelopmentModeWarning()}
 
           </View>
-           
+
             <View style={{margin:60}} />
 
             <Button
@@ -62,20 +63,20 @@ export default class HomeScreen extends React.Component {
 
             <View style={{margin:20}} />
             <Button onPress={() => this.props.navigation.navigate('Auth')}
-             title="log out"
+             title="Salir"
              color ="#e0e241"
-             />  
+             />
 
-  
-          
+
+
 
         </ScrollView>
 
         <View style={styles.tabBarInfoContainer}>
-          <Text style={styles.tabBarInfoText}>Bienvenido, user.</Text>
+          <Text style={styles.tabBarInfoText}>Bienvenido.</Text>
 
           <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-         
+
         </View>
         </View>
       </View>
@@ -131,7 +132,7 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     textAlign: 'center',
   },
-  
+
   contentContainer: {
     paddingTop: 30,
   },

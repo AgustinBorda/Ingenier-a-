@@ -45,10 +45,10 @@ export default class CreateUserScreen extends React.Component {
           value={this.state.password}
         />
 
-        <Button title="Sign in" onPress={this._signUp} 
+        <Button title="Sign in" onPress={this._signUp}
          color = "#e0e241"
         />
-        
+
          <View style={{margin:20}} />
         <Button
           onPress={() => this.props.navigation.navigate('Auth')}
