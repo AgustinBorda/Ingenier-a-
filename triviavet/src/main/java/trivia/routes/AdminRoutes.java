@@ -15,6 +15,7 @@ import trivia.models.*;
 import trivia.structures.*;
 
 import org.javalite.activejdbc.DBException;
+import org.javalite.activejdbc.LazyList;
 
 public class AdminRoutes {
 
@@ -50,7 +51,7 @@ public class AdminRoutes {
 		return resp;
 	};
 	
-	public static final Route RemoveQuestions = (req,res) -> {
+	public static final Route RemoveQuestions = (req,  res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 		Question question = Question.findFirst("description = ?", bodyParams.get("description").toString());
 		question.delete();
@@ -68,4 +69,21 @@ public class AdminRoutes {
 		resp.put("answer", "OK");
 		return resp;
 	};
+	
+	public static final Route CreateCategory = (req, res) -> {
+		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+		JSONObject resp = new JSONObject();
+		Base.openTransaction();
+		try {
+			Category.createCategory((String)bodyParams.get("name"));
+			Base.commitTransaction();
+			resp.put("answer", "Created category");
+		}
+		catch(DBException e) {
+			Base.rollbackTransaction();
+			resp.put("answer", "Cannot create category");			
+		}
+		return resp;
+	};
+	
 }
