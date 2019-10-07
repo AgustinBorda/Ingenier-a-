@@ -20,4 +20,15 @@ public class Category extends Model {
 			UserStatisticsCategory.createUserStatistic(u,category);
 		}
 	}
+	
+	public static void deleteCategory(String name) {
+		Category cat = Category.findFirst("nombre = ?", name);
+		cat.delete();	
+	}
+	
+	public static void modifyCategory(String oldName, String newName) {
+		Category cat = Category.findFirst("nombre = ?", oldName);
+		cat.set("nombre", newName);
+		cat.saveIt();
+	}
 }
