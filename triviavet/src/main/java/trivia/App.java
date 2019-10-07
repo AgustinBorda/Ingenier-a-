@@ -38,5 +38,11 @@ public class App {
 		post("/admin/removequestion", AdminRoutes.RemoveQuestions);
 		
 		post("/admin/modifyquestion", AdminRoutes.ModifyQuestions);
+		
+		post("/admin/createcategory", AdminRoutes.CreateCategory);
+		
+		post("/admin/modifycategory", AdminRoutes.ModifyCategory);
+		
+		post("/admin/deletecategory", AdminRoutes.DeleteCategory);
 	}
 }
