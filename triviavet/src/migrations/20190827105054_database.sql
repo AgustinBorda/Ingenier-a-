@@ -23,7 +23,7 @@ user VARCHAR(56),
 points int(11) NOT NULL,
 correct_answer int(11) NOT NULL,
 incorrect_answer int(11) NOT NULL,
-foreign key (nombre) references categories (nombre),
+foreign key (nombre) references categories (nombre) ON DELETE CASCADE ON UPDATE CASCADE,
 foreign key (user) references users (username) ON DELETE CASCADE
 );
 
