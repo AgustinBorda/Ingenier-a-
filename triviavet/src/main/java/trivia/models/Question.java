@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.javalite.activejdbc.Base;
+import org.javalite.activejdbc.DBException;
 import org.javalite.activejdbc.Model;
 import org.javalite.activejdbc.validation.UniquenessValidator;
 import org.json.JSONObject;
@@ -22,6 +24,9 @@ public class Question extends Model {
 	public void setQuestion(QuestionParam bodyParams) {
 		this.set("description", bodyParams.description);
 		this.set("category", bodyParams.category);
+		this.set("wrong_attempts", 0);
+		this.set("right_attempts", 0);
+		this.set("total_attempts", 0);
 		Option.setOptions(bodyParams.options, this);
 		this.saveIt();
 	}
@@ -67,24 +72,60 @@ public class Question extends Model {
 	}
 	
 	public JSONObject answerQuestion(String answer, String username) {
-		JSONObject resp = new JSONObject();
+		JSONObject resp;
 		List<Option> options = Option.where("question_id = ?", this.get("id"));
 		int i = Integer.parseInt(answer);
 		Option option = options.get(i - 1);
-		UserStatisticsCategory stat = UserStatisticsCategory.findFirst("user = ? AND nombre = ?", username,
-				this.get("category"));
 		if ((boolean) option.get("correct")) {
-			UserQuestions.createUserQuestion(username, this.get("id").toString());
-			stat.updateCorrectAnswer();
-			resp.put("answer", "Correcto!");
+			resp = this.updateCorrectAnswer(username);
 		} else {
-			stat.updateIncorrecrAnswer();
-			resp.put("answer", "Incorrecto!");
+			resp = this.updateWrongAnswer(username);
 		}
 		return resp;
 	}
 
 	public static Question getQuestionById(String id) {
 		return Question.findFirst("id = ?", id);
+	}
+	
+	public JSONObject updateCorrectAnswer(String username) {
+		JSONObject resp = new JSONObject();
+		Base.openTransaction();
+		try {
+			this.set("right_attempts",(int)this.get("right_attempts")+1);
+			this.set("total_attempts",(int)this.get("total_attempts")+1);
+			this.saveIt();
+			UserStatisticsCategory stat = UserStatisticsCategory.findFirst("user = ? AND nombre = ?",
+					username,this.get("category"));
+			UserQuestions.createUserQuestion(username, this.get("id").toString());
+			stat.updateCorrectAnswer();
+			Base.commitTransaction();
+			resp.put("answer", "Correcto!");
+		}
+		catch(DBException e) {
+			Base.rollbackTransaction();
+			resp.put("answer", "Ocurrio un error inesperado");
+		}
+		return resp;
+	}
+	
+	public JSONObject updateWrongAnswer(String username) {
+		JSONObject resp = new JSONObject();
+		Base.openTransaction();
+		try {
+			this.set("wrong_attempts",(int)this.get("wrong_attempts")+1);
+			this.set("total_attempts",(int)this.get("total_attempts")+1);
+			this.saveIt();
+			UserStatisticsCategory stat = UserStatisticsCategory.findFirst("user = ? AND nombre = ?",
+					username,this.get("category"));
+			stat.updateIncorrecrAnswer();
+			Base.commitTransaction();
+			resp.put("answer", "Incorrecto!");
+		}
+		catch(DBException e) {
+			Base.rollbackTransaction();
+			resp.put("answer", "Ocurrio un error inesperado");
+		}
+		return resp;
 	}
 }
