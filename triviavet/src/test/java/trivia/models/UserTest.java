@@ -26,36 +26,36 @@ public class UserTest {
   @Test
   public void validatePrecenseOfusername(){
     User userTest = new User();
-    userTest.set("password", "jose" , "admin", true);
+    userTest.set("password", "jose" , "admin", true, "email", "123");
     assertEquals(userTest.isValid(), false);
   }
   
   @Test
   public void validateUniqueUsername(){
-    assertTrue(new User().set("username", "jose98523168541", "password", "jose98523168541" , "admin", true).saveIt());
+    assertTrue(new User().set("username", "jose98523168541", "password", "jose98523168541" , "admin", true, "email", "123@gmail.com").saveIt());
     User userTest = new User();
-    userTest.set("username", "jose98523168541", "password", "jose98523168541" , "admin", true);
+    userTest.set("username", "jose98523168541", "password", "jose98523168541" , "admin", true, "email", "123@gmail.com");
     assertEquals(userTest.isValid(), false);
   }
 
   @Test
   public void validatePrecenseOfpassword(){
     User userTest = new User();
-    userTest.set("username", "jose", "admin", true);
+    userTest.set("username", "jose", "admin", true, "email", "123");
     assertEquals(userTest.isValid(), false);
   }
   
   @Test
   public void validatePrecenseOfadmin(){
     User userTest = new User();
-    userTest.set("username", "jose", "password", "jose");
+    userTest.set("username", "jose", "password", "jose", "email", "123");
     assertEquals(userTest.isValid(), false);
   }
   
   @Test
   public void validatePrecenseOfSomethingIn(){
     User userTest = new User();
-    userTest.set("username", "jose98523168541", "password", "jose98523168541" , "admin", true);
+    userTest.set("username", "jose98523168541", "password", "jose98523168541" , "admin", true, "email", "theemail@gmail.com");
     assertEquals(userTest.isValid(), true);
   }
 }

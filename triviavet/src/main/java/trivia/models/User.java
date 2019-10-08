@@ -18,7 +18,8 @@ public class User extends Model {
 		User u = new User();
 		u.set("username", bodyParams.get("username"),
 				 "password", bodyParams.get("password"),
-				 "admin", false).saveIt();
+				 "admin", false,
+				 "email", bodyParams.get("email")).saveIt();
 		for (Model c : Category.findAll()) {
 			UserStatisticsCategory.createUserStatistic(u, (Category) c);
 		}
