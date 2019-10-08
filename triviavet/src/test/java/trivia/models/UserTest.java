@@ -53,6 +53,21 @@ public class UserTest {
   }
   
   @Test
+  public void validatePrecenseOfEmail(){
+    User userTest = new User();
+    userTest.set("username", "jose", "password", "jose" , "admin", true);
+    assertEquals(userTest.isValid(), false);
+  }
+  
+  @Test
+  public void validateUniqueEmail(){
+    assertTrue(new User().set("username", "jose98523168541", "password", "jose98523168541" , "admin", true, "email", "123@gmail.com").saveIt());
+    User userTest = new User();
+    userTest.set("username", "asd", "password", "jose98523168541" , "admin", true, "email", "123@gmail.com");
+    assertEquals(userTest.isValid(), false);
+  }
+  
+  @Test
   public void validatePrecenseOfSomethingIn(){
     User userTest = new User();
     userTest.set("username", "jose98523168541", "password", "jose98523168541" , "admin", true, "email", "theemail@gmail.com");
