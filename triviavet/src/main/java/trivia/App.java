@@ -9,7 +9,6 @@ public class App {
 	public static void main(String[] args) {
 
 		before("*",PublicRoutes.BaseOpen);
-		Email.getSingletonInstance().sendMail("nicolasdalessandro2@gmail.com","q");
 		after("*", PublicRoutes.BaseClose);
 
 		before("/logged/*", PrivateRoutes.CheckSession);
