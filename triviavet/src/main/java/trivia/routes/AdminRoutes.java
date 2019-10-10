@@ -118,4 +118,19 @@ public class AdminRoutes {
 		return resp;
 	};
 	
+	public static final Route GetSpecificUserStatistics = (req, res) -> {
+		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+		JSONObject resp = new JSONObject();
+		LazyList<UserStatisticsCategory> stats = UserStatisticsCategory.where("user = ?",bodyParams.get("username"));
+		resp.put("stats", stats.toArray());
+		return resp;
+	};
+	
+	public static final Route GetAllUserStatistics = (req, res) -> {
+		JSONObject resp = new JSONObject();
+		LazyList<UserStatisticsCategory> stats = UserStatisticsCategory.findAll();
+		resp.put("stats", stats.toArray());
+		return resp;
+	};
+	
 }
