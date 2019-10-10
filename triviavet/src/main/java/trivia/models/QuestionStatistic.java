@@ -3,9 +3,9 @@ package trivia.models;
 import org.javalite.activejdbc.Model;
 
 public class QuestionStatistic extends Model {
-	public static void generateQuestionStatistic(int questionId) {
+	public static void generateQuestionStatistic(String question) {
 		QuestionStatistic stat = new QuestionStatistic();
-		stat.set("question_id", questionId);
+		stat.set("question", question);
 		stat.set("wrong_attempts", 0);
 		stat.set("right_attempts", 0);
 		stat.set("total_attempts", 0);

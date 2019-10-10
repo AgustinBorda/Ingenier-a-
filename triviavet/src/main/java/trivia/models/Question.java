@@ -26,7 +26,7 @@ public class Question extends Model {
 		this.set("category", bodyParams.category);
 		Option.setOptions(bodyParams.options, this);
 		this.saveIt();
-		QuestionStatistic.generateQuestionStatistic(this.getInteger("id"));
+		QuestionStatistic.generateQuestionStatistic((String)this.get("question"));
 	}
 
 	public static Pair<JSONObject,String> getQuestion(Map<String,Object> bodyParams,String userId) {

@@ -133,4 +133,19 @@ public class AdminRoutes {
 		return resp;
 	};
 	
+	public static final Route GetSpecificQuestionStatistics = (req, res) -> {
+		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+		JSONObject resp = new JSONObject();
+		LazyList<QuestionStatistic> stats = QuestionStatistic.where("question = ?",bodyParams.get("question"));
+		resp.put("stats", stats.toArray());
+		return resp;
+	};
+	
+	public static final Route GetAllQuestionsStatistics = (req, res) -> {
+		JSONObject resp = new JSONObject();
+		LazyList<QuestionStatistic> stats = QuestionStatistic.findAll();
+		resp.put("stats", stats.toArray());
+		return resp;
+	};
+
 }

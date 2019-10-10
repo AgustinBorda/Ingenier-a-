@@ -4,9 +4,9 @@ ALTER TABLE questions
   DROP COLUMN total_attempts;
 
 CREATE TABLE question_statistics(
-  question_id INTEGER PRIMARY KEY,
+  question VARCHAR(255) PRIMARY KEY,
   wrong_attempts INTEGER NOT NULL,
   right_attempts INTEGER NOT NULL,
   total_attempts INTEGER NOT NULL,
-  FOREIGN KEY (question_id) REFERENCES questions (id) ON DELETE CASCADE
+  FOREIGN KEY (question) REFERENCES questions (description) ON DELETE CASCADE
 );
