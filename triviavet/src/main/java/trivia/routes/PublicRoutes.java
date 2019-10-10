@@ -1,15 +1,14 @@
 package trivia.routes;
 
+import spark.*;
 import static spark.Spark.halt;
-
-import java.util.Map;
-
 import org.javalite.activejdbc.Base;
 
+import java.util.Map;
 import com.google.gson.Gson;
 
-import spark.*;
 import trivia.models.User;
+import trivia.utils.Email;
 
 public class PublicRoutes {
 
@@ -57,6 +56,19 @@ public class PublicRoutes {
 		
 		loadSession(req, user);
 		return user.toJson(true);
+	};
+
+	public static final Route PostReset = (req, res) -> {
+		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+		User user = User.findFirst("email = ?", bodyParams.get("email"));
+		if (user == null) {
+			halt(401, "");
+			return "";
+		}
+		System.out.println("Reset: " + user.get("username"));
+		Email.getSingletonInstance().sendMail((String) bodyParams.get("email"), (String) user.get("username"));
+	
+		return true;
 	};
 	
 	private static void loadSession(Request req, User user) {

@@ -2,8 +2,6 @@ package trivia.models;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.javalite.activejdbc.LazyList;
 import org.javalite.activejdbc.Model;
 import org.json.JSONObject;
 
