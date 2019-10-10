@@ -24,11 +24,9 @@ public class Question extends Model {
 	public void setQuestion(QuestionParam bodyParams) {
 		this.set("description", bodyParams.description);
 		this.set("category", bodyParams.category);
-		this.set("wrong_attempts", 0);
-		this.set("right_attempts", 0);
-		this.set("total_attempts", 0);
 		Option.setOptions(bodyParams.options, this);
 		this.saveIt();
+		QuestionStatistic.generateQuestionStatistic(this.getInteger("id"));
 	}
 
 	public static Pair<JSONObject,String> getQuestion(Map<String,Object> bodyParams,String userId) {
@@ -89,12 +87,11 @@ public class Question extends Model {
 	}
 	
 	public JSONObject updateCorrectAnswer(String username) {
-		JSONObject resp = new JSONObject();
+		JSONObject resp = new JSONObject();;
 		Base.openTransaction();
 		try {
-			this.set("right_attempts",(int)this.get("right_attempts")+1);
-			this.set("total_attempts",(int)this.get("total_attempts")+1);
-			this.saveIt();
+			QuestionStatistic questionStat = QuestionStatistic.findFirst("question_id = ?", this.getInteger("id"));
+			questionStat.updateCorrectAnswer();
 			UserStatisticsCategory stat = UserStatisticsCategory.findFirst("user = ? AND nombre = ?",
 					username,this.get("category"));
 			UserQuestions.createUserQuestion(username, this.get("id").toString());
@@ -113,9 +110,8 @@ public class Question extends Model {
 		JSONObject resp = new JSONObject();
 		Base.openTransaction();
 		try {
-			this.set("wrong_attempts",(int)this.get("wrong_attempts")+1);
-			this.set("total_attempts",(int)this.get("total_attempts")+1);
-			this.saveIt();
+			QuestionStatistic questionStat = QuestionStatistic.findFirst("question_id = ?", this.getInteger("id"));
+			questionStat.updateIncorrectAnswer();			
 			UserStatisticsCategory stat = UserStatisticsCategory.findFirst("user = ? AND nombre = ?",
 					username,this.get("category"));
 			stat.updateIncorrecrAnswer();
