@@ -26,31 +26,23 @@ public class QuestionTest {
   @Test
   public void validatePrecenseOfDescription(){
     Question questionTest = new Question();
-    questionTest.set("description", "","category","cat",
-    		"wrong_attempts", 0,"right_attempts", 0,
-    		"total_attempts", 0);
+    questionTest.set("description", "","category","cat");
     assertEquals(questionTest.isValid(), false);
   }
   
   @Test
   public void validatePrecenseOfSomethingInNombre(){
     Question questionTest = new Question();
-    questionTest.set("description", "algo cool","category","cat",
-    		"wrong_attempts", 0,"right_attempts", 0,
-    		"total_attempts", 0);
+    questionTest.set("description", "algo cool","category","cat");
     assertEquals(questionTest.isValid(), true);
   }
 
   @Test
   public void validateUniqueLeague(){
 	Category.createCategory("cat"); 
-    assertTrue(new Question().set("description", "algo cool","category","cat",
-    		"wrong_attempts", 0,"right_attempts", 0,
-    		"total_attempts", 0).saveIt());
+    assertTrue(new Question().set("description", "algo cool","category","cat").saveIt());
     Question questionTest = new Question();
-    questionTest.set("description", "algo cool","category","cat",
-    		"wrong_attempts", 0,"right_attempts", 0,
-    		"total_attempts", 0);
+    questionTest.set("description", "algo cool","category","cat");
     assertEquals(questionTest.isValid(), false);
   }
 }
