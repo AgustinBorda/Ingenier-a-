@@ -25,7 +25,6 @@ En otra terminal
 #### Database configuration
 
 	Create an archive named "database.properties" in ~/src/main/resources/ with the following content;
-
 ```Java Properties
 	development.driver=com.mysql.jdbc.Driver
 	development.username=<username>
@@ -37,6 +36,18 @@ En otra terminal
 	development.test.password=<password>
 	development.test.url=jdbc:mysql://localhost/trivia_test
 ```
+
+#### Email configuration
+
+	Create an archive named "email.properties" in triviavet/src/main/resources/ with the following content;
+
+```Java Properties
+	email.sender=<your email whiout "@gmail.com">
+	email.password=<password>
+	email.host=smtp.gmail.com
+	email.port="587"
+```
+
 
 
 # Licence
