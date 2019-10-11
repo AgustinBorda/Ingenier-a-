@@ -43,22 +43,33 @@ public class PublicRoutes {
 
 	public static final Route PostUsers = (req, res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+		if (!bodyParams.containsKey("username") || !bodyParams.containsKey("password")
+				|| !bodyParams.containsKey("email")) {
+			halt(403, "");
+			return "";
+		}
+
+		if (((String) bodyParams.get("username")).length() == 0 || ((String) bodyParams.get("password")).length() == 0
+				|| ((String) bodyParams.get("email")).length() == 0) {
+			halt(403, "");
+			return "";
+		}
 		if (User.findFirst("Username = ?", bodyParams.get("username")) != null) {
 			halt(401, "");
 			return "";
 		}
-		if (((String) bodyParams.get("username")).length() == 0
-				|| ((String) bodyParams.get("password")).length() == 0) {
-			halt(403, "");
+		if (User.findFirst("email = ?", bodyParams.get("email")) != null) {
+			halt(401, "");
 			return "";
 		}
+
 		User user = User.createUser(bodyParams);
 		System.out.println("Registred: " + user.get("username"));
-		
+
 		loadSession(req, user);
 		return user.toJson(true);
 	};
-	
+
 	private static void loadSession(Request req, User user) {
 		req.session().attribute("username", user.get("username"));
 		req.session().attribute("id", user.get("id"));

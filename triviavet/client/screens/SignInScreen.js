@@ -32,6 +32,7 @@ export default class SignInScreen extends React.Component {
 
         <TextInput
           placeholder="Username"
+          autoCompleteType='username'
           style={styles.input}
           onChangeText={(value) => this.setState({ username: value })}
           value={this.state.username}
@@ -40,6 +41,7 @@ export default class SignInScreen extends React.Component {
 
         <TextInput
           placeholder="Password"
+          autoCompleteType='password'
           style={styles.input}
           secureTextEntry={true}
           onChangeText={(value) => this.setState({ password: value })}
