@@ -30,6 +30,14 @@ public class App {
 		post("/logged/userdelete", PrivateRoutes.PostUserDelete);
 
 		post("/logged/answer", PrivateRoutes.PostAnswer);
+		
+		get("/admin/userstatistic", AdminRoutes.GetSpecificUserStatistics);
+		
+		get("/admin/usersstatistic", AdminRoutes.GetAllUserStatistics);
+		
+		get("/admin/questionstatistic", AdminRoutes.GetSpecificQuestionStatistics);
+		
+		get("/admin/questionsstatistic", AdminRoutes.GetAllQuestionsStatistics);
 
 		post("/admin/admin",AdminRoutes.PostAdmin);
 		
