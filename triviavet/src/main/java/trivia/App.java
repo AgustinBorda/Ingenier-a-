@@ -1,25 +1,25 @@
 package trivia;
 
 import static spark.Spark.*;
-
 import trivia.routes.*;
+import trivia.utils.Email;
 
 public class App {
 
 	public static void main(String[] args) {
 
 		before("*",PublicRoutes.BaseOpen);
-
 		after("*", PublicRoutes.BaseClose);
 
 		before("/logged/*", PrivateRoutes.CheckSession);
 		
 		before("/admin/*",AdminRoutes.CheckAdmin);
 		
-		
 		post("/login", PublicRoutes.PostLogin);
 		
 		post("/users", PublicRoutes.PostUsers);
+		
+		post("/reset", PublicRoutes.PostReset);
 
 		get("/logged/category", PrivateRoutes.GetCategory);
 		
@@ -30,6 +30,14 @@ public class App {
 		post("/logged/userdelete", PrivateRoutes.PostUserDelete);
 
 		post("/logged/answer", PrivateRoutes.PostAnswer);
+		
+		get("/admin/userstatistic", AdminRoutes.GetSpecificUserStatistics);
+		
+		get("/admin/usersstatistic", AdminRoutes.GetAllUserStatistics);
+		
+		get("/admin/questionstatistic", AdminRoutes.GetSpecificQuestionStatistics);
+		
+		get("/admin/questionsstatistic", AdminRoutes.GetAllQuestionsStatistics);
 
 		post("/admin/admin",AdminRoutes.PostAdmin);
 		
@@ -38,5 +46,12 @@ public class App {
 		post("/admin/removequestion", AdminRoutes.RemoveQuestions);
 		
 		post("/admin/modifyquestion", AdminRoutes.ModifyQuestions);
+		
+		post("/admin/createcategory", AdminRoutes.CreateCategory);
+		
+		post("/admin/modifycategory", AdminRoutes.ModifyCategory);
+		
+		post("/admin/deletecategory", AdminRoutes.DeleteCategory);
+
 	}
 }

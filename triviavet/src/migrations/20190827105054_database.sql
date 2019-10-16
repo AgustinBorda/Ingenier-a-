@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
   id int(11) NOT NULL auto_increment PRIMARY KEY,
   username VARCHAR(56) NOT NULL UNIQUE,
   password VARCHAR(56) NOT NULL,
+  email VARCHAR(255) NOT NULL,
   admin BOOLEAN NOT NULL,
   created_at DATETIME,
   updated_at DATETIME
@@ -16,14 +17,14 @@ CREATE TABLE IF NOT EXISTS categories (
 nombre VARCHAR(50) NOT NULL PRIMARY KEY UNIQUE
 );
 
-CREATE TABLE IF NOT EXISTS use_statistics_categories(
+CREATE TABLE IF NOT EXISTS user_statistics_categories(
 id int(11) NOT NULL auto_increment PRIMARY KEY,
 nombre VARCHAR(50),
 user VARCHAR(56),
 points int(11) NOT NULL,
 correct_answer int(11) NOT NULL,
 incorrect_answer int(11) NOT NULL,
-foreign key (nombre) references categories (nombre),
+foreign key (nombre) references categories (nombre) ON DELETE CASCADE ON UPDATE CASCADE,
 foreign key (user) references users (username) ON DELETE CASCADE
 );
 
@@ -31,6 +32,9 @@ CREATE TABLE IF NOT EXISTS questions (
   id int(11) NOT NULL auto_increment PRIMARY KEY,
   category VARCHAR(50),
   description VARCHAR(255) NOT NULL UNIQUE,
+  wrong_attempts INT NOT NULL,
+  right_attempts INT NOT NULL,
+  total_attempts INT NOT NULL,
   foreign key (category) references categories (nombre) ON DELETE CASCADE
 );
 

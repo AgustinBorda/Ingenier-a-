@@ -1,15 +1,14 @@
 package trivia.routes;
 
+import spark.*;
 import static spark.Spark.halt;
-
-import java.util.Map;
-
 import org.javalite.activejdbc.Base;
 
+import java.util.Map;
 import com.google.gson.Gson;
 
-import spark.*;
 import trivia.models.User;
+import trivia.utils.Email;
 
 public class PublicRoutes {
 
@@ -43,22 +42,48 @@ public class PublicRoutes {
 
 	public static final Route PostUsers = (req, res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+		if (!bodyParams.containsKey("username") || !bodyParams.containsKey("password")
+				|| !bodyParams.containsKey("email")) {
+			halt(403, "");
+			return "";
+		}
+
+		if (((String) bodyParams.get("username")).length() == 0 || ((String) bodyParams.get("password")).length() == 0
+				|| ((String) bodyParams.get("email")).length() == 0) {
+			halt(403, "");
+			return "";
+		}
 		if (User.findFirst("Username = ?", bodyParams.get("username")) != null) {
 			halt(401, "");
 			return "";
 		}
-		if (((String) bodyParams.get("username")).length() == 0
-				|| ((String) bodyParams.get("password")).length() == 0) {
-			halt(403, "");
+		if (User.findFirst("email = ?", bodyParams.get("email")) != null) {
+			halt(401, "");
 			return "";
 		}
+
 		User user = User.createUser(bodyParams);
 		System.out.println("Registred: " + user.get("username"));
-		
+
 		loadSession(req, user);
 		return user.toJson(true);
 	};
+
+
+	public static final Route PostReset = (req, res) -> {
+		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+		User user = User.findFirst("email = ?", bodyParams.get("email"));
+		if (user == null) {
+			halt(401, "");
+			return "";
+		}
+		System.out.println("Reset: " + user.get("username"));
+		Email.getSingletonInstance().sendMail((String) bodyParams.get("email"), (String) user.get("username"));
 	
+		return true;
+	};
+	
+
 	private static void loadSession(Request req, User user) {
 		req.session().attribute("username", user.get("username"));
 		req.session().attribute("id", user.get("id"));

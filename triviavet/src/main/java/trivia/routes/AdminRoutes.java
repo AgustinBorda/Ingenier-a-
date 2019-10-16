@@ -50,7 +50,7 @@ public class AdminRoutes {
 		return resp;
 	};
 	
-	public static final Route RemoveQuestions = (req,res) -> {
+	public static final Route RemoveQuestions = (req,  res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 		Question question = Question.findFirst("description = ?", bodyParams.get("description").toString());
 		question.delete();
@@ -68,4 +68,83 @@ public class AdminRoutes {
 		resp.put("answer", "OK");
 		return resp;
 	};
+	
+	public static final Route CreateCategory = (req, res) -> {
+		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+		JSONObject resp = new JSONObject();
+		Base.openTransaction();
+		try {
+			Category.createCategory((String)bodyParams.get("name"));
+			Base.commitTransaction();
+			resp.put("answer", "Created category");
+		}
+		catch(DBException e) {
+			Base.rollbackTransaction();
+			resp.put("answer", "Cannot create category");			
+		}
+		return resp;
+	};
+	
+	public static final Route DeleteCategory = (req, res) -> {
+		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+		JSONObject resp = new JSONObject();
+		Base.openTransaction();
+		try {
+			Category.deleteCategory((String)bodyParams.get("name"));
+			Base.commitTransaction();
+			resp.put("answer","Category deleted");
+		}
+		catch(DBException e) {
+			Base.rollbackTransaction();
+			resp.put("answer", "Cannot delete category");
+		}
+		return resp;
+	};
+	
+	public static final Route ModifyCategory = (req, res) -> {
+		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+		JSONObject resp = new JSONObject();
+		Base.openTransaction();
+		try {
+			Category.modifyCategory((String)bodyParams.get("old_name"), (String)bodyParams.get("new_name"));
+			Base.commitTransaction();
+			resp.put("answer","Category modified");	
+		}
+		catch(DBException e) {
+			Base.rollbackTransaction();
+			resp.put("answer", "Cannot modify category");			
+		}
+		return resp;
+	};
+	
+	public static final Route GetSpecificUserStatistics = (req, res) -> {
+		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+		JSONObject resp = new JSONObject();
+		LazyList<UserStatisticsCategory> stats = UserStatisticsCategory.where("user = ?",bodyParams.get("username"));
+		resp.put("stats", stats.toArray());
+		return resp;
+	};
+	
+	public static final Route GetAllUserStatistics = (req, res) -> {
+		JSONObject resp = new JSONObject();
+		LazyList<UserStatisticsCategory> stats = UserStatisticsCategory.findAll();
+		resp.put("stats", stats.toArray());
+		return resp;
+	};
+	
+	public static final Route GetSpecificQuestionStatistics = (req, res) -> {
+		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+		JSONObject resp = new JSONObject();
+		LazyList<QuestionStatistic> stats = QuestionStatistic.where("question = ?",bodyParams.get("question"));
+		resp.put("stats", stats.toArray());
+		return resp;
+	};
+	
+	public static final Route GetAllQuestionsStatistics = (req, res) -> {
+		JSONObject resp = new JSONObject();
+		LazyList<QuestionStatistic> stats = QuestionStatistic.findAll();
+		resp.put("stats", stats.toArray());
+		return resp;
+	};
+
 }

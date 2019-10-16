@@ -10,6 +10,8 @@ public class User extends Model {
 	static {
 		validatePresenceOf("username").message("Please, provide your username");
 		validateWith(new UniquenessValidator("username")).message("This username is already taken.");
+		validatePresenceOf("email").message("Please, provide your email");
+		validateWith(new UniquenessValidator("email")).message("This email is already taken.");
 		validatePresenceOf("password").message("Please, provide your password");
 		validatePresenceOf("admin").message("Please, provide admin flag");
 	}
@@ -18,7 +20,8 @@ public class User extends Model {
 		User u = new User();
 		u.set("username", bodyParams.get("username"),
 				 "password", bodyParams.get("password"),
-				 "admin", false).saveIt();
+				 "admin", false,
+				 "email", bodyParams.get("email")).saveIt();
 		for (Model c : Category.findAll()) {
 			UserStatisticsCategory.createUserStatistic(u, (Category) c);
 		}

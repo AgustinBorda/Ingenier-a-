@@ -20,6 +20,7 @@ export default class CreateUserScreen extends React.Component {
     super(props);
     this.state = {
       username: '',
+      email: '',
       password: ''
     }
 
@@ -33,14 +34,26 @@ export default class CreateUserScreen extends React.Component {
         <TextInput
           placeholder="Username"
           style={styles.input}
+          autoCompleteType='username'
           onChangeText={(value) => this.setState({ username: value })}
           value={this.state.username}
+        />
+
+        <TextInput
+          placeholder="Email"
+          style={styles.input}
+          textContentType='emailAddress'
+          autoCompleteType='email'
+          keyboardType='email-address'
+          onChangeText={(value) => this.setState({ email: value })}
+          value={this.state.email}
         />
 
         <TextInput
           placeholder="Password"
           style={styles.input}
           secureTextEntry={true}
+          autoCompleteType='password'
           onChangeText={(value) => this.setState({ password: value })}
           value={this.state.password}
         />
@@ -60,10 +73,11 @@ export default class CreateUserScreen extends React.Component {
     );
   }
   _signUp = async () => {
-    const { username, password } = this.state;
+    const { username, password, email } = this.state;
 
     axios.post(API_HOST+"/users", {
       username: username,
+      email: email,
       password: password,
     }, {
       auth: {
@@ -84,7 +98,7 @@ export default class CreateUserScreen extends React.Component {
         return;
       }
       if(error.toString().match(/403/)) {
-        alert("Invalid Username or password");
+        alert("Invalid Username, email or password");
         return;
       }
       alert(API_HOST+"\n"+error);
