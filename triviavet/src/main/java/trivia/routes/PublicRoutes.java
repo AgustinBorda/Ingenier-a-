@@ -72,17 +72,30 @@ public class PublicRoutes {
 
 	public static final Route PostReset = (req, res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
-		User user = User.findFirst("email = ?", bodyParams.get("email"));
+		User user = User.findFirst("username = ?", bodyParams.get("username"));
 		if (user == null) {
+			System.out.println("Try reset: " + bodyParams.get("username"));
 			halt(401, "");
 			return "";
 		}
 		System.out.println("Reset: " + user.get("username"));
-		Email.getSingletonInstance().sendMail((String) bodyParams.get("email"), (String) user.get("username"));
+		Email.getSingletonInstance().sendMail((String) user.get("email"), (String) user.get("username"));
 	
 		return true;
 	};
 	
+	public static final Route PostNewPass= (req, res) -> {
+		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+		String username = Email.getSingletonInstance().checkCode((String) bodyParams.get("code"));
+		if(username == null) {
+			halt(401, "");
+			return "";
+		}
+		System.out.println("New pass to: " + username);
+		User.update("password = ?", "username = ?", bodyParams.get("newPass"), username);
+		
+		return true;
+	};
 
 	private static void loadSession(Request req, User user) {
 		req.session().attribute("username", user.get("username"));

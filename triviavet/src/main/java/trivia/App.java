@@ -9,6 +9,7 @@ public class App {
 	public static void main(String[] args) {
 
 		before("*",PublicRoutes.BaseOpen);
+		
 		after("*", PublicRoutes.BaseClose);
 
 		before("/logged/*", PrivateRoutes.CheckSession);
@@ -20,6 +21,8 @@ public class App {
 		post("/users", PublicRoutes.PostUsers);
 		
 		post("/reset", PublicRoutes.PostReset);
+		
+		post("/newPass", PublicRoutes.PostNewPass);
 
 		get("/logged/category", PrivateRoutes.GetCategory);
 		
