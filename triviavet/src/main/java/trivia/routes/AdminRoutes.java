@@ -15,6 +15,7 @@ import trivia.models.*;
 import trivia.structures.*;
 
 import org.javalite.activejdbc.DBException;
+import org.javalite.activejdbc.LazyList;
 
 public class AdminRoutes {
 
