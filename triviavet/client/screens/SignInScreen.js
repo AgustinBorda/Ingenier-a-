@@ -55,6 +55,10 @@ export default class SignInScreen extends React.Component {
         <Button title="Create account" onPress={() => this.props.navigation.navigate('Create')}
           color = "#ebee2c"
         />
+        <View style={{margin:20}} />
+       <Button title="Reset password" onPress={() => this.props.navigation.navigate('ResetPass')}
+         color = "#ebee2c"
+       />
       </View>
     );
   }
