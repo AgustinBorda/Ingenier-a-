@@ -33,9 +33,9 @@ public class PublicRoutes {
 				bodyParams.get("password"));
 		if (user != null) {
 			loadSession(req, user);
-			System.out.println("Loged: " + user.get("username"));
 			return true;
 		}
+		System.out.println(user);
 		res.status(401);
 		return true;
 	};
@@ -47,7 +47,6 @@ public class PublicRoutes {
 			halt(403, "");
 			return "";
 		}
-
 		if (((String) bodyParams.get("username")).length() == 0 || ((String) bodyParams.get("password")).length() == 0
 				|| ((String) bodyParams.get("email")).length() == 0) {
 			halt(403, "");
@@ -61,7 +60,6 @@ public class PublicRoutes {
 			halt(401, "");
 			return "";
 		}
-
 		User user = User.createUser(bodyParams);
 		System.out.println("Registred: " + user.get("username"));
 

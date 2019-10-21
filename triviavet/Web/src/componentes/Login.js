@@ -13,29 +13,33 @@ class Login extends Component{
     constructor(props) {
         super(props);
         this.state = {username: '',password: ''};
-    
+
+        this._login = this._login.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
       }
-    
-      handleChange(event) {
-        this.setState({username: event.target.username, password: event.target.password});
+
+      async handleChange(event) {
+        await this.setState({username: event.target.username, password: event.target.password});
       }
-    
+
       handleSubmit(event) {
         alert('A user was submitted: ' + this.state.username);
         event.preventDefault();
       }
-      
-      componentDidMount(){
-    
-          fetch(process.env.API_HOST+"/login",{
-              method: 'POST', 
-              body: JSON.stringify({username: this.state.username, password: this.state.password}), 
-              mode: "no-cors"
-            }) 
+
+        async _login(){
+          let bodyValue = new FormData()
+          await bodyValue.append('username', this.state.username);
+          await bodyValue.append('password', this.state.password);
+          await fetch(process.env.REACT_APP_API_HOST+"/login",{
+              method: 'POST',
+              body: JSON.stringify(bodyValue),
+              mode: "no-cors",
+              cache: "default"
+            })
             .then(response => {
-              console.log(response);
+              alert(response);
                 AsyncStorage.setItem('userToken', response.config.headers.Authorization);
                 ReactDOM.render(
                    <Menu/>,
@@ -45,35 +49,35 @@ class Login extends Component{
               .catch(error => {
                 console.log(error)
               });
-                   
+
       }
 
   render () {
         return (
-          
+
              <form onSubmit={this.handleSubmit}>
              <h1> Login</h1>
 
              <Form>
               <Form.Group controlId="formBasicEmail">
               <Form.Label>Username</Form.Label>
-              <Form.Control type="Username" placeholder="Enter Username" bsSize="large" 
+              <Form.Control type="Username" placeholder="Username" bsSize="large"
               username={this.state.username} onChange={this.handleChange}/>
               <Form.Text className="text-muted">
-       
+
               </Form.Text>
               </Form.Group>
 
               <Form.Group controlId="formBasicPassword" >
                 <Form.Label>Password</Form.Label>
-                <Form.Control type="password" placeholder="Password"  
+                <Form.Control type="password" placeholder="Password"
                 password={this.state.password} onChange={this.handleChange}/>
               </Form.Group>
-      
-               <Button variant="primary" type="submit">
+
+               <Button onClick = {this._login} variant="primary" type="submit">
                   Iniciar Sesion
               </Button>
-              <html>             
+              <html>
               <body>
               <p>   </p>
               <p>   </p>
@@ -86,7 +90,7 @@ class Login extends Component{
                </Link>
             </Form>
         </form>
-        ); 
+        );
   }
 }
 
@@ -100,19 +104,19 @@ export default Login;
       <Form>
       <Form.Group controlId="formBasicEmail">
       <Form.Label>Username</Form.Label>
-      <Form.Control type="Username" placeholder="Enter Username" bsSize="large" 
+      <Form.Control type="Username" placeholder="Enter Username" bsSize="large"
       username={this.state.username} onChange={this.handleChange}/>
       <Form.Text className="text-muted">
-       
+
       </Form.Text>
       </Form.Group>
 
       <Form.Group controlId="formBasicPassword">
         <Form.Label>Password</Form.Label>
-        <Form.Control type="password" placeholder="Password" 
+        <Form.Control type="password" placeholder="Password"
         password={this.state.password} onChange={this.handleChange}/>
       </Form.Group>
-      
+
        <Button variant="primary" type="submit">
         Submit
       </Button>
