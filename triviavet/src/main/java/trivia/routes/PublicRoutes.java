@@ -32,7 +32,6 @@ public class PublicRoutes {
 		User user = User.findFirst("username = ? and password = ?", bodyParams.get("username"),
 				bodyParams.get("password"));
 		if (user != null) {
-			System.out.println("Aaaaa");
 			loadSession(req, user);
 			return true;
 		}
