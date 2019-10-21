@@ -19,22 +19,25 @@ class Login extends Component{
         this.handleSubmit = this.handleSubmit.bind(this);
       }
 
-      async handleChange(event) {
-        await this.setState({username: event.target.username, password: event.target.password});
+      handleChange=(event)=> {
+        this.setState({[event.target.name]: event.target.value},
+        () => {
+          //updated state
+          console.log(this.state)
+        });
       }
-
       handleSubmit(event) {
         alert('A user was submitted: ' + this.state.username);
         event.preventDefault();
       }
 
         async _login(){
-          let bodyValue = new FormData()
-          await bodyValue.append('username', this.state.username);
-          await bodyValue.append('password', this.state.password);
           await fetch(process.env.REACT_APP_API_HOST+"/login",{
               method: 'POST',
-              body: JSON.stringify(bodyValue),
+              body: JSON.stringify({
+                username : this.state.username,
+                password : this.state.password
+                }),
               mode: "no-cors",
               cache: "default"
             })
@@ -61,28 +64,24 @@ class Login extends Component{
              <Form>
               <Form.Group controlId="formBasicEmail">
               <Form.Label>Username</Form.Label>
-              <Form.Control type="Username" placeholder="Username" bsSize="large"
+              <Form.Control name="username" type="Username" placeholder="Username" bsSize="large"
               username={this.state.username} onChange={this.handleChange}/>
               <Form.Text className="text-muted">
 
               </Form.Text>
               </Form.Group>
 
-              <Form.Group controlId="formBasicPassword" >
+              <Form.Group controlId="formBasicEmail" >
                 <Form.Label>Password</Form.Label>
-                <Form.Control type="password" placeholder="Password"
+                <Form.Control name="password" type="password" placeholder="Password"
                 password={this.state.password} onChange={this.handleChange}/>
               </Form.Group>
 
                <Button onClick = {this._login} variant="primary" type="submit">
                   Iniciar Sesion
               </Button>
-              <html>
-              <body>
               <p>   </p>
               <p>   </p>
-              </body>
-              </html>
               <Link to="/CreateAccount" className="CreateAccount">
                <Button variant="primary" type="submit">
                   Crear Cuenta
