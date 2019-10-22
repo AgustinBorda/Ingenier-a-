@@ -14,7 +14,9 @@ class App extends Component {
     require('dotenv').config();
     return (
     <BrowserRouter>
-       <img src={logo} className="App-logo" alt="logo"/>
+       <img src={logo} className="App-logo" alt="logo" class="center"
+         height={200}
+          width={200}/>
       <div>
       <Redirect from="/" to="/login"/>
         

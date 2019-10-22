@@ -53,10 +53,7 @@ class Login extends Component {
       ReactDOM.render(<Menu/>, document.getElementById('root'))
     });
   }
-  /*<img src={logo} className="App-logo" alt="logo" style={{
-      width: 200,
-      height: 200
-    }}/>*/
+
     render() {
 
       return (<div className={StyleResolver.resolve([styles.app])}>
