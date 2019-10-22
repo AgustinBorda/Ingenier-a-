@@ -37,16 +37,20 @@ class Login extends Component {
 
   async _login() {
     await fetch(process.env.REACT_APP_API_HOST + "/login", {
+      headers : {
+        'Accept' : 'application/json',
+        'content-type' : 'application/json',
+      },
       method: 'POST',
       body: JSON.stringify({username: this.state.username, password: this.state.password}),
       mode: "no-cors",
       cache: "default"
-    }).then(response => {
-      alert(response);
-      AsyncStorage.setItem('userToken', response.config.headers.Authorization);
+    })
+  //  .then(response => response.json())
+     .then(response => {
+      console.log(response.json());
+      AsyncStorage.setItem('userToken', this.state);
       ReactDOM.render(<Menu/>, document.getElementById('root'))
-    }).then(({data}) => {
-      this.setState({categories: data.categories});
     });
   }
   /*<img src={logo} className="App-logo" alt="logo" style={{
