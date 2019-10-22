@@ -10,18 +10,18 @@ class Menu extends Component{
         <div>
            <h1> MENU  </h1>
            <Link to="/newQuestion" className="NewQuestion">
-           <Button variant="primary" type="submit">
-                 Atras
+            <Button variant="primary" type="submit">
+                 Cargar Pregunta
             </Button>
-           </Link>
-        </div>
-         <p></p>
-         <p></p>
-         <Link to="/menu" className="Menu">
+			</Link>
+			<p></p>
+           <p></p>
+           <Link to="/login" className="Login">
             <Button variant="primary" type="submit">
                  Atras
             </Button>
            </Link>
+        </div>
     );
   }
 }
