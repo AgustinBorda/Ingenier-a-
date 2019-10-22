@@ -3,6 +3,8 @@ import {AsyncStorage} from "AsyncStorage";
 import ReactDOM from "react-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import Menu from './Menu';
+import { Link } from 'react-router-dom';
 
 class NewQuestion extends Component{
     constructor(props) {
@@ -72,6 +74,14 @@ class NewQuestion extends Component{
              <Button variant="primary" type="submit">
                  Guardar
             </Button>
+            <p></p>
+            <p></p>
+            <Link to="/menu" className="Menu">
+            <Button variant="primary" type="submit">
+                 Atras
+            </Button>
+           </Link>
+
         </Form>
         </form>
         ); 
