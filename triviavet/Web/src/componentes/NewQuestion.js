@@ -5,6 +5,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Menu from './Menu';
 import { Link } from 'react-router-dom';
+import {StyleSheet, StyleResolver} from "style-sheet";
 
 class NewQuestion extends Component{
     constructor(props) {
@@ -45,6 +46,14 @@ class NewQuestion extends Component{
 
   render () {
         return (
+          <div className={StyleResolver.resolve([styles.app])}>
+
+          <div className={StyleResolver.resolve([styles.layout, styles.container])}>
+
+          <div css={{
+              fontFamily: "monaco, monospace",
+              color: "#1e252d"
+            }}>
             <form onSubmit={this.handleSubmit}>
             <Form>
                 <Form.Group controlId="formBasicPassword" >
@@ -84,10 +93,41 @@ class NewQuestion extends Component{
 
         </Form>
         </form>
-        ); 
+              </div>
+       </div>
+     </div>
+    ); 
   }
 }
 
 
 export default NewQuestion;
 
+ const styles = StyleSheet.create({
+    layout: {
+      width: "100%",
+      maxWidth: "640px"
+    },
+    container: {
+      padding: "2em",
+      border: "1px solid",
+      borderRadius: "3px",
+
+      backgroundColor: "rgba(114,137,218, 0.2)",
+      boxShadow: "0 2px 30px 6px #000000",
+      transition: "transform 0.2s ease-out",
+      "&:hover": {
+        transform: "scale(1.1)"
+      }
+    },
+    app: {
+      background: "radial-gradient(circle, rgba(35,39,42,1) 0%, rgba(44,47,51,1) 100%)",
+      height: "100vh",
+      width: "100vw",
+      padding: "2rem",
+      boxSizing: "border-box",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center"
+    }
+  });
