@@ -6,7 +6,7 @@ import Menu from './Menu';
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import CreateAccount from './CreateAccount';
-import {Link} from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
 import logo from './logo.png';
 
 class Login extends Component {
@@ -42,7 +42,10 @@ class Login extends Component {
         'content-type' : 'application/json',
       },
       method: 'POST',
-      body: JSON.stringify({username: this.state.username, password: this.state.password}),
+      body: JSON.stringify({
+        username: this.state.username,
+         password: this.state.password
+       }),
       mode: "no-cors",
       cache: "default"
     })
@@ -50,7 +53,7 @@ class Login extends Component {
      .then(response => {
       console.log(response.json());
       AsyncStorage.setItem('userToken', this.state);
-      ReactDOM.render(<Menu/>, document.getElementById('root'))
+      this.props.history.push("/menu")
     });
   }
 

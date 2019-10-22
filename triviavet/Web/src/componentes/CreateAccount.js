@@ -15,33 +15,44 @@ class CreateAccount extends Component{
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+				this._createAccount = this._createAccount.bind(this);
       }
 
-      handleChange(event) {
-        this.setState({username: event.target.username, password: event.target.password,
-        	email: event.target.email});
-      }
+			handleChange = (event) => {
+		    this.setState({
+		      [event.target.name]: event.target.value
+		    }, () => {
+		      //updated state
+		      console.log(this.state)
+		    });
+		  }
 
       handleSubmit(event) {
         alert('A user was submitted: ' + this.state.username);
         event.preventDefault();
       }
 
-      componentDidMount(){
+      _createAccount(){
 
           fetch(process.env.REACT_APP_API_HOST+"/users",{
+							headers : {
+								'Accept' : 'application/json',
+								'content-type' : 'application/json',
+							},
               method: 'POST',
-              body: JSON.stringify({username: this.state.username, password: this.state.password,
-               email: this.state.email}),
+              body: JSON.stringify({
+								username: this.state.username,
+								password: this.state.password,
+               	email: this.state.email
+							}),
               mode: "no-cors"
             })
             .then(response => {
-              console.log(response);
-                AsyncStorage.setItem('userToken', response.config.headers.Authorization);
-                ReactDOM.render(
-                   <Menu/>,
-                    document.getElementById('root')
-                )
+							AsyncStorage.setItem('userToken', {
+									username: this.state.username,
+									password: this.state.password
+								});
+				      this.props.history.push("/menu")
               })
               .catch(error => {
                 console.log(error)
@@ -51,11 +62,11 @@ class CreateAccount extends Component{
 
 
   render () {
-    return (  
+    return (
           <div className={StyleResolver.resolve([styles.app])}>
-          
+
           <div className={StyleResolver.resolve([styles.layout, styles.container])}>
-          
+
           <div css={{
               fontFamily: "monaco, monospace",
               color: "#1e252d"
@@ -65,7 +76,7 @@ class CreateAccount extends Component{
             <Form>
               <Form.Group controlId="formBasicEmail">
               <Form.Label>Username</Form.Label>
-              <Form.Control type="Username" placeholder="Enter Username" bsSize="large"
+              <Form.Control name="username" type="Username" placeholder="Enter Username" bsSize="large"
               username={this.state.username} onChange={this.handleChange}/>
               <Form.Text className="text-muted">
 
@@ -74,17 +85,17 @@ class CreateAccount extends Component{
 
               <Form.Group controlId="formBasicPassword" >
                 <Form.Label>Password</Form.Label>
-                <Form.Control type="password" placeholder="Password"
+                <Form.Control name="password" type="password" placeholder="Password"
                 password={this.state.password} onChange={this.handleChange}/>
               </Form.Group>
 
                <Form.Group controlId="formBasicEmail" >
                 <Form.Label>Email</Form.Label>
-                <Form.Control type="email" placeholder="Email"
+                <Form.Control name="email" type="email" placeholder="Email"
                 password={this.state.email} onChange={this.handleChange}/>
               </Form.Group>
 
-		       <Button variant="primary" type="submit">
+		   <Button onClick={this._createAccount} variant="primary" type="submit">
                 Crear Cuenta
            </Button>
            <p></p>

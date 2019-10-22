@@ -1,4 +1,4 @@
-import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom';
+import {BrowserRouter, Route, Switch, Redirect, Link} from 'react-router-dom';
 import React, {Component} from "react";
 import Menu from './componentes/Menu';
 import logo from './componentes/logo.png';
@@ -19,7 +19,6 @@ class App extends Component {
           width={200}/>
       <div>
       <Redirect from="/" to="/login"/>
-        
         <Switch>
           <Route path="/newQuestion" component={NewQuestion}/>
           <Route path="/login" component={Login}/>
