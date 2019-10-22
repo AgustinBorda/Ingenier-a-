@@ -1,7 +1,7 @@
 import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom';
 import React, {Component} from "react";
-//import Home from './componentes/Home';
 import Menu from './componentes/Menu';
+import logo from './componentes/logo.png';
 import CreateAccount from './componentes/CreateAccount';
 import './App.css';
 import Login from './componentes/Login';
@@ -13,13 +13,11 @@ class App extends Component {
   render() {
     require('dotenv').config();
     return (
-      <BrowserRouter>
-
-
-
-
+    <BrowserRouter>
+       <img src={logo} className="App-logo" alt="logo"/>
       <div>
-        <Redirect from="/" to="/login"/>
+      <Redirect from="/" to="/login"/>
+        
         <Switch>
           <Route path="/newQuestion" component={NewQuestion}/>
           <Route path="/login" component={Login}/>

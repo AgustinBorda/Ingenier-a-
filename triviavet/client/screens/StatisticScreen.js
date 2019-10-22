@@ -92,7 +92,7 @@ export default class QuestionScreen extends React.Component {
 
 
           <Button  title="Volver" onPress={() => this.props.navigation.navigate('App')}
-            color="#ebee2c"
+            color="#d35400"
           />
         </ScrollView>
     </View>
@@ -109,7 +109,7 @@ export default class QuestionScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
-    backgroundColor: '#48c9b0',
+    backgroundColor: '#1b4f72',
     alignItems: 'center',
   },
   title: {

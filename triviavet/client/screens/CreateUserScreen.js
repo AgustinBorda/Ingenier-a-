@@ -59,14 +59,14 @@ export default class CreateUserScreen extends React.Component {
         />
 
         <Button title="Sign in" onPress={this._signUp}
-         color = "#e0e241"
+         color = "#d35400"
         />
 
          <View style={{margin:20}} />
         <Button
           onPress={() => this.props.navigation.navigate('Auth')}
           title="back"
-           color = "#e0e241"
+           color = "#d35400"
         />
 
       </View>
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#48c9b0',
+    backgroundColor: '#1b4f72',
   },
   welcome: {
     fontSize: 20,
