@@ -13,18 +13,24 @@ import trivia.utils.Email;
 public class PublicRoutes {
 
 	public static final Filter BaseOpen = (request, response) -> {
-		if (!Base.hasConnection())
+		if (!Base.hasConnection()) {
 			Base.open();
+		}
 	};
+	
 
 	public static final Filter BaseClose = (request, response) -> {
-		if (Base.hasConnection())
+		if (Base.hasConnection()) {
 			Base.close();
-
+		}
 		response.header("Access-Control-Allow-Origin", "*");
-		response.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
-		response.header("Access-Control-Allow-Headers",
-				"Content-Type,Authorization,X-Requested-With,Content-Length,Accept,Origin,");
+	};
+	
+	public static final Route SetHeaders = (request, response) -> {	
+		response.header("Access-Control-Allow-Methods", "*");
+		response.header("Access-Control-Allow-Headers", "*");
+		response.header("Access-Control-Allow-Body", "*");
+        return "OK";
 	};
 
 	public static final Route PostLogin = (req, res) -> {
@@ -36,32 +42,31 @@ public class PublicRoutes {
 			return true;
 		}
 		res.status(401);
-		return true;
+		return false;
 	};
 
 	public static final Route PostUsers = (req, res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 		if (!bodyParams.containsKey("username") || !bodyParams.containsKey("password")
 				|| !bodyParams.containsKey("email")) {
-			halt(403, "");
-			return "";
+			res.status(403);
+			return false;
 		}
 		if (((String) bodyParams.get("username")).length() == 0 || ((String) bodyParams.get("password")).length() == 0
 				|| ((String) bodyParams.get("email")).length() == 0) {
-			halt(403, "");
-			return "";
+			res.status(403);
+			return false;
 		}
 		if (User.findFirst("Username = ?", bodyParams.get("username")) != null) {
-			halt(401, "");
-			return "";
+			res.status(401);
+			return false;
 		}
 		if (User.findFirst("email = ?", bodyParams.get("email")) != null) {
-			halt(401, "");
-			return "";
+			res.status(401);
+			return false;
 		}
 		User user = User.createUser(bodyParams);
 		System.out.println("Registred: " + user.get("username"));
-
 		loadSession(req, user);
 		return user.toJson(true);
 	};

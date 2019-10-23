@@ -28,7 +28,6 @@ class CreateAccount extends Component{
 		  }
 
       handleSubmit(event) {
-        alert('A user was submitted: ' + this.state.username);
         event.preventDefault();
       }
 
@@ -45,14 +44,22 @@ class CreateAccount extends Component{
 								password: this.state.password,
                	email: this.state.email
 							}),
-              mode: "no-cors"
+              mode: "cors"
             })
             .then(response => {
-							AsyncStorage.setItem('userToken', {
-									username: this.state.username,
-									password: this.state.password
-								});
-				      this.props.history.push("/menu")
+							if(response.ok) {
+								AsyncStorage.setItem('userToken', {
+										username: this.state.username,
+										password: this.state.password
+									});
+									this.props.history.push("/menu")
+							} else {
+								if(response.status == 403) {
+									alert("Todos los datos deben ser rellenados");
+								} else {
+									alert("Ya existe un usuario con ese nombre o email");
+								}
+							}
               })
               .catch(error => {
                 console.log(error)

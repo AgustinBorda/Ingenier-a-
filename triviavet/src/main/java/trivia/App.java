@@ -10,6 +10,8 @@ public class App {
 
 		before("*",PublicRoutes.BaseOpen);
 		
+		options("*",PublicRoutes.SetHeaders);
+		
 		after("*", PublicRoutes.BaseClose);
 
 		before("/logged/*", PrivateRoutes.CheckSession);

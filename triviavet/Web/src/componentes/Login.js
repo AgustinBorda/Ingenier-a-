@@ -31,12 +31,11 @@ class Login extends Component {
     });
   }
   handleSubmit(event) {
-    alert('A user was submitted: ' + this.state.username);
     event.preventDefault();
   }
 
-  async _login() {
-    await fetch(process.env.REACT_APP_API_HOST + "/login", {
+   _login() {
+    fetch(process.env.REACT_APP_API_HOST + "/login", {
       headers : {
         'Accept' : 'application/json',
         'content-type' : 'application/json',
@@ -46,14 +45,20 @@ class Login extends Component {
         username: this.state.username,
          password: this.state.password
        }),
-      mode: "no-cors",
+      mode: "cors",
       cache: "default"
-    })
-  //  .then(response => response.json())
+      })
      .then(response => {
-      console.log(response.json());
-      AsyncStorage.setItem('userToken', this.state);
-      this.props.history.push("/menu")
+      console.log(response);
+      if (response.ok) {
+        AsyncStorage.setItem('userToken', this.state);
+        this.props.history.push("/menu")
+      } else {
+          alert("El usuario o contraseña no es valido");
+        }
+    })
+    .catch(error => {
+      console.log(error);
     });
   }
 
