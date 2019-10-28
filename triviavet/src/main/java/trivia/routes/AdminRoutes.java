@@ -27,7 +27,17 @@ public class AdminRoutes {
 	public static final Route CreateQuestions = (req, res) -> {
 		QuestionParam bodyParams = new Gson().fromJson(req.body(), QuestionParam.class);
 		Question question = new Question();
-		question.setQuestion(bodyParams);
+		Base.openTransaction();
+		try {
+			question.setQuestion(bodyParams);
+			Base.commitTransaction();
+			res.status(200);
+		}
+		catch (DBException e) {
+			Base.rollbackTransaction();
+			res.status(401);
+		}
+
 		return question.toJson(true);
 	};
 	
@@ -39,12 +49,14 @@ public class AdminRoutes {
 		try {
 			question.setQuestion((QuestionParam)bodyParams.get("modifiedQuestion"));
 			Base.commitTransaction();
-			resp.put("Answer", "Question Modified");
+			resp.put("Answer", "Modified Question");
+			res.status(200);
 			
 		}
 		catch(DBException e) {
 			Base.rollbackTransaction();
-			resp.put("answer", "Cannot modify question");
+			resp.put("answer", "Cannot modify Question");
+			res.status(401);
 		}
 		return resp;
 	};
@@ -52,9 +64,16 @@ public class AdminRoutes {
 	public static final Route RemoveQuestions = (req,  res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 		Question question = Question.findFirst("description = ?", bodyParams.get("description").toString());
-		question.delete();
 		JSONObject resp = new JSONObject();
-		resp.put("answer", "OK");
+		try {
+			question.delete();	
+			resp.put("answer", "OK");
+			res.status(200);
+		}
+		catch(DBException e) {
+			resp.put("answer", "Fail");
+			res.status(404);
+		}
 		return resp;
 	};
 	
@@ -63,8 +82,15 @@ public class AdminRoutes {
 		JSONObject resp = new JSONObject();
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 		user = User.findFirst("username = ?", bodyParams.get("username"));
-		user.giveAdminPermissions();
-		resp.put("answer", "OK");
+		try {
+			user.giveAdminPermissions();
+			resp.put("answer", "OK");
+			res.status(200);
+		}
+		catch (DBException e) {
+			resp.put("answer", "Fail");
+			res.status(404);
+		}
 		return resp;
 	};
 	
@@ -76,10 +102,12 @@ public class AdminRoutes {
 			Category.createCategory((String)bodyParams.get("name"));
 			Base.commitTransaction();
 			resp.put("answer", "Created category");
+			res.status(200);
 		}
 		catch(DBException e) {
 			Base.rollbackTransaction();
-			resp.put("answer", "Cannot create category");			
+			resp.put("answer", "Cannot create category");
+			res.status(404);
 		}
 		return resp;
 	};
@@ -92,10 +120,12 @@ public class AdminRoutes {
 			Category.deleteCategory((String)bodyParams.get("name"));
 			Base.commitTransaction();
 			resp.put("answer","Category deleted");
+			res.status(200);
 		}
 		catch(DBException e) {
 			Base.rollbackTransaction();
 			resp.put("answer", "Cannot delete category");
+			res.status(404);
 		}
 		return resp;
 	};
@@ -107,11 +137,13 @@ public class AdminRoutes {
 		try {
 			Category.modifyCategory((String)bodyParams.get("old_name"), (String)bodyParams.get("new_name"));
 			Base.commitTransaction();
-			resp.put("answer","Category modified");	
+			resp.put("answer","Category modified");
+			res.status(200);
 		}
 		catch(DBException e) {
 			Base.rollbackTransaction();
-			resp.put("answer", "Cannot modify category");			
+			resp.put("answer", "Cannot modify category");
+			res.status(404);
 		}
 		return resp;
 	};
@@ -121,6 +153,7 @@ public class AdminRoutes {
 		JSONObject resp = new JSONObject();
 		LazyList<UserStatisticsCategory> stats = UserStatisticsCategory.where("user = ?",bodyParams.get("username"));
 		resp.put("stats", stats.toArray());
+		res.status(200);
 		return resp;
 	};
 	
@@ -128,6 +161,7 @@ public class AdminRoutes {
 		JSONObject resp = new JSONObject();
 		LazyList<UserStatisticsCategory> stats = UserStatisticsCategory.findAll();
 		resp.put("stats", stats.toArray());
+		res.status(200);
 		return resp;
 	};
 	
@@ -136,6 +170,7 @@ public class AdminRoutes {
 		JSONObject resp = new JSONObject();
 		LazyList<QuestionStatistic> stats = QuestionStatistic.where("question = ?",bodyParams.get("question"));
 		resp.put("stats", stats.toArray());
+		res.status(200);
 		return resp;
 	};
 	
@@ -143,6 +178,7 @@ public class AdminRoutes {
 		JSONObject resp = new JSONObject();
 		LazyList<QuestionStatistic> stats = QuestionStatistic.findAll();
 		resp.put("stats", stats.toArray());
+		res.status(200);
 		return resp;
 	};
 
