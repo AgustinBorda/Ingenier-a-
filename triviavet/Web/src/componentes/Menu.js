@@ -1,41 +1,67 @@
 import React, {Component} from "react";
-import {Link} from 'react-router-dom';
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Card from "react-bootstrap/Card";
 import exitlogo from './exit.png';
+import {AsyncStorage} from "AsyncStorage";
 
 class Menu extends Component {
 
-  render() {
-    return (<div>
+  constructor(props){
+    super(props);
+    this.state = {
+      categories: []
+    }
+  }
 
-      <Navbar className="bg-light justify-content-between" fixed="top">
+  componentWillMount(){
+    this._loadCategories();
+  }
+
+  async _loadCategories() {
+    const token =  await AsyncStorage.getItem('userToken');
+    fetch(process.env.REACT_APP_API_HOST + "/logged/category", {
+      headers : {
+        'Accept' : 'application/json',
+        'content-type' : 'application/json',
+        'Authorization' : token
+      },method: 'GET',
+      mode: "cors",
+      })
+    .then(({data}) => {
+      this.setState({ categories: data.categories});
+    })
+    .catch(error => {
+      console.log(error);
+    });
+
+  }
+
+  render() {
+    return (
+      <div>
+        <Navbar className="bg-light justify-content-between" fixed="top">
         <Navbar.Brand>Administracion trivia</Navbar.Brand>
         <Nav>
           <Nav.Link href="/login"><img src={exitlogo} height={40} width={40}/>
-          </Nav.Link>
+        </Nav.Link>
         </Nav>
       </Navbar>
-
-      <Row style={{paddingTop: 60}} noGutters="true">
+        <Row style={{paddingTop: 60}} noGutters="true">
         <Col>
           <Navbar variant="dark" bg="dark">
             <Navbar.Brand>Categoria</Navbar.Brand>
           </Navbar>
-          <div style={{padding:10}}>
-            <Card border="primary">
-              <Card.Header>Header</Card.Header>
-              <Card.Body>
-                <Card.Title>Primary Card Title</Card.Title>
-                <Card.Text>
-                  Some quick example text to build on the card title and make up the bulk of the card's content.
-                </Card.Text>
-              </Card.Body>
-            </Card>
-          </div>
+
+            {this.state.categories.map((message) =>
+              <div style={{padding:10}}>
+                <Card id={message} border="secondary">
+                  <Card.Header>{message}</Card.Header>
+                </Card>
+                </div>
+            )}
         </Col>
         <Col>
           <Navbar variant="dark" bg="dark">
@@ -70,7 +96,8 @@ class Menu extends Component {
           </div>
         </Col>
       </Row>
-    </div>);
+      </div>
+    );
   }
 }
 export default Menu;
