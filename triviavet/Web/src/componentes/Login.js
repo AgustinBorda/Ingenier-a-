@@ -51,7 +51,8 @@ class Login extends Component {
      .then(response => {
       console.log(response);
       if (response.ok) {
-        AsyncStorage.setItem('userToken', this.state);
+        let base64 = require('base-64');
+        AsyncStorage.setItem('userToken', 'Basic ' + base64.encode(this.state.username + ":" + this.state.password));
         this.props.history.push("/menu")
       } else {
           alert("El usuario o contraseña no es valido");
