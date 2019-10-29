@@ -3,6 +3,8 @@ package trivia.routes;
 import static spark.Spark.*;
 
 import java.util.Map;
+
+import org.javalite.activejdbc.Base;
 import org.json.JSONObject;
 
 import com.google.gson.Gson;
@@ -11,6 +13,8 @@ import spark.*;
 import trivia.BasicAuth;
 import trivia.models.*;
 import trivia.structures.*;
+
+import org.javalite.activejdbc.DBException;
 
 public class PrivateRoutes {
 
@@ -23,9 +27,22 @@ public class PrivateRoutes {
 
 	public static final Route PostQuestion = (req, res) -> {// its a get
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
-		Pair<JSONObject, String> answer = Question.getQuestion(bodyParams, req.session().attribute("id").toString());
-		req.session().attribute("preg_id", answer.getSecond());
-		return answer.getFirst();
+		Base.openTransaction();
+		try {
+			Pair<JSONObject, String> answer = Question.getQuestion(bodyParams, req.session().attribute("id").toString());
+			req.session().attribute("preg_id", answer.getSecond());
+			Base.commitTransaction();
+			res.status(200);
+			return answer.getFirst();
+		}
+		catch(DBException e) {
+			Base.rollbackTransaction();
+			res.status(401);
+			JSONObject resp = new JSONObject();
+			resp.put("description", "Error interno del servidor");
+			return resp;
+		}
+
 	};
 
 	public static final Route PostUserDelete = (req, res) -> {
@@ -39,6 +56,7 @@ public class PrivateRoutes {
 		} else {
 			resp.put("answer", "El usuario no existe");
 		}
+		res.status(200);
 		return resp;
 	};
 
@@ -46,17 +64,46 @@ public class PrivateRoutes {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 		Question question = Question.getQuestionById(req.session().attribute("preg_id").toString());
 		req.session().removeAttribute("preg_id");
-		return question.answerQuestion(bodyParams.get("answer").toString(), req.session().attribute("username"));
+		JSONObject resp;
+		try {
+			resp = question.answerQuestion(bodyParams.get("answer").toString(), req.session().attribute("username"));
+			res.status(200);
+			return resp;		
+		}
+		catch(DBException e) {
+			resp = new JSONObject();
+			res.status(401);
+			resp.put("description", "Server Error");
+			return resp;
+		}
 	};
 
 	public static final Route GetStatistics = (req, res) -> {
 		System.out.println("/loged/statistics");
-		return UserStatisticsCategory.getStatistics(req.session().attribute("username").toString());
+		JSONObject resp;
+		try {
+			resp = UserStatisticsCategory.getStatistics(req.session().attribute("username").toString());
+			res.status(200);
+		}
+		catch(DBException e) {
+			resp = new JSONObject();
+			res.status(401);
+			resp.put("description", "Server Error");
+		}
+
+		return resp;
 	};
 
 	public static final Route GetCategory = (req, res) -> {
 		JSONObject resp = new JSONObject();
-		resp.put("categories", Category.findAll().collect("nombre").toArray());
+		try {
+			resp.put("categories", Category.findAll().collect("nombre").toArray());
+			res.status(200);
+		}
+		catch(DBException e) {
+			res.status(401);
+			resp.put("description", "Server Error");
+		}
 		return resp;
 	};
 	

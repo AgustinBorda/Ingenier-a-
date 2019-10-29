@@ -151,7 +151,8 @@ public class AdminRoutes {
 	public static final Route GetSpecificUserStatistics = (req, res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 		JSONObject resp = new JSONObject();
-		LazyList<UserStatisticsCategory> stats = UserStatisticsCategory.where("user = ?",bodyParams.get("username"));
+		String user = "%"+bodyParams.get("username")+"%";
+		LazyList<UserStatisticsCategory> stats = UserStatisticsCategory.where("user = ?",user);
 		resp.put("stats", stats.toArray());
 		res.status(200);
 		return resp;
@@ -168,7 +169,8 @@ public class AdminRoutes {
 	public static final Route GetSpecificQuestionStatistics = (req, res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 		JSONObject resp = new JSONObject();
-		LazyList<QuestionStatistic> stats = QuestionStatistic.where("question = ?",bodyParams.get("question"));
+		String question = "%"+bodyParams.get("question")+"%";
+		LazyList<QuestionStatistic> stats = QuestionStatistic.where("question = ?",question);
 		resp.put("stats", stats.toArray());
 		res.status(200);
 		return resp;

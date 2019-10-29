@@ -5,6 +5,8 @@ import java.util.Map;
 import org.javalite.activejdbc.Model;
 import org.javalite.activejdbc.validation.UniquenessValidator;
 
+import spark.Request;
+
 public class User extends Model {
 
 	static {
@@ -31,6 +33,12 @@ public class User extends Model {
 	public void giveAdminPermissions() {
 		this.set("admin", true);
 		this.saveIt();
+	}
+	
+	public void loadSession(Request req) {
+		req.session().attribute("username", this.get("username"));
+		req.session().attribute("id", this.get("id"));
+		req.session().attribute("admin", this.get("admin"));
 	}
 
 }
