@@ -17,15 +17,17 @@ class Menu extends Component {
     this.state = {
       categories: []
     }
+  this._loadCategories = this._loadCategories.bind(this);
+  this._deleteQuestion = this._deleteQuestion.bind(this);
   }
 
-  componentWillMount(){
+  componentDidMount(){
     this._loadCategories();
   }
 
   async _loadCategories() {
     const token =  await AsyncStorage.getItem('userToken');
-    fetch(process.env.REACT_APP_API_HOST + "/logged/category", {
+      await fetch(process.env.REACT_APP_API_HOST + "/logged/category", {
       headers : {
         'Accept' : 'application/json',
         'content-type' : 'application/json',
@@ -33,22 +35,28 @@ class Menu extends Component {
       },method: 'GET',
       mode: "cors",
       })
-    .then(({data}) => {
-      this.setState({ categories: data.categories});
+    .then(async response => {
+      const resp = await response.json();
+      this.setState({ categories: resp.categories});
+      console.log(this.state);
     })
     .catch(error => {
       console.log(error);
     });
   }
 
-  async _deleteQuestion() {
+  async _deleteQuestion(message) {
     const token =  await AsyncStorage.getItem('userToken');
     fetch(process.env.REACT_APP_API_HOST + "/admin/removequestion", {
       headers : {
         'Accept' : 'application/json',
         'content-type' : 'application/json',
         'Authorization' : token
-      },method: 'POST',
+        },
+      method: 'POST',
+      body: JSON.stringify({
+        name : message,
+      }),
       mode: "cors",
       })
     .then(({data}) => {
@@ -86,7 +94,7 @@ class Menu extends Component {
               <div style={{padding:10}}>
                 <Card id={message} border="secondary">
                   <Card.Header>{message}
-                  <Button variant="primary" type="submit">
+                  <Button variant ="primary" type="submit">
                       -
                   </Button>
                   </Card.Header>
@@ -111,7 +119,7 @@ class Menu extends Component {
                 </Button>
                 </Card.Header>
               <Card.Body>
-              
+
                 <Card.Title>Primary Card Title</Card.Title>
                 <Card.Text>
                   Some quick example text to build on the card title and make up the bulk of the card's content.

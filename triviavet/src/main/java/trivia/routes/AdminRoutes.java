@@ -19,9 +19,13 @@ public class AdminRoutes {
 
 	public static final Filter CheckAdmin = (request,response) -> {
 		String headerToken = (String) request.headers("Authorization");
-		if (request.session().attributes().isEmpty() || headerToken == null || headerToken.isEmpty()
-				|| !BasicAuth.authorize(headerToken) || (boolean)request.session().attribute("admin") == false)
-			halt(401, "Usuario o clave invalidos \n");
+		if (request.requestMethod() != "OPTIONS"){ 
+			if (headerToken == null || headerToken.isEmpty()
+					|| !BasicAuth.authorize(headerToken) ||
+					(boolean)request.session().attribute("admin") == false) {
+				halt(401,"Token invalido \n");
+			}
+		}
 	};
 	
 	public static final Route CreateQuestions = (req, res) -> {

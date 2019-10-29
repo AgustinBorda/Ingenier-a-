@@ -25,9 +25,6 @@ class Login extends Component {
   handleChange = (event) => {
     this.setState({
       [event.target.name]: event.target.value
-    }, () => {
-      //updated state
-      console.log(this.state)
     });
   }
   handleSubmit(event) {
@@ -48,11 +45,10 @@ class Login extends Component {
       mode: "cors",
       cache: "default"
       })
-     .then(response => {
-      console.log(response);
+     .then(async response => {
       if (response.ok) {
         let base64 = require('base-64');
-        AsyncStorage.setItem('userToken', 'Basic ' + base64.encode(this.state.username + ":" + this.state.password));
+        await AsyncStorage.setItem('userToken', 'Basic ' + base64.encode(this.state.username + ":" + this.state.password));
         this.props.history.push("/menu")
       } else {
           alert("El usuario o contraseña no es valido");

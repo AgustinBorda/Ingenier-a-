@@ -22,9 +22,6 @@ class CreateAccount extends Component{
 			handleChange = (event) => {
 		    this.setState({
 		      [event.target.name]: event.target.value
-		    }, () => {
-		      //updated state
-		      console.log(this.state)
 		    });
 		  }
 
@@ -47,10 +44,10 @@ class CreateAccount extends Component{
 							}),
               mode: "cors"
             })
-            .then(response => {
+            .then(async response => {
 							if(response.ok) {
 									let base64 = require('base-64');
-									AsyncStorage.setItem('userToken', 'Basic ' + base64.encode(this.state.username + ":" + this.state.password));
+									await AsyncStorage.setItem('userToken', 'Basic ' + base64.encode(this.state.username + ":" + this.state.password));
 									this.props.history.push("/menu")
 							} else {
 								if(response.status == 403) {

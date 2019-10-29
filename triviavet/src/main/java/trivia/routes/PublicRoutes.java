@@ -27,6 +27,7 @@ public class PublicRoutes {
 		response.header("Access-Control-Allow-Methods", "*");
 		response.header("Access-Control-Allow-Headers", "*");
 		response.header("Access-Control-Allow-Body", "*");
+		response.header("Content-Type","application/json");
 	};
 	
 	public static final Route SetHeaders = (request, response) -> {	
