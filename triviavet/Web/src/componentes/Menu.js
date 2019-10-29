@@ -39,8 +39,8 @@ class Menu extends Component {
     .catch(error => {
       console.log(error);
     });
-
   }
+
   async _deleteQuestion() {
     const token =  await AsyncStorage.getItem('userToken');
     fetch(process.env.REACT_APP_API_HOST + "/admin/removequestion", {
@@ -123,7 +123,7 @@ class Menu extends Component {
         <Col>
           <Navbar variant="dark" bg="dark" className="justify-content-between">
             <Navbar.Brand>Estadisticas</Navbar.Brand>
-             <Link to="/newQuestion" className="NewQuestion">
+             <Link to="/Stadistics" className="Stadistics">
                 <Button variant="primary" type="submit">
                  Ver Estadisticas
                 </Button>

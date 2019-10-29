@@ -103,10 +103,8 @@ class CreateAccount extends Component{
                 <Form.Label>Email</Form.Label>
                 <Form.Control name="email" type="email" placeholder="Email"
                 password={this.state.email} onChange={this.handleChange}/>
-              </Form.Group>import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-
-		   <Button onClick={this._createAccount} variant="primary" type="submit">
+              </Form.Group>
+		       <Button onClick={this._createAccount} variant="primary" type="submit">
                 Crear Cuenta
            </Button>
            <p></p>

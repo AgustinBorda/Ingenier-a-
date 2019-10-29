@@ -6,7 +6,7 @@ import './App.css';
 import Login from './componentes/Login';
 import NewQuestion from './componentes/NewQuestion';
 import NewCategory from './componentes/NewCategory';
-
+import Stadistics from './componentes/Stadistics';
 
 class App extends Component {
 
@@ -21,6 +21,7 @@ class App extends Component {
           <Route path="/login" component={Login}/>
           <Route path="/menu" component={Menu}/>
           <Route path="/CreateAccount" component={CreateAccount}/>
+          <Route path="/Stadistics" component={Stadistics}/>
         </Switch>
     </BrowserRouter>);
   }
