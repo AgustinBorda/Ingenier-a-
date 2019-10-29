@@ -6,10 +6,10 @@ import Button from "react-bootstrap/Button";
 import Menu from './Menu';
 import { Link } from 'react-router-dom';
 
-class NewQuestion extends Component{
+class NewCategory extends Component{
     constructor(props) {
         super(props);
-        this.state = {description: '',option1: '',option2:'',option3:'',optionCorrect:''};
+        this.state = {description: '', Categoria:''};
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -29,12 +29,10 @@ class NewQuestion extends Component{
         event.preventDefault();
       }
 
-      _createQuestion(){
-          var c= 'Ciencia';
-          fetch(process.env.REACT_APP_API_HOST+"/admin/questions",{
+      _createCategory(){
+          fetch(process.env.REACT_APP_API_HOST+"/admin/categories",{
               method: 'POST',
-              body: {description: this.state.description, option1: this.state.option1,
-                option2: this.state.option2, option3: this.state.option3, optionCorrect:this.state.optionCorrect, cat:c},
+              body: {description: this.state.description, categories: this.state.categories},
                 headers: { 'Authorization' : AsyncStorage.getItem('userToken')}
             }).then(response => response.json())
             .then(response => {
@@ -58,26 +56,15 @@ class NewQuestion extends Component{
               </Form.Group>
 
             <label>
-            Opción correcta:
+            Ingrese la Categoria:
             <input type="text" optionCorrect={this.state.optionCorrect} onChange={this.handleChange} />
             </label>
-            <label>
-            Opción:
-            <input type="text" option1={this.state.option1} onChange={this.handleChange} />
-            </label>
-            <label>
-            Opción:
-            <input type="text" option2={this.state.option2} onChange={this.handleChange} />
-            </label>
-            <label>
-            Opción:
-            <input type="text" option3={this.state.option3} onChange={this.handleChange} />
-            </label>
-             <p>   </p>
-              <p>   </p>
+            <p></p>
+            <p></p>
              <Button variant="primary" type="submit">
                  Guardar
             </Button>
+            
             <p></p>
             <p></p>
             <Link to="/menu" className="Menu">
@@ -93,4 +80,4 @@ class NewQuestion extends Component{
 }
 
 
-export default NewQuestion;
+export default NewCategory;

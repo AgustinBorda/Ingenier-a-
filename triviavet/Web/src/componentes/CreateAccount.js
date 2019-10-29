@@ -6,6 +6,7 @@ import {AsyncStorage} from "AsyncStorage";
 import ReactDOM from "react-dom";
 import Menu from './Menu';
 import {StyleSheet, StyleResolver} from "style-sheet";
+import logo from './logo.png';
 
 
 class CreateAccount extends Component{
@@ -78,8 +79,12 @@ class CreateAccount extends Component{
               fontFamily: "monaco, monospace",
               color: "#1e252d"
             }}>
+            <div>
+              <h1> <img src={logo}
+                height={60}
+                 width={60}/>CreateAccount</h1>
+            </div>
           <form onSubmit={this.handleSubmit}>
-           <h1> CreateAccount</h1>
             <Form>
               <Form.Group controlId="formBasicEmail">
               <Form.Label>Username</Form.Label>
@@ -100,7 +105,8 @@ class CreateAccount extends Component{
                 <Form.Label>Email</Form.Label>
                 <Form.Control name="email" type="email" placeholder="Email"
                 password={this.state.email} onChange={this.handleChange}/>
-              </Form.Group>
+              </Form.Group>import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 
 		   <Button onClick={this._createAccount} variant="primary" type="submit">
                 Crear Cuenta

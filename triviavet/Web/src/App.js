@@ -5,6 +5,7 @@ import CreateAccount from './componentes/CreateAccount';
 import './App.css';
 import Login from './componentes/Login';
 import NewQuestion from './componentes/NewQuestion';
+import NewCategory from './componentes/NewCategory';
 
 
 class App extends Component {
@@ -16,6 +17,7 @@ class App extends Component {
       <Switch>
           <Redirect exact from="/" to="/login"/>
           <Route path="/newQuestion" component={NewQuestion}/>
+          <Route path="/newCategory" component={NewCategory}/>
           <Route path="/login" component={Login}/>
           <Route path="/menu" component={Menu}/>
           <Route path="/CreateAccount" component={CreateAccount}/>
