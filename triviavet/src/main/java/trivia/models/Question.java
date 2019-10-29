@@ -2,6 +2,8 @@ package trivia.models;
 
 import trivia.structures.Pair;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -56,8 +58,8 @@ public class Question extends Model {
 		}
 		Question question = questions.get(r.nextInt(questions.size()));
 		List<Option> options = Option.where("question_id = ?", question.get("id"));
+		Collections.shuffle(options);
 		resp.put("description", question.get("description"));
-
 		int i = 1;
 		for (Option o : options) {
 			resp.put("answer" + i, o.get("description"));

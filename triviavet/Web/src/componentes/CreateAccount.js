@@ -49,10 +49,8 @@ class CreateAccount extends Component{
             })
             .then(response => {
 							if(response.ok) {
-								AsyncStorage.setItem('userToken', {
-										username: this.state.username,
-										password: this.state.password
-									});
+									let base64 = require('base-64');
+									AsyncStorage.setItem('userToken', 'Basic ' + base64.encode(this.state.username + ":" + this.state.password));
 									this.props.history.push("/menu")
 							} else {
 								if(response.status == 403) {
