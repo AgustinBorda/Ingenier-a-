@@ -9,13 +9,15 @@ import {AsyncStorage} from "AsyncStorage";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { Link } from 'react-router-dom';
-
+import logo from './logo.png';
 class Menu extends Component {
 
   constructor(props){
     super(props);
     this.state = {
-      categories: []
+      categories: [],
+      username: '',
+      password: ''
     }
   this._loadCategories = this._loadCategories.bind(this);
   this._deleteQuestion = this._deleteQuestion.bind(this);
@@ -73,7 +75,11 @@ class Menu extends Component {
     return (
       <div>
         <Navbar className="bg-light justify-content-between" fixed="top">
+                    <img src={logo}
+                height={60}
+                 width={60}/> 
         <Navbar.Brand>Administracion trivia</Navbar.Brand>
+    
         <Nav>
           <Nav.Link href="/login"><img src={exitlogo} height={40} width={40}/>
         </Nav.Link>

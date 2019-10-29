@@ -1,18 +1,17 @@
+
 import React, {Component} from "react";
 import {AsyncStorage} from "AsyncStorage";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { Link } from 'react-router-dom';
 import Menu from './Menu';
-import exitlogo from './exit.png';
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import logo from './logo.png';
 
-class Stadistics extends Component {
+class StatForUser extends Component {
 
   constructor(props){
     super(props);
@@ -49,12 +48,8 @@ class Stadistics extends Component {
         return (
         	   <div>
         	  	<Navbar className="bg-light justify-content-between" fixed="top">
-        	  	 <img src={logo} height={60} width={60}/> 
-		      		<Navbar.Brand>Estadisticas</Navbar.Brand>
-		      		<Nav>
-		      			<Nav.Link href="/Menu"><img src={exitlogo} height={40} width={40}/>
-		      			</Nav.Link>
-		      		</Nav>
+		      		<Navbar.Brand>Estadisticas Por Usuario</Navbar.Brand>
+		      	
 		      	</Navbar>
 		      	<Row style={{paddingTop: 60}} noGutters="true">
 		        	<Col>
@@ -71,23 +66,10 @@ class Stadistics extends Component {
 	            )}
 	        		</Col>
 	        	</Row>
-	        	<p></p>
-            <p></p> 
-			<Link to="/StatForUser" className="StatForUser">
-            <Button variant="primary" type="submit">
-                 Estadisticas Por Usuario
-            </Button>
-            </Link>
-            <p></p>
-            <p></p>
-             <Link to="/AllStatistics" className="AllStatistics">
-            <Button variant="primary" type="submit">
-                 Todas Las Estadisticas
-            </Button>
-            </Link>  
+			
             <p></p>
             <p></p>   
-            <Link to="/menu" className="Menu">
+            <Link to="/Stadistics" className="Stadistics">
             <Button variant="primary" type="submit">
                  Atras
             </Button>
@@ -97,5 +79,5 @@ class Stadistics extends Component {
   	}		
 
 }
-export default Stadistics;
+export default StatForUser;
 

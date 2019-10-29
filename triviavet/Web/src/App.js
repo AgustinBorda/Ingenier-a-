@@ -7,6 +7,8 @@ import Login from './componentes/Login';
 import NewQuestion from './componentes/NewQuestion';
 import NewCategory from './componentes/NewCategory';
 import Stadistics from './componentes/Stadistics';
+import StatForUser from './componentes/StatForUser';
+import AllStatistics from './componentes/AllStatistics';
 
 class App extends Component {
 
@@ -22,6 +24,8 @@ class App extends Component {
           <Route path="/menu" component={Menu}/>
           <Route path="/CreateAccount" component={CreateAccount}/>
           <Route path="/Stadistics" component={Stadistics}/>
+          <Route path="/StatForUser" component={StatForUser}/>
+          <Route path="/AllStatistics" component={AllStatistics}/>
         </Switch>
     </BrowserRouter>);
   }
