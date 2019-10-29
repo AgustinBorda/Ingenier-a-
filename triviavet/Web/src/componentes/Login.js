@@ -72,8 +72,11 @@ class Login extends Component {
               fontFamily: "monaco, monospace",
               color: "#1e252d"
             }}>
-            <h1>
-              Login</h1>
+            <div>
+              <h1> <img src={logo}
+                height={60}
+                 width={60}/> Login</h1>
+            </div>
             <Form onSubmit={this.handleSubmit}>
               <Form.Group controlId="formBasicEmail">
                 <Form.Label>Username</Form.Label>
@@ -89,10 +92,9 @@ class Login extends Component {
               <Button onClick={this._login} variant="primary" type="submit">
                 Iniciar Sesion
               </Button>
-              <p></p>
-              <p></p>
+
               <Link to="/CreateAccount" className="CreateAccount">
-                <Button variant="primary" type="submit">
+                <Button variant="secondary" type="submit">
                   Crear Cuenta
                 </Button>
               </Link>
