@@ -24,12 +24,12 @@ public class PublicRoutes {
 			Base.close();
 		}
 		response.header("Access-Control-Allow-Origin", "*");
-	};
-	
-	public static final Route SetHeaders = (request, response) -> {	
 		response.header("Access-Control-Allow-Methods", "*");
 		response.header("Access-Control-Allow-Headers", "*");
 		response.header("Access-Control-Allow-Body", "*");
+	};
+	
+	public static final Route SetHeaders = (request, response) -> {	
         return "OK";
 	};
 
@@ -38,7 +38,7 @@ public class PublicRoutes {
 		User user = User.findFirst("username = ? and password = ?", bodyParams.get("username"),
 				bodyParams.get("password"));
 		if (user != null) {
-			loadSession(req, user);
+			user.loadSession(req);
 			return true;
 		}
 		res.status(401);
@@ -67,7 +67,8 @@ public class PublicRoutes {
 		}
 		User user = User.createUser(bodyParams);
 		System.out.println("Registred: " + user.get("username"));
-		loadSession(req, user);
+		user.loadSession(req);
+		res.status(200);
 		return user.toJson(true);
 	};
 
@@ -77,31 +78,30 @@ public class PublicRoutes {
 		User user = User.findFirst("username = ?", bodyParams.get("username"));
 		if (user == null) {
 			System.out.println("Try reset: " + bodyParams.get("username"));
-			halt(401, "");
-			return "";
+			res.status(401);
+			return false;
 		}
-		System.out.println("Reset: " + user.get("username"));
-		Email.getSingletonInstance().sendMail((String) user.get("email"), (String) user.get("username"));
-	
-		return true;
+		else {
+			System.out.println("Reset: " + user.get("username"));
+			Email.getSingletonInstance().sendMail((String) user.get("email"), (String) user.get("username"));
+			res.status(200);
+			return true;
+		}
 	};
 	
 	public static final Route PostNewPass= (req, res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 		String username = Email.getSingletonInstance().checkCode((String) bodyParams.get("code"));
 		if(username == null) {
-			halt(401, "");
-			return "";
+			res.status(401);
+			return false;
 		}
-		System.out.println("New pass to: " + username);
-		User.update("password = ?", "username = ?", bodyParams.get("newPass"), username);
-		
-		return true;
+		else {
+			System.out.println("New pass to: " + username);
+			User.update("password = ?", "username = ?", bodyParams.get("newPass"), username);
+			res.status(200);
+			return true;
+		}
 	};
 
-	private static void loadSession(Request req, User user) {
-		req.session().attribute("username", user.get("username"));
-		req.session().attribute("id", user.get("id"));
-		req.session().attribute("admin", user.get("admin"));
-	}
 }
