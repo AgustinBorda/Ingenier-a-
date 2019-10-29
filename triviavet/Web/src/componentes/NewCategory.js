@@ -41,7 +41,7 @@ class NewCategory extends Component{
                     <Redirect to="/menu" />,
                     document.getElementById('root')
                 )
-              });
+         });
 
       }
 
