@@ -26,7 +26,7 @@ class AllStatistics extends Component {
 
    async _getStadistics() {
     const token =  await AsyncStorage.getItem('userToken');
-    fetch(process.env.REACT_APP_API_HOST + "/logged/statistics", {
+    fetch(process.env.REACT_APP_API_HOST + "/admin/usersstatistics", {
       headers : {
         'Accept' : 'application/json',
         'content-type' : 'application/json',
