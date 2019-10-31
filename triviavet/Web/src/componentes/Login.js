@@ -47,8 +47,10 @@ class Login extends Component {
       })
      .then(async response => {
       if (response.ok) {
+        let res = await response.json();
         let base64 = require('base-64');
         await AsyncStorage.setItem('userToken', 'Basic ' + base64.encode(this.state.username + ":" + this.state.password));
+        await AsyncStorage.setItem('isAdmin', res.isAdmin);
         this.props.history.push("/menu")
       } else {
           alert("El usuario o contraseña no es valido");

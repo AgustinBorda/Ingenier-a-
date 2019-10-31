@@ -3,6 +3,7 @@ package trivia.routes;
 import spark.*;
 import static spark.Spark.halt;
 import org.javalite.activejdbc.Base;
+import org.json.JSONObject;
 
 import java.util.Map;
 import com.google.gson.Gson;
@@ -40,7 +41,9 @@ public class PublicRoutes {
 				bodyParams.get("password"));
 		if (user != null) {
 			user.loadSession(req);
-			return true;
+			JSONObject resp = new JSONObject();
+			resp.put("isAdmin", user.get("admin"));
+			return resp;
 		}
 		res.status(401);
 		return false;
@@ -70,7 +73,9 @@ public class PublicRoutes {
 		System.out.println("Registred: " + user.get("username"));
 		user.loadSession(req);
 		res.status(200);
-		return user.toJson(true);
+		JSONObject resp = new JSONObject();
+		resp.put("isAdmin", user.get("admin"));
+		return resp;
 	};
 
 

@@ -25,18 +25,21 @@ class AllStatistics extends Component {
   }
 
    async _getStadistics() {
+    const isAdmin = await AsyncStorage.getItem("isAdmin")
     const token =  await AsyncStorage.getItem('userToken');
-    fetch(process.env.REACT_APP_API_HOST + "/admin/usersstatistics", {
+    fetch(process.env.REACT_APP_API_HOST + "/admin/usersstatistic", {
       headers : {
         'Accept' : 'application/json',
         'content-type' : 'application/json',
-        'Authorization' : token
-      },method: 'GET',
+        'Authorization' : token,
+        'IsAdmin' : isAdmin,
+        },
+      method: 'GET',
       mode: "cors",
       })
     .then(async response => {
       const resp = await response.json();
-      this.setState({ estadisticas: resp.estadisticas});
+      this.setState({ estadisticas: resp.stats});
       console.log(this.state);
     })
     .catch(error => {
@@ -49,7 +52,7 @@ class AllStatistics extends Component {
         	   <div>
         	  	<Navbar className="bg-light justify-content-between" fixed="top">
 		      		<Navbar.Brand>Todas Las Estadisticas</Navbar.Brand>
-		      	
+
 		      	</Navbar>
 		      	<Row style={{paddingTop: 60}} noGutters="true">
 		        	<Col>
@@ -66,9 +69,9 @@ class AllStatistics extends Component {
 	            )}
 	        		</Col>
 	        	</Row>
-			
+
             <p></p>
-            <p></p>   
+            <p></p>
             <Link to="/Stadistics" className="Stadistics">
             <Button variant="primary" type="submit">
                  Atras
@@ -76,8 +79,7 @@ class AllStatistics extends Component {
            </Link>
           </div>
         );
-  	}		
+  	}
 
 }
 export default AllStatistics;
-

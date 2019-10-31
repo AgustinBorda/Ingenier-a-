@@ -22,7 +22,7 @@ public class AdminRoutes {
 		if (request.requestMethod() != "OPTIONS"){ 
 			if (headerToken == null || headerToken.isEmpty()
 					|| !BasicAuth.authorize(headerToken) ||
-					(boolean)request.session().attribute("admin") == false) {
+					Boolean.parseBoolean(request.headers("IsAdmin")) == false) {
 				halt(401,"Token invalido \n");
 			}
 		}
