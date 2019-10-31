@@ -12,11 +12,41 @@ import logo from './logo.png';
 class NewQuestion extends Component{
     constructor(props) {
         super(props);
-        this.state = {description: '',option1: '',option2:'',option3:'',optionCorrect:''};
+        this.state = {
+        	description: '',
+        	option1: '',
+        	option2:'',
+        	option3:'',
+        	optionCorrect:'',
+        	categories:[]
+        };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
       }
+      componentDidMount(){
+    	this._loadCategories();
+  	  }
+
+  	  async _loadCategories() {
+	    const token =  await AsyncStorage.getItem('userToken');
+	      await fetch(process.env.REACT_APP_API_HOST + "/logged/category", {
+	      headers : {
+	        'Accept' : 'application/json',
+	        'content-type' : 'application/json',
+	        'Authorization' : token
+	      },method: 'GET',
+	      mode: "cors",
+	      })
+	    .then(async response => {
+	      const resp = await response.json();
+	      this.setState({ categories: resp.categories});
+	      console.log(this.state);
+	    })
+	    .catch(error => {
+	      console.log(error);
+	    });
+	  }
 
       handleChange = (event) => {
 		    this.setState({
@@ -32,9 +62,10 @@ class NewQuestion extends Component{
         event.preventDefault();
       }
 
-      _createQuestion(){
-          var c= 'Ciencia';
+     /* _createQuestion(){
+   
           fetch(process.env.REACT_APP_API_HOST+"/admin/questions",{
+        
               method: 'POST',
               body: {description: this.state.description, option1: this.state.option1,
                 option2: this.state.option2, option3: this.state.option3, optionCorrect:this.state.optionCorrect, cat:c},
@@ -48,7 +79,7 @@ class NewQuestion extends Component{
                 )
               });
 
-      }
+      }*/
 
   render () {
         return (
@@ -63,6 +94,19 @@ class NewQuestion extends Component{
                 height={60}
                  width={60}/> Crear Pregunta </h1>
             </div>
+            
+            <div class="Selecionar Categoria">
+			  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" 
+			  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			    Selecione Categoria
+			  </button>
+			  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+			    <a class="dropdown-item" href="#">Action</a>
+			    <a class="dropdown-item" href="#">Another action</a>
+			    <a class="dropdown-item" href="#">Something else here</a>
+			 	 </div>
+			</div>
+
             <Form onSubmit={this.handleSubmit}>
 
               <Form.Group controlId="formBasicEmail">
@@ -73,26 +117,26 @@ class NewQuestion extends Component{
               </Form.Group>
 
           	  <Form.Group controlId="formBasicEmail">
-                <Form.Label>option1</Form.Label>
+                <Form.Label>Opcion 1</Form.Label>
                 <Form.Control name="option1" type="option1" placeholder="option1" 
                 option1={this.state.option1} onChange={this.handleChange}/>
                </Form.Group>
 			  
 			  <Form.Group controlId="formBasicEmail">
-                <Form.Label>option2</Form.Label>
+                <Form.Label>Opcion 2</Form.Label>
                 <Form.Control name="option2" type="option2" placeholder="option2" 
                 option1={this.state.option1} onChange={this.handleChange}/>
                </Form.Group>
 			
 			  <Form.Group controlId="formBasicEmail">
-                <Form.Label>option3</Form.Label>
+                <Form.Label>Opcion 3</Form.Label>
                 <Form.Control name="option3" type="option3" placeholder="option3" 
                 option1={this.state.option1} onChange={this.handleChange}/>
                </Form.Group>
 
                <Form.Group controlId="formBasicEmail">
-                <Form.Label>Opcion 4</Form.Label>
-                <Form.Control name="optionCorrect" type="optionCorrect" placeholder="optionCorrect" 
+                <Form.Label>Opcion Correcta</Form.Label>
+                <Form.Control name="Opcion 4" type="optionCorrect" placeholder="optionCorrect" 
                 optionCorrect={this.state.optionCorrect} onChange={this.handleChange}/>
               </Form.Group>
 
@@ -108,7 +152,7 @@ class NewQuestion extends Component{
             </Form>
         </div>
       </div>
-    </div>);''
+    </div>);
   }
 }
 
