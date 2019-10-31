@@ -49,32 +49,28 @@ class AllStatistics extends Component {
 
   render () {
         return (
-        	   <div>
-        	  	<Navbar className="bg-light justify-content-between" fixed="top">
-		      		<Navbar.Brand>Todas Las Estadisticas</Navbar.Brand>
+       	  <div>
+          <Navbar className="bg-light justify-content-between" fixed="top">
+		  <Navbar.Brand>Todas Las Estadisticas</Navbar.Brand>
+		  </Navbar>
+		  <Col>
+	      <Navbar variant="dark" bg="dark"className="justify-content-between">
+	      <Navbar.Brand>Estadisticas</Navbar.Brand>
+	      </Navbar>
 
-		      	</Navbar>
-		      	<Row style={{paddingTop: 60}} noGutters="true">
-		        	<Col>
-	            	 {this.state.estadisticas.map((message) =>
-	             	 <div style={{padding:10}}>
-	                	<Card id={message} border="secondary">
-	                 	<Card.Header>{message}
-	                  		<Button variant ="primary" type="submit">
-	                    		  -
-	                  		</Button>
-	                  	</Card.Header>
-	                	</Card>
-	                 </div>
-	            )}
-	        		</Col>
-	        	</Row>
-
-            <p></p>
-            <p></p>
+            {this.state.estadisticas.map((message) =>
+              <div style={{padding:10}}>
+                <Card id={message} border="primary">
+                  <Card.Header>{message}
+                  </Card.Header>
+                </Card>
+                </div>
+            )}
+        	</Col>
+        	
             <Link to="/Stadistics" className="Stadistics">
             <Button variant="primary" type="submit">
-                 Atras
+                Atras
             </Button>
            </Link>
           </div>

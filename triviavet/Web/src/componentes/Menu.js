@@ -89,7 +89,7 @@ class Menu extends Component {
         <Col>
           <Navbar variant="dark" bg="dark"className="justify-content-between">
             <Navbar.Brand>Categoria</Navbar.Brand>
-             <Link to="/admin/createcategory" className="NewCategory">
+             <Link to="/NewCategory" className="NewCategory">
                 <Button variant="primary" type="submit">
                  +
                 </Button>
