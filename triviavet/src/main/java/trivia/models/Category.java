@@ -23,8 +23,10 @@ public class Category extends Model {
 	
 	public static void deleteCategory(String name) {
 		Category cat = Category.findFirst("nombre = ?", name);
-		cat.delete();	
+		System.out.println(cat);
+		Category.delete("nombre = ?", cat.getString("nombre")); //unorthodox, but effective way to delete a category.
 	}
+	
 	
 	public static void modifyCategory(String oldName, String newName) {
 		Category cat = Category.findFirst("nombre = ?", oldName);

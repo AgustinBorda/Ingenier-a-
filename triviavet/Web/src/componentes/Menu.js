@@ -16,11 +16,9 @@ class Menu extends Component {
     super(props);
     this.state = {
       categories: [],
-      username: '',
-      password: ''
     }
   this._loadCategories = this._loadCategories.bind(this);
-  this._deleteQuestion = this._deleteQuestion.bind(this);
+  this._deleteCategory = this._deleteCategory.bind(this);
   }
 
   componentDidMount(){
@@ -40,29 +38,31 @@ class Menu extends Component {
     .then(async response => {
       const resp = await response.json();
       this.setState({ categories: resp.categories});
-      console.log(this.state);
     })
     .catch(error => {
       console.log(error);
     });
   }
 
-  async _deleteQuestion(message) {
+  async _deleteCategory(message) {
+console.log(message);
     const token =  await AsyncStorage.getItem('userToken');
-    fetch(process.env.REACT_APP_API_HOST + "/admin/removequestion", {
+    const isAdmin = await AsyncStorage.getItem('isAdmin');
+    await fetch(process.env.REACT_APP_API_HOST + "/admin/deletecategory", {
       headers : {
         'Accept' : 'application/json',
         'content-type' : 'application/json',
-        'Authorization' : token
+        'Authorization' : token,
+        'IsAdmin' : isAdmin,
         },
       method: 'POST',
       body: JSON.stringify({
-        name : message,
+        name : message.toString(),
       }),
       mode: "cors",
       })
-    .then(({data}) => {
-      this.setState({ categories: data.categories});
+    .then(async response => {
+        this._loadCategories();
     })
     .catch(error => {
       console.log(error);
@@ -77,9 +77,9 @@ class Menu extends Component {
         <Navbar className="bg-light justify-content-between" fixed="top">
                     <img src={logo}
                 height={60}
-                 width={60}/> 
+                 width={60}/>
         <Navbar.Brand>Administracion trivia</Navbar.Brand>
-    
+
         <Nav>
           <Nav.Link href="/login"><img src={exitlogo} height={40} width={40}/>
         </Nav.Link>
@@ -89,7 +89,7 @@ class Menu extends Component {
         <Col>
           <Navbar variant="dark" bg="dark"className="justify-content-between">
             <Navbar.Brand>Categoria</Navbar.Brand>
-             <Link to="/admin/createcategory" className="NewCategory">
+             <Link to="/NewCategory" className="NewCategory">
                 <Button variant="primary" type="submit">
                  +
                 </Button>
@@ -100,7 +100,7 @@ class Menu extends Component {
               <div style={{padding:10}}>
                 <Card id={message} border="secondary">
                   <Card.Header>{message}
-                  <Button variant ="primary" type="submit">
+                  <Button onClick={() => this._deleteCategory(message)} variant ="primary" type="submit">
                       -
                   </Button>
                   </Card.Header>
