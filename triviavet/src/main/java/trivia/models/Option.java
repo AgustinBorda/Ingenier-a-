@@ -14,7 +14,8 @@ public class Option extends Model{
 		for (OptionParam item : options) {
 			Option option = new Option();
 			option.set("description", item.description).set("correct", item.correct);
-			question.add(option);
+			option.set("question_id", question.getId());
+			option.saveIt();
 		}
 	}
 }

@@ -34,6 +34,7 @@ public class AdminRoutes {
 		QuestionParam bodyParams = new Gson().fromJson(req.body(), QuestionParam.class);
 		Question question = new Question();
 		Base.openTransaction();
+		System.out.println(bodyParams.options);
 		try {
 			question.setQuestion(bodyParams);
 			Base.commitTransaction();
@@ -85,10 +86,8 @@ public class AdminRoutes {
 	
 	public static final Route ListQuestions = (req,  res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
-		System.out.println(bodyParams.get("category").toString());
 		List<String> question = Question.where("category = ?", bodyParams.get("category").toString()).collect("description");
 		JSONObject resp = new JSONObject();
-		System.out.println(question.size());
 		try {
 			resp.put("questions", question.toArray());
 			resp.put("answer", "OK");

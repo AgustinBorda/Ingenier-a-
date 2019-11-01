@@ -21,12 +21,13 @@ class NewQuestion extends Component{
         	option3:'',
         	optionCorrect:'',
         	categories:[],
-          chosenCat:'Seleccionar Categorias'
+          category:'Seleccionar Categorias'
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this._setCategory = this._setCategory.bind(this);
+        this._createQuestion = this._createQuestion.bind(this);
       }
       componentDidMount(){
     	 this._loadCategories();
@@ -66,12 +67,15 @@ class NewQuestion extends Component{
       }
 
       _setCategory(msg) {
-        this.setState({chosenCat : msg})
+        this.setState({category : msg})
       }
 
       async  _createQuestion(){
           const token = await AsyncStorage.getItem('userToken');
           const admin = await AsyncStorage.getItem('isAdmin');
+           if (this.state.category !== 'Seleccionar Categorias') {
+
+          
           fetch(process.env.REACT_APP_API_HOST+"/admin/questions",{
               headers: { 
                   'IsAdmin' : admin,
@@ -82,28 +86,23 @@ class NewQuestion extends Component{
               method: 'POST',
                body:JSON.stringify({
                   description: this.state.description,
-                  option1: this.state.option1,
-                  option2: this.state.option2,
-                  option3: this.state.option3, 
-                  optionCorrect:this.state.optionCorrect,
-                  chosenCat:this.state.chosenCat
+                  category:this.state.category,
+                  options: [{description:this.state.option1, correct: false}, 
+                            {description:this.state.option2, correct:false}, 
+                            {description:this.state.option3, correct:false},
+                            {description:this.state.optionCorrect, correct:true}]
                 }),
                 mode: "cors",
                 cache: "default",
             })
             .then(response => response.json())
             .then(response => {
-              if (this.state.chosenCat !== 'Seleccionar Categorias') {
-                AsyncStorage.setItem('userToken', response.config.headers.Authorization);
-                ReactDOM.render(
-                    <Redirect to="/menu" />,
-                    document.getElementById('root')
-                )
-              }else{
+             
+               this.props.history.push("/menu");
+              });
+             }else{
                  alert("Seleccione una categoria");
               }
-              });
-
       }
 
   render () {
@@ -120,9 +119,10 @@ class NewQuestion extends Component{
                  width={60}/> Crear Pregunta </h1>
             </div>
             <Form onSubmit={this.handleSubmit}>
-            <DropdownButton id="dropdown-item-button" title={this.state.chosenCat}>
+            <DropdownButton id="dropdown-item-button" title={this.state.category}>
               {this.state.categories.map((message) =>
-                  <a onClick={() => this._setCategory(message)} class="dropdown-item" href="#" value={message}>{message}</a>
+                  <a onClick={() => this._setCategory(message)} class="dropdown-item" 
+                  href="#" value={message}>{message}</a>
                 )}
             </DropdownButton>  
   
