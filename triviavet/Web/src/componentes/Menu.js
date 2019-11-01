@@ -19,6 +19,7 @@ class Menu extends Component {
     }
   this._loadCategories = this._loadCategories.bind(this);
   this._deleteCategory = this._deleteCategory.bind(this);
+  this._modifyCategory = this._modifyCategory.bind(this);
   }
 
   componentDidMount(){
@@ -42,6 +43,11 @@ class Menu extends Component {
     .catch(error => {
       console.log(error);
     });
+  }
+
+  async _modifyCategory(message) {
+    AsyncStorage.setItem("old_name", message);
+    this.props.history.push("/modifyCategory")
   }
 
   async _deleteCategory(message) {
@@ -99,9 +105,14 @@ class Menu extends Component {
               <div style={{padding:10}}>
                 <Card id={message} border="secondary">
                   <Card.Header>{message}
-                  <Button onClick={() => this._deleteCategory(message)} variant ="primary" type="submit">
-                      -
-                  </Button>
+                  <div>
+                    <Button onClick={() => this._deleteCategory(message)} variant ="primary" type="submit">
+                        -
+                    </Button>
+                    <Button onClick={() => this._modifyCategory(message)} variant ="primary" type="submit">
+                        Modificar
+                    </Button>
+                  </div>
                   </Card.Header>
                 </Card>
                 </div>
