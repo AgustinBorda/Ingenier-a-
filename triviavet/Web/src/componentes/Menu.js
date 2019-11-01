@@ -16,11 +16,13 @@ class Menu extends Component {
     super(props);
     this.state = {
       categories: [],
+      questions: [],
       username: '',
       password: ''
     }
-  this._loadCategories = this._loadCategories.bind(this);
-  this._deleteQuestion = this._deleteQuestion.bind(this);
+    this._loadCategories = this._loadCategories.bind(this);
+    this._deleteQuestion = this._deleteQuestion.bind(this);
+    this._loadQuestions = this._loadQuestions.bind(this);
   }
 
   componentDidMount(){
@@ -40,7 +42,31 @@ class Menu extends Component {
     .then(async response => {
       const resp = await response.json();
       this.setState({ categories: resp.categories});
-      console.log(this.state);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  }
+
+  async _loadQuestions(s) {
+
+    const token =  await AsyncStorage.getItem('userToken');
+    const admin =  await AsyncStorage.getItem('isAdmin');
+    await fetch(process.env.REACT_APP_API_HOST + "/admin/listquestion", {
+      headers : {
+        'Accept' : 'application/json',
+        'content-type' : 'application/json',
+        'Authorization' : token,
+        'IsAdmin': admin,
+      },method: 'POST',
+      body:  JSON.stringify({'category': s}),
+      mode: 'cors',
+      })
+    .then(async response => {
+      let resp = await response.json();
+      console.log(resp);
+      this.setState({ questions: resp.questions});
+
     })
     .catch(error => {
       console.log(error);
@@ -77,9 +103,9 @@ class Menu extends Component {
         <Navbar className="bg-light justify-content-between" fixed="top">
                     <img src={logo}
                 height={60}
-                 width={60}/> 
+                 width={60}/>
         <Navbar.Brand>Administracion trivia</Navbar.Brand>
-    
+
         <Nav>
           <Nav.Link href="/login"><img src={exitlogo} height={40} width={40}/>
         </Nav.Link>
@@ -98,7 +124,7 @@ class Menu extends Component {
 
             {this.state.categories.map((message) =>
               <div style={{padding:10}}>
-                <Card id={message} border="secondary">
+                <Card id={message} onClick={(x) => this._loadQuestions(message)} border="secondary">
                   <Card.Header>{message}
                   <Button variant ="primary" type="submit">
                       -
@@ -117,22 +143,13 @@ class Menu extends Component {
                 </Button>
              </Link>
           </Navbar>
-          <div style={{padding:10}}>
-            <Card border="primary">
-              <Card.Header>Header
-              <Button variant="primary" type="submit">
-                 -
-                </Button>
-                </Card.Header>
-              <Card.Body>
-
-                <Card.Title>Primary Card Title</Card.Title>
-                <Card.Text>
-                  Some quick example text to build on the card title and make up the bulk of the card's content.
-                </Card.Text>
-              </Card.Body>
-            </Card>
-          </div>
+          {this.state.questions.map((message) =>
+            <div style={{padding:10}}>
+              <Card id={message} border="secondary">
+                <Card.Header>{message}</Card.Header>
+              </Card>
+              </div>
+          )}
         </Col>
         <Col>
           <Navbar variant="dark" bg="dark" className="justify-content-between">

@@ -64,7 +64,7 @@ class NewCategory extends Component{
              <Button variant="primary" type="submit">
                  Guardar
             </Button>
-            
+
             <p></p>
             <p></p>
             <Link to="/menu" className="Menu">

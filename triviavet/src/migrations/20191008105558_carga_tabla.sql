@@ -208,4 +208,3 @@ INSERT INTO options (id, question_id, description, correct) VALUES
 	(0,40,"0,20 mg./Kg",0),
 	(0,40,"0,315 mg./Kg",0),
 	(0,40,"0.630 mg./Kg",1);
-	
