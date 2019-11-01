@@ -49,7 +49,7 @@ class Stadistics extends Component {
         return (
         	   <div>
         	  	<Navbar className="bg-light justify-content-between" fixed="top">
-        	  	 <img src={logo} height={60} width={60}/> 
+        	  	 <img src={logo} height={60} width={60}/>
 		      		<Navbar.Brand>Estadisticas</Navbar.Brand>
 		      		<Nav>
 		      			<Nav.Link href="/Menu"><img src={exitlogo} height={40} width={40}/>
@@ -72,7 +72,7 @@ class Stadistics extends Component {
 	        		</Col>
 	        	</Row>
 	        	<p></p>
-            <p></p> 
+            <p></p>
 			<Link to="/StatForUser" className="StatForUser">
             <Button variant="primary" type="submit">
                  Estadisticas Por Usuario
@@ -84,9 +84,9 @@ class Stadistics extends Component {
             <Button variant="primary" type="submit">
                  Todas Las Estadisticas
             </Button>
-            </Link>  
+            </Link>
             <p></p>
-            <p></p>   
+            <p></p>
             <Link to="/menu" className="Menu">
             <Button variant="primary" type="submit">
                  Atras
@@ -94,8 +94,7 @@ class Stadistics extends Component {
            </Link>
           </div>
         );
-  	}		
+  	}
 
 }
 export default Stadistics;
-

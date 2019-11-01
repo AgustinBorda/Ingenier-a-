@@ -45,7 +45,6 @@ class Menu extends Component {
   }
 
   async _deleteCategory(message) {
-console.log(message);
     const token =  await AsyncStorage.getItem('userToken');
     const isAdmin = await AsyncStorage.getItem('isAdmin');
     await fetch(process.env.REACT_APP_API_HOST + "/admin/deletecategory", {
