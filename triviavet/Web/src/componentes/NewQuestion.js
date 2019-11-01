@@ -3,6 +3,8 @@ import {AsyncStorage} from "AsyncStorage";
 import ReactDOM from "react-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import DropdownButton from "react-bootstrap/DropdownButton";
+import Dropdown from  "react-bootstrap/Dropdown";
 import Menu from './Menu';
 import { Link } from 'react-router-dom';
 import {StyleSheet, StyleResolver} from "style-sheet";
@@ -13,19 +15,21 @@ class NewQuestion extends Component{
     constructor(props) {
         super(props);
         this.state = {
-        	description: '',
-        	option1: '',
+        	description:'',
+        	option1:'',
         	option2:'',
         	option3:'',
         	optionCorrect:'',
-        	categories:[]
+        	categories:[],
+          chosenCat:'Seleccionar Categorias'
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this._setCategory = this._setCategory.bind(this);
       }
       componentDidMount(){
-    	this._loadCategories();
+    	 this._loadCategories();
   	  }
 
   	  async _loadCategories() {
@@ -35,7 +39,8 @@ class NewQuestion extends Component{
 	        'Accept' : 'application/json',
 	        'content-type' : 'application/json',
 	        'Authorization' : token
-	      },method: 'GET',
+	      },
+        method: 'GET',
 	      mode: "cors",
 	      })
 	    .then(async response => {
@@ -52,34 +57,54 @@ class NewQuestion extends Component{
 		    this.setState({
 		      [event.target.name]: event.target.value
 		    }, () => {
-		      //updated state
 		      console.log(this.state)
 		    });
 		  }
 
       handleSubmit(event) {
-        alert('A user was submitted: ' + this.state.username);
         event.preventDefault();
       }
 
-     /* _createQuestion(){
-   
+      _setCategory(msg) {
+        this.setState({chosenCat : msg})
+      }
+
+      async  _createQuestion(){
+          const token = await AsyncStorage.getItem('userToken');
+          const admin = await AsyncStorage.getItem('isAdmin');
           fetch(process.env.REACT_APP_API_HOST+"/admin/questions",{
-        
+              headers: { 
+                  'IsAdmin' : admin,
+                  'Authorization' : token,
+                  'Accept' : 'application/json',
+                  'content-type' : 'application/json',
+              },
               method: 'POST',
-              body: {description: this.state.description, option1: this.state.option1,
-                option2: this.state.option2, option3: this.state.option3, optionCorrect:this.state.optionCorrect, cat:c},
-                headers: { 'Authorization' : AsyncStorage.getItem('userToken')}
-            }).then(response => response.json())
+               body:JSON.stringify({
+                  description: this.state.description,
+                  option1: this.state.option1,
+                  option2: this.state.option2,
+                  option3: this.state.option3, 
+                  optionCorrect:this.state.optionCorrect,
+                  chosenCat:this.state.chosenCat
+                }),
+                mode: "cors",
+                cache: "default",
+            })
+            .then(response => response.json())
             .then(response => {
+              if (this.state.chosenCat !== 'Seleccionar Categorias') {
                 AsyncStorage.setItem('userToken', response.config.headers.Authorization);
                 ReactDOM.render(
                     <Redirect to="/menu" />,
                     document.getElementById('root')
                 )
+              }else{
+                 alert("Seleccione una categoria");
+              }
               });
 
-      }*/
+      }
 
   render () {
         return (
@@ -94,20 +119,13 @@ class NewQuestion extends Component{
                 height={60}
                  width={60}/> Crear Pregunta </h1>
             </div>
-            
-            <div class="Selecionar Categoria">
-			  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" 
-			  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			    Selecione Categoria
-			  </button>
-			  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-			    <a class="dropdown-item" href="#">Action</a>
-			    <a class="dropdown-item" href="#">Another action</a>
-			    <a class="dropdown-item" href="#">Something else here</a>
-			 	 </div>
-			</div>
-
             <Form onSubmit={this.handleSubmit}>
+            <DropdownButton id="dropdown-item-button" title={this.state.chosenCat}>
+              {this.state.categories.map((message) =>
+                  <a onClick={() => this._setCategory(message)} class="dropdown-item" href="#" value={message}>{message}</a>
+                )}
+            </DropdownButton>  
+  
 
               <Form.Group controlId="formBasicEmail">
                 <Form.Label>Descripcion</Form.Label>
@@ -122,25 +140,25 @@ class NewQuestion extends Component{
                 option1={this.state.option1} onChange={this.handleChange}/>
                </Form.Group>
 			  
-			  <Form.Group controlId="formBasicEmail">
+			         <Form.Group controlId="formBasicEmail">
                 <Form.Label>Opcion 2</Form.Label>
                 <Form.Control name="option2" type="option2" placeholder="option2" 
-                option1={this.state.option1} onChange={this.handleChange}/>
+                option2={this.state.option2} onChange={this.handleChange}/>
                </Form.Group>
 			
-			  <Form.Group controlId="formBasicEmail">
+			        <Form.Group controlId="formBasicEmail">
                 <Form.Label>Opcion 3</Form.Label>
                 <Form.Control name="option3" type="option3" placeholder="option3" 
-                option1={this.state.option1} onChange={this.handleChange}/>
+                option3={this.state.option3} onChange={this.handleChange}/>
                </Form.Group>
 
                <Form.Group controlId="formBasicEmail">
                 <Form.Label>Opcion Correcta</Form.Label>
-                <Form.Control name="Opcion 4" type="optionCorrect" placeholder="optionCorrect" 
+                <Form.Control name="optionCorrect" type="optionCorrect" placeholder="optionCorrect" 
                 optionCorrect={this.state.optionCorrect} onChange={this.handleChange}/>
               </Form.Group>
 
-              <Button onClick={this._login} variant="primary" type="submit">
+              <Button onClick={this._createQuestion} variant="primary" type="submit">
                 Crear Pregunta
               </Button>
 
@@ -186,3 +204,4 @@ export default NewQuestion;
       justifyContent: "center"
     }
   });
+ 
