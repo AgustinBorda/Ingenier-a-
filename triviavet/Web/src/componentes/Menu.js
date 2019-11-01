@@ -16,11 +16,12 @@ class Menu extends Component {
     super(props);
     this.state = {
       categories: [],
+      questions : [],
     }
   this._loadCategories = this._loadCategories.bind(this);
   this._deleteCategory = this._deleteCategory.bind(this);
   this._modifyCategory = this._modifyCategory.bind(this);
-  this._deleteQuestion = this._deleteQuestion.bind(this);
+  //this._deleteQuestion = this._deleteQuestion.bind(this);
   }
 
   componentDidMount(){
