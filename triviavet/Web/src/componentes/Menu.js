@@ -20,6 +20,7 @@ class Menu extends Component {
   this._loadCategories = this._loadCategories.bind(this);
   this._deleteCategory = this._deleteCategory.bind(this);
   this._modifyCategory = this._modifyCategory.bind(this);
+  this._deleteQuestion = this._deleteQuestion.bind(this);
   }
 
   componentDidMount(){
@@ -39,6 +40,32 @@ class Menu extends Component {
     .then(async response => {
       const resp = await response.json();
       this.setState({ categories: resp.categories});
+
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  }
+
+  async _loadQuestions(s) {
+
+    const token =  await AsyncStorage.getItem('userToken');
+    const admin =  await AsyncStorage.getItem('isAdmin');
+    await fetch(process.env.REACT_APP_API_HOST + "/admin/listquestion", {
+      headers : {
+        'Accept' : 'application/json',
+        'content-type' : 'application/json',
+        'Authorization' : token,
+        'IsAdmin': admin,
+      },method: 'POST',
+      body:  JSON.stringify({'category': s}),
+      mode: 'cors',
+      })
+    .then(async response => {
+      let resp = await response.json();
+      console.log(resp);
+      this.setState({ questions: resp.questions});
+
     })
     .catch(error => {
       console.log(error);
@@ -103,7 +130,7 @@ class Menu extends Component {
 
             {this.state.categories.map((message) =>
               <div style={{padding:10}}>
-                <Card id={message} border="secondary">
+                <Card id={message} onClick={(x) => this._loadQuestions(message)} border="secondary">
                   <Card.Header>{message}
                   <div>
                     <Button onClick={() => this._deleteCategory(message)} variant ="primary" type="submit">
@@ -127,22 +154,13 @@ class Menu extends Component {
                 </Button>
              </Link>
           </Navbar>
-          <div style={{padding:10}}>
-            <Card border="primary">
-              <Card.Header>Header
-              <Button variant="primary" type="submit">
-                 -
-                </Button>
-                </Card.Header>
-              <Card.Body>
-
-                <Card.Title>Primary Card Title</Card.Title>
-                <Card.Text>
-                  Some quick example text to build on the card title and make up the bulk of the card's content.
-                </Card.Text>
-              </Card.Body>
-            </Card>
-          </div>
+          {this.state.questions.map((message) =>
+            <div style={{padding:10}}>
+              <Card id={message} border="secondary">
+                <Card.Header>{message}</Card.Header>
+              </Card>
+              </div>
+          )}
         </Col>
         <Col>
           <Navbar variant="dark" bg="dark" className="justify-content-between">

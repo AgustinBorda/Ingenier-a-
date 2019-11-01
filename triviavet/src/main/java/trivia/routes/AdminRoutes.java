@@ -2,6 +2,7 @@ package trivia.routes;
 
 import static spark.Spark.*;
 
+import java.util.List;
 import java.util.Map;
 
 import org.javalite.activejdbc.Base;
@@ -19,6 +20,7 @@ public class AdminRoutes {
 
 	public static final Filter CheckAdmin = (request,response) -> {
 		String headerToken = (String) request.headers("Authorization");
+		System.out.println(request.headers("IsAdmin"));
 		if (request.requestMethod() != "OPTIONS"){ 
 			if (headerToken == null || headerToken.isEmpty()
 					|| !BasicAuth.authorize(headerToken) ||
@@ -71,6 +73,24 @@ public class AdminRoutes {
 		JSONObject resp = new JSONObject();
 		try {
 			question.delete();	
+			resp.put("answer", "OK");
+			res.status(200);
+		}
+		catch(DBException e) {
+			resp.put("answer", "Fail");
+			res.status(404);
+		}
+		return resp;
+	};
+	
+	public static final Route ListQuestions = (req,  res) -> {
+		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+		System.out.println(bodyParams.get("category").toString());
+		List<String> question = Question.where("category = ?", bodyParams.get("category").toString()).collect("description");
+		JSONObject resp = new JSONObject();
+		System.out.println(question.size());
+		try {
+			resp.put("questions", question.toArray());
 			resp.put("answer", "OK");
 			res.status(200);
 		}

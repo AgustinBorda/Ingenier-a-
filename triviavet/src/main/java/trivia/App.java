@@ -2,7 +2,6 @@ package trivia;
 
 import static spark.Spark.*;
 import trivia.routes.*;
-import trivia.utils.Email;
 
 public class App {
 
@@ -49,6 +48,8 @@ public class App {
 		post("/admin/questions", AdminRoutes.CreateQuestions);
 		
 		post("/admin/removequestion", AdminRoutes.RemoveQuestions);
+		
+		post("/admin/listquestion", AdminRoutes.ListQuestions);
 		
 		post("/admin/modifyquestion", AdminRoutes.ModifyQuestions);
 		
