@@ -16,13 +16,11 @@ class Menu extends Component {
     super(props);
     this.state = {
       categories: [],
-      questions: [],
-      username: '',
-      password: ''
     }
-    this._loadCategories = this._loadCategories.bind(this);
-    this._deleteQuestion = this._deleteQuestion.bind(this);
-    this._loadQuestions = this._loadQuestions.bind(this);
+  this._loadCategories = this._loadCategories.bind(this);
+  this._deleteCategory = this._deleteCategory.bind(this);
+  this._modifyCategory = this._modifyCategory.bind(this);
+  this._deleteQuestion = this._deleteQuestion.bind(this);
   }
 
   componentDidMount(){
@@ -42,6 +40,7 @@ class Menu extends Component {
     .then(async response => {
       const resp = await response.json();
       this.setState({ categories: resp.categories});
+
     })
     .catch(error => {
       console.log(error);
@@ -73,22 +72,29 @@ class Menu extends Component {
     });
   }
 
-  async _deleteQuestion(message) {
+  async _modifyCategory(message) {
+    AsyncStorage.setItem("old_name", message);
+    this.props.history.push("/modifyCategory")
+  }
+
+  async _deleteCategory(message) {
     const token =  await AsyncStorage.getItem('userToken');
-    fetch(process.env.REACT_APP_API_HOST + "/admin/removequestion", {
+    const isAdmin = await AsyncStorage.getItem('isAdmin');
+    await fetch(process.env.REACT_APP_API_HOST + "/admin/deletecategory", {
       headers : {
         'Accept' : 'application/json',
         'content-type' : 'application/json',
-        'Authorization' : token
+        'Authorization' : token,
+        'IsAdmin' : isAdmin,
         },
       method: 'POST',
       body: JSON.stringify({
-        name : message,
+        name : message.toString(),
       }),
       mode: "cors",
       })
-    .then(({data}) => {
-      this.setState({ categories: data.categories});
+    .then(async response => {
+        this._loadCategories();
     })
     .catch(error => {
       console.log(error);
@@ -126,9 +132,14 @@ class Menu extends Component {
               <div style={{padding:10}}>
                 <Card id={message} onClick={(x) => this._loadQuestions(message)} border="secondary">
                   <Card.Header>{message}
-                  <Button variant ="primary" type="submit">
-                      -
-                  </Button>
+                  <div>
+                    <Button onClick={() => this._deleteCategory(message)} variant ="primary" type="submit">
+                        -
+                    </Button>
+                    <Button onClick={() => this._modifyCategory(message)} variant ="primary" type="submit">
+                        Modificar
+                    </Button>
+                  </div>
                   </Card.Header>
                 </Card>
                 </div>

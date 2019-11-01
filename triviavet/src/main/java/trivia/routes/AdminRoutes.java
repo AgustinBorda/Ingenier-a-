@@ -148,6 +148,7 @@ public class AdminRoutes {
 		}
 		catch(DBException e) {
 			Base.rollbackTransaction();
+			e.printStackTrace();
 			resp.put("answer", "Cannot delete category");
 			res.status(404);
 		}

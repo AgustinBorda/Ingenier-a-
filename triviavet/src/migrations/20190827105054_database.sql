@@ -14,7 +14,8 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS categories (
-nombre VARCHAR(50) NOT NULL PRIMARY KEY UNIQUE
+id int(11) NOT NULL auto_increment PRIMARY KEY,
+nombre VARCHAR(50) NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS user_statistics_categories(

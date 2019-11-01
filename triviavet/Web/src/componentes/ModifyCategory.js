@@ -12,12 +12,12 @@ class NewCategory extends Component{
     constructor(props) {
         super(props);
         this.state = {
-          category:''
+          newName:''
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this._createCategory = this._createCategory.bind(this);
+        this._modifyCategory = this._modifyCategory.bind(this);
       }
 
       handleChange = (event) => {
@@ -30,13 +30,15 @@ class NewCategory extends Component{
         event.preventDefault();
       }
 
-     async  _createCategory(){
+     async  _modifyCategory(){
+          const oldName = await AsyncStorage.getItem("old_name");
           const token = await AsyncStorage.getItem('userToken');
           const isAdmin = await AsyncStorage.getItem('isAdmin');
-          fetch(process.env.REACT_APP_API_HOST+"/admin/createcategory",{
+          fetch(process.env.REACT_APP_API_HOST+"/admin/modifycategory",{
               method: 'POST',
               body: JSON.stringify({
-                name: this.state.category
+                old_name: oldName,
+                new_name: this.state.newName
               }),
                 headers: {
                   'Accept' : 'application/json',
@@ -49,11 +51,12 @@ class NewCategory extends Component{
             .then(async response => {
                 const resp = await response.json();
                 if(response.ok){
-                  alert("Categoria creada");
+                  alert("Categoria modificada");
                   this.props.history.push("/menu");
                 }
                 else{
-                  alert("No se pudo crear la categoria");
+                  alert("No se pudo modificar la categoria");
+                  this.props.history.push("/menu");
                 }
          });
 
@@ -75,13 +78,13 @@ class NewCategory extends Component{
           </div>
           <Form onSubmit={this.handleSubmit}>
             <Form.Group controlId="formBasicEmail">
-              <Form.Label>Categoria</Form.Label>
-              <Form.Control name="category" type="Text" placeholder="Categoria" bsSize="large" category={this.state.category} onChange={this.handleChange}/>
+              <Form.Label>Nuevo nombre</Form.Label>
+              <Form.Control name="newName" type="Text" placeholder="Nuevo Nombre" bsSize="large" category={this.state.category} onChange={this.handleChange}/>
               <Form.Text className="text-muted"></Form.Text>
             </Form.Group>
 
-            <Button onClick={this._createCategory} variant="primary" type="submit">
-              Crear Categoria
+            <Button onClick={this._modifyCategory} variant="primary" type="submit">
+              modificar Categoria
             </Button>
             <p></p>
             <p></p>

@@ -49,7 +49,7 @@ class StatForUser extends Component {
         	   <div>
         	  	<Navbar className="bg-light justify-content-between" fixed="top">
 		      		<Navbar.Brand>Estadisticas Por Usuario</Navbar.Brand>
-		      	
+
 		      	</Navbar>
 		      	<Row style={{paddingTop: 60}} noGutters="true">
 		        	<Col>
@@ -66,9 +66,9 @@ class StatForUser extends Component {
 	            )}
 	        		</Col>
 	        	</Row>
-			
+
             <p></p>
-            <p></p>   
+            <p></p>
             <Link to="/Stadistics" className="Stadistics">
             <Button variant="primary" type="submit">
                  Atras
@@ -76,8 +76,7 @@ class StatForUser extends Component {
            </Link>
           </div>
         );
-  	}		
+  	}
 
 }
 export default StatForUser;
-
