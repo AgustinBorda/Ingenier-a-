@@ -74,7 +74,7 @@ class NewCategory extends Component{
           <div>
             <h1> <img src={logo}
               height={60}
-               width={60}/> Crear nueva Categoria</h1>
+               width={60}/> Modificar Categoria</h1>
           </div>
           <Form onSubmit={this.handleSubmit}>
             <Form.Group controlId="formBasicEmail">

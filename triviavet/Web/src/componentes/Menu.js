@@ -21,11 +21,12 @@ class Menu extends Component {
   this._loadCategories = this._loadCategories.bind(this);
   this._deleteCategory = this._deleteCategory.bind(this);
   this._modifyCategory = this._modifyCategory.bind(this);
-  //this._deleteQuestion = this._deleteQuestion.bind(this);
+  this._deleteQuestion = this._deleteQuestion.bind(this);
   }
 
   componentDidMount(){
     this._loadCategories();
+    this._loadQuestions();
   }
 
   async _loadCategories() {
@@ -71,6 +72,31 @@ class Menu extends Component {
     .catch(error => {
       console.log(error);
     });
+  }
+  async _deleteQuestion(message) {
+    const token =  await AsyncStorage.getItem('userToken');
+    const isAdmin = await AsyncStorage.getItem('isAdmin');
+    await fetch(process.env.REACT_APP_API_HOST + "/admin/removequestion", {
+      headers : {
+        'Accept' : 'application/json',
+        'content-type' : 'application/json',
+        'Authorization' : token,
+        'IsAdmin' : isAdmin,
+        },
+      method: 'POST',
+      body: JSON.stringify({
+        description : message.toString(),
+      }),
+      mode: "cors",
+      })
+    .then(async response => {
+        const res = await response.json();
+        this._loadQuestions(res.cat);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+
   }
 
   async _modifyCategory(message) {
@@ -131,7 +157,9 @@ class Menu extends Component {
 
             {this.state.categories.map((message) =>
               <div style={{padding:10}}>
+                
                 <Card id={message} onClick={(x) => this._loadQuestions(message)} border="secondary">
+
                   <Card.Header>{message}
                   <div>
                     <Button onClick={() => this._deleteCategory(message)} variant ="primary" type="submit">
@@ -159,6 +187,9 @@ class Menu extends Component {
             <div style={{padding:10}}>
               <Card id={message} border="secondary">
                 <Card.Header>{message}</Card.Header>
+               <Button onClick={() => this._deleteQuestion(message)} variant ="primary" type="submit">
+                   -
+               </Button>
               </Card>
               </div>
           )}
@@ -178,7 +209,7 @@ class Menu extends Component {
               <Card.Body>
                 <Card.Title>Primary Card Title</Card.Title>
                 <Card.Text>
-                  Some quick example text to build on the card title and make up the bulk of the card's content.
+                  
                 </Card.Text>
               </Card.Body>
             </Card>

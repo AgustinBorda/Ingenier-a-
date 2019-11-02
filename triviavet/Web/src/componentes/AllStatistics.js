@@ -16,7 +16,7 @@ class AllStatistics extends Component {
   constructor(props){
     super(props);
     this.state = {
-      estadisticas: []
+      statistics: []
     }
   }
 
@@ -39,8 +39,7 @@ class AllStatistics extends Component {
       })
     .then(async response => {
       const resp = await response.json();
-      this.setState({ estadisticas: resp.stats});
-      console.log(this.state);
+      this.setState({ statistics: resp});
     })
     .catch(error => {
       console.log(error);
@@ -58,13 +57,15 @@ class AllStatistics extends Component {
 	      <Navbar.Brand>Estadisticas</Navbar.Brand>
 	      </Navbar>
 
-            {this.state.estadisticas.map((message) =>
-              <div style={{padding:10}}>
-                <Card id={message} border="primary">
-                  <Card.Header>{message}
-                  </Card.Header>
-                </Card>
-                </div>
+            {this.state.statistics.map(statistic =>
+              <li key={statistic.id.toString()}>
+                <div style={{padding:10}}>
+                 <Card id={statistic.id.toString()} border="primary">
+                   <Card.Header>{statistic.nombre.toString()} {statistic.correct_answer.toString()} 
+                   </Card.Header>
+                 </Card>
+                 </div>
+              </li>
             )}
         	</Col>
         	

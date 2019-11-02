@@ -73,8 +73,9 @@ public class AdminRoutes {
 		Question question = Question.findFirst("description = ?", bodyParams.get("description").toString());
 		JSONObject resp = new JSONObject();
 		try {
-			question.delete();	
+			Question.delete("description =?",bodyParams.get("description"));	
 			resp.put("answer", "OK");
+			resp.put("cat", question.get("category"));
 			res.status(200);
 		}
 		catch(DBException e) {
@@ -174,38 +175,30 @@ public class AdminRoutes {
 	
 	public static final Route GetSpecificUserStatistics = (req, res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
-		JSONObject resp = new JSONObject();
 		String user = "%"+bodyParams.get("username")+"%";
 		LazyList<UserStatisticsCategory> stats = UserStatisticsCategory.where("user = ?",user);
-		resp.put("stats", stats.toArray());
 		res.status(200);
-		return resp;
+		return stats.toJson(true);
 	};
 	
 	public static final Route GetAllUserStatistics = (req, res) -> {
-		JSONObject resp = new JSONObject();
 		LazyList<UserStatisticsCategory> stats = UserStatisticsCategory.findAll();
-		resp.put("stats", stats.toArray());
 		res.status(200);
-		return resp;
+		return stats.toJson(true);
 	};
 	
 	public static final Route GetSpecificQuestionStatistics = (req, res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
-		JSONObject resp = new JSONObject();
 		String question = "%"+bodyParams.get("question")+"%";
 		LazyList<QuestionStatistic> stats = QuestionStatistic.where("question = ?",question);
-		resp.put("stats", stats.toArray());
 		res.status(200);
-		return resp;
+		return stats.toJson(true);
 	};
 	
 	public static final Route GetAllQuestionsStatistics = (req, res) -> {
-		JSONObject resp = new JSONObject();
 		LazyList<QuestionStatistic> stats = QuestionStatistic.findAll();
-		resp.put("stats", stats.toArray());
 		res.status(200);
-		return resp;
+		return stats.toJson(true);
 	};
 
 }
