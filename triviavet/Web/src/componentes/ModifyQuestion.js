@@ -8,16 +8,20 @@ import { Link } from 'react-router-dom';
 import logo from './logo.png';
 import {StyleSheet, StyleResolver} from "style-sheet";
 
-class MofifyCategory extends Component{
+class ModifyQuestion extends Component{
     constructor(props) {
         super(props);
         this.state = {
-          newName:''
+          description:'',
+          option1:'',
+          option2:'',
+          option3:'',
+          optionCorrect:''
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this._modifyCategory = this._modifyCategory.bind(this);
+        this._modifyQuestion = this._modifyQuestion.bind(this);
       }
 
       handleChange = (event) => {
@@ -30,15 +34,23 @@ class MofifyCategory extends Component{
         event.preventDefault();
       }
 
-     async  _modifyCategory(){
+     async  _modifyQuestion(){
           const oldName = await AsyncStorage.getItem("old_name");
           const token = await AsyncStorage.getItem('userToken');
           const isAdmin = await AsyncStorage.getItem('isAdmin');
-          fetch(process.env.REACT_APP_API_HOST+"/admin/modifycategory",{
+          const cat = await AsyncStorage.getItem('choosenCategory');
+          fetch(process.env.REACT_APP_API_HOST+"/admin/modifyquestion",{
               method: 'POST',
               body: JSON.stringify({
-                old_name: oldName,
-                new_name: this.state.newName
+                oldDescription: oldName,
+                modifiedQuestion :{
+                  description : this.state.description,
+                  category: cat,
+                  options: [{description:this.state.option1, correct: false}, 
+                            {description:this.state.option2, correct:false}, 
+                            {description:this.state.option3, correct:false},
+                            {description:this.state.optionCorrect, correct:true}],
+                },
               }),
                 headers: {
                   'Accept' : 'application/json',
@@ -51,11 +63,11 @@ class MofifyCategory extends Component{
             .then(async response => {
                 const resp = await response.json();
                 if(response.ok){
-                  alert("Categoria modificada");
+                  alert("Pregunta Modificada");
                   this.props.history.push("/menu");
                 }
                 else{
-                  alert("No se pudo modificar la categoria");
+                  alert("No se pudo modificar la Pregunta");
                   this.props.history.push("/menu");
                 }
          });
@@ -78,13 +90,38 @@ class MofifyCategory extends Component{
           </div>
           <Form onSubmit={this.handleSubmit}>
             <Form.Group controlId="formBasicEmail">
-              <Form.Label>Nuevo nombre</Form.Label>
-              <Form.Control name="newName" type="Text" placeholder="Nuevo Nombre" bsSize="large" category={this.state.category} onChange={this.handleChange}/>
+              <Form.Label>Descripcion</Form.Label>
+              <Form.Control name="description" type="Text" placeholder="Descripcion"
+               bsSize="large" question={this.state.question} onChange={this.handleChange}/>
               <Form.Text className="text-muted"></Form.Text>
             </Form.Group>
 
-            <Button onClick={this._modifyCategory} variant="primary" type="submit">
-              modificar Categoria
+              <Form.Group controlId="formBasicEmail">
+                <Form.Label>Opcion 1</Form.Label>
+                <Form.Control name="option1" type="option1" placeholder="option1" 
+                option1={this.state.option1} onChange={this.handleChange}/>
+               </Form.Group>
+        
+               <Form.Group controlId="formBasicEmail">
+                <Form.Label>Opcion 2</Form.Label>
+                <Form.Control name="option2" type="option2" placeholder="option2" 
+                option2={this.state.option2} onChange={this.handleChange}/>
+               </Form.Group>
+      
+              <Form.Group controlId="formBasicEmail">
+                <Form.Label>Opcion 3</Form.Label>
+                <Form.Control name="option3" type="option3" placeholder="option3" 
+                option3={this.state.option3} onChange={this.handleChange}/>
+               </Form.Group>
+
+               <Form.Group controlId="formBasicEmail">
+                <Form.Label>Opcion Correcta</Form.Label>
+                <Form.Control name="optionCorrect" type="optionCorrect" placeholder="optionCorrect" 
+                optionCorrect={this.state.optionCorrect} onChange={this.handleChange}/>
+              </Form.Group>
+
+            <Button onClick={this._modifyQuestion} variant="primary" type="submit">
+              modificar Pregunta
             </Button>
             <p></p>
             <p></p>
@@ -103,7 +140,7 @@ class MofifyCategory extends Component{
 }
 
 
-export default MofifyCategory;
+export default ModifyQuestion;
 const styles = StyleSheet.create({
   layout: {
     width: "100%",

@@ -104,6 +104,10 @@ class Menu extends Component {
     AsyncStorage.setItem("old_name", message);
     this.props.history.push("/modifyCategory")
   }
+  async _modifyQuestion(message) {
+    AsyncStorage.setItem("old_name", message);
+    this.props.history.push("/modifyquestion")
+  }
 
   async _deleteCategory(message) {
     const token =  await AsyncStorage.getItem('userToken');
@@ -212,6 +216,9 @@ class Menu extends Component {
                 <Card.Header>{message}</Card.Header>
                <Button onClick={() => this._deleteQuestion(message)} variant ="primary" type="submit">
                    -
+               </Button>
+               <Button onClick={() => this._modifyQuestion(message)} variant ="primary" type="submit">
+                  Modificar
                </Button>
 
               </Card>

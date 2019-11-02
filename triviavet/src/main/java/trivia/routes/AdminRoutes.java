@@ -49,7 +49,7 @@ public class AdminRoutes {
 	};
 	
 	public static final Route ModifyQuestions = (req,res) -> {
-		ModifyQuestionParam bodyParams = (ModifyQuestionParam) new Gson().fromJson(req.body(), Map.class);
+		ModifyQuestionParam bodyParams = new Gson().fromJson(req.body(), ModifyQuestionParam.class);
 		JSONObject resp = new JSONObject();
 		Base.openTransaction();
 		Question question = Question.findFirst("description = ?", bodyParams.oldDescription);
@@ -62,6 +62,7 @@ public class AdminRoutes {
 		}
 		catch(DBException e) {
 			Base.rollbackTransaction();
+			e.printStackTrace();
 			resp.put("answer", "Cannot modify Question");
 			res.status(401);
 		}

@@ -10,6 +10,7 @@ import Stadistics from './componentes/Stadistics';
 import StatForUser from './componentes/StatForUser';
 import AllStatistics from './componentes/AllStatistics';
 import ModifyCategory from './componentes/ModifyCategory';
+import ModifyQuestion from './componentes/ModifyQuestion';
 
 class App extends Component {
 
@@ -28,6 +29,8 @@ class App extends Component {
           <Route path="/StatForUser" component={StatForUser}/>
           <Route path="/AllStatistics" component={AllStatistics}/>
           <Route path="/ModifyCategory" component={ModifyCategory}/>
+          <Route path="/ModifyQuestion" component={ModifyQuestion}/>
+
         </Switch>
     </BrowserRouter>);
   }
