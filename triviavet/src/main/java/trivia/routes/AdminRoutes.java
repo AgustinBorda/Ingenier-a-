@@ -49,12 +49,12 @@ public class AdminRoutes {
 	};
 	
 	public static final Route ModifyQuestions = (req,res) -> {
-		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+		ModifyQuestionParam bodyParams = (ModifyQuestionParam) new Gson().fromJson(req.body(), Map.class);
 		JSONObject resp = new JSONObject();
 		Base.openTransaction();
-		Question question = Question.findFirst("description = ?", bodyParams.get("oldDescription"));
+		Question question = Question.findFirst("description = ?", bodyParams.oldDescription);
 		try {
-			question.setQuestion((QuestionParam)bodyParams.get("modifiedQuestion"));
+			question.setQuestion((QuestionParam)bodyParams.modifiedQuestion);
 			Base.commitTransaction();
 			resp.put("Answer", "Modified Question");
 			res.status(200);
