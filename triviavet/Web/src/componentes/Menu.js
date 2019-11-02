@@ -17,6 +17,7 @@ class Menu extends Component {
     this.state = {
       categories: [],
       questions : [],
+      catSelect: ''
     }
   this._loadCategories = this._loadCategories.bind(this);
   this._deleteCategory = this._deleteCategory.bind(this);
@@ -50,7 +51,7 @@ class Menu extends Component {
   }
 
   async _loadQuestions(s) {
-
+    this.setState({catSelect: s});
     const token =  await AsyncStorage.getItem('userToken');
     const admin =  await AsyncStorage.getItem('isAdmin');
     await fetch(process.env.REACT_APP_API_HOST + "/admin/listquestion", {
@@ -126,9 +127,31 @@ class Menu extends Component {
     .catch(error => {
       console.log(error);
     });
-
   }
 
+  async _deleteQuestion(message) {
+    const token =  await AsyncStorage.getItem('userToken');
+    const isAdmin = await AsyncStorage.getItem('isAdmin');
+    await fetch(process.env.REACT_APP_API_HOST + "/admin/removequestion", {
+      headers : {
+        'Accept' : 'application/json',
+        'content-type' : 'application/json',
+        'Authorization' : token,
+        'IsAdmin' : isAdmin,
+        },
+      method: 'POST',
+      body: JSON.stringify({
+        description : message.toString(),
+      }),
+      mode: "cors",
+      })
+    .then(async response => {
+        this._loadQuestions(this.state.catSelect);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  }
 
   render() {
     return (
@@ -169,7 +192,6 @@ class Menu extends Component {
                         Modificar
                     </Button>
                   </div>
-                  </Card.Header>
                 </Card>
                 </div>
             )}
@@ -185,11 +207,17 @@ class Menu extends Component {
           </Navbar>
           {this.state.questions.map((message) =>
             <div style={{padding:10}}>
-              <Card id={message} border="secondary">
+              <Card id={message} border="secondary" className="text-center">
                 <Card.Header>{message}</Card.Header>
+<<<<<<< HEAD
                <Button onClick={() => this._deleteQuestion(message)} variant ="primary" type="submit">
                    -
                </Button>
+=======
+                  <Button onClick={() => this._deleteQuestion(message)} variant ="primary" type="submit">
+                      -
+                  </Button>
+>>>>>>> cb21cc4b6b24abfdbdaa6cb138d6c497f4b2db19
               </Card>
               </div>
           )}
