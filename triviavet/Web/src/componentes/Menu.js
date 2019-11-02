@@ -180,7 +180,7 @@ class Menu extends Component {
 
             {this.state.categories.map((message) =>
               <div style={{padding:10}}>
-                
+
                 <Card id={message} onClick={(x) => this._loadQuestions(message)} border="secondary">
 
                   <Card.Header>{message}
@@ -192,7 +192,8 @@ class Menu extends Component {
                         Modificar
                     </Button>
                   </div>
-                </Card>
+                </Card.Header>
+              </Card>
                 </div>
             )}
         </Col>
@@ -209,15 +210,10 @@ class Menu extends Component {
             <div style={{padding:10}}>
               <Card id={message} border="secondary" className="text-center">
                 <Card.Header>{message}</Card.Header>
-<<<<<<< HEAD
                <Button onClick={() => this._deleteQuestion(message)} variant ="primary" type="submit">
                    -
                </Button>
-=======
-                  <Button onClick={() => this._deleteQuestion(message)} variant ="primary" type="submit">
-                      -
-                  </Button>
->>>>>>> cb21cc4b6b24abfdbdaa6cb138d6c497f4b2db19
+
               </Card>
               </div>
           )}
@@ -237,7 +233,7 @@ class Menu extends Component {
               <Card.Body>
                 <Card.Title>Primary Card Title</Card.Title>
                 <Card.Text>
-                  
+
                 </Card.Text>
               </Card.Body>
             </Card>
