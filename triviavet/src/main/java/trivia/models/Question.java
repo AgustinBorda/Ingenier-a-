@@ -14,6 +14,7 @@ import org.javalite.activejdbc.Model;
 import org.javalite.activejdbc.validation.UniquenessValidator;
 import org.json.JSONObject;
 
+import controllers.OptionController;
 import trivia.structures.QuestionParam;
 
 public class Question extends Model {
@@ -27,7 +28,7 @@ public class Question extends Model {
 		this.set("description", bodyParams.description);
 		this.set("category", bodyParams.category);
 		this.saveIt();
-		Option.setOptions(bodyParams.options, this);
+		OptionController.setOptions(bodyParams.options, this);
 	}
 
 	public static Pair<JSONObject,String> getQuestion(Map<String,Object> bodyParams,String userId) {
@@ -76,7 +77,7 @@ public class Question extends Model {
 		List<Option> options = Option.where("question_id = ?", this.get("id"));
 		int i = Integer.parseInt(answer);
 		Option option = options.get(i - 1);
-		if ((boolean) option.get("correct")) {
+		if ((boolean) option.getCorrect()) {
 			resp = this.updateCorrectAnswer(username);
 		} else {
 			resp = this.updateWrongAnswer(username);

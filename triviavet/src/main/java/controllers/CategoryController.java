@@ -1,4 +1,4 @@
-package controlers;
+package controllers;
 
 import org.javalite.activejdbc.LazyList;
 
@@ -6,7 +6,7 @@ import trivia.models.Category;
 import trivia.models.User;
 import trivia.models.UserStatisticsCategory;
 
-public class CategoryControler {
+public class CategoryController {
 	
 	public static void createCategory(String name) {
 		Category category = new Category();

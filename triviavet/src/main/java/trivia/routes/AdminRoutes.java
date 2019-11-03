@@ -9,7 +9,7 @@ import org.javalite.activejdbc.Base;
 import org.json.JSONObject;
 import com.google.gson.Gson;
 
-import controlers.CategoryControler;
+import controllers.CategoryController;
 import spark.*;
 import trivia.BasicAuth;
 import trivia.models.*;
@@ -128,7 +128,7 @@ public class AdminRoutes {
 		JSONObject resp = new JSONObject();
 		Base.openTransaction();
 		try {
-			CategoryControler.createCategory((String)bodyParams.get("name"));
+			CategoryController.createCategory((String)bodyParams.get("name"));
 			Base.commitTransaction();
 			resp.put("answer", "Created category");
 			res.status(200);
@@ -146,7 +146,7 @@ public class AdminRoutes {
 		JSONObject resp = new JSONObject();
 		Base.openTransaction();
 		try {
-			CategoryControler.deleteCategory((String)bodyParams.get("name"));
+			CategoryController.deleteCategory((String)bodyParams.get("name"));
 			Base.commitTransaction();
 			resp.put("answer","Category deleted");
 			res.status(200);
@@ -165,7 +165,7 @@ public class AdminRoutes {
 		JSONObject resp = new JSONObject();
 		Base.openTransaction();
 		try {
-			CategoryControler.modifyCategory((String)bodyParams.get("old_name"), (String)bodyParams.get("new_name"));
+			CategoryController.modifyCategory((String)bodyParams.get("old_name"), (String)bodyParams.get("new_name"));
 			Base.commitTransaction();
 			resp.put("answer","Category modified");
 			res.status(200);
