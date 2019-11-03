@@ -37,6 +37,7 @@ public class AdminRoutes {
 		System.out.println(bodyParams.options);
 		try {
 			question.setQuestion(bodyParams);
+			QuestionStatistic.generateQuestionStatistic((String)bodyParams.description);
 			Base.commitTransaction();
 			res.status(200);
 		}
@@ -54,6 +55,7 @@ public class AdminRoutes {
 		Base.openTransaction();
 		Question question = Question.findFirst("description = ?", bodyParams.oldDescription);
 		try {
+			Option.delete("question_id = ?",question.getId());
 			question.setQuestion((QuestionParam)bodyParams.modifiedQuestion);
 			Base.commitTransaction();
 			resp.put("Answer", "Modified Question");

@@ -27,7 +27,6 @@ class Menu extends Component {
 
   componentDidMount(){
     this._loadCategories();
-    this._loadQuestions();
   }
 
   async _loadCategories() {
@@ -92,7 +91,7 @@ class Menu extends Component {
       })
     .then(async response => {
         const res = await response.json();
-        this._loadQuestions(res.cat);
+        this._loadQuestions(this.state.catSelect);
     })
     .catch(error => {
       console.log(error);
@@ -104,7 +103,8 @@ class Menu extends Component {
     AsyncStorage.setItem("old_name", message);
     this.props.history.push("/modifyCategory")
   }
-  async _modifyQuestion(message) {
+  async _modifyQuestion(message,category) {
+    AsyncStorage.setItem("choosenCategory",this.state.catSelect);
     AsyncStorage.setItem("old_name", message);
     this.props.history.push("/modifyquestion")
   }
