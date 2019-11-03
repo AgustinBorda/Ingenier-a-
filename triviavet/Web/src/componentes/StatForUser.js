@@ -16,27 +16,51 @@ class StatForUser extends Component {
   constructor(props){
     super(props);
     this.state = {
-      estadisticas: []
+      statistics: [],
+      username:''
     }
+    
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this._getStadisticsForUsers = this._getStadisticsForUsers.bind(this);
   }
 
   componentDidMount(){
-    this._getStadistics();
+    this._getStadisticsForUsers();
+  }
+ handleChange = (event) => {
+    this.setState({
+      [event.target.name]: event.target.value
+    });
+  }
+  handleSubmit(event) {
+    event.preventDefault();
   }
 
-   async _getStadistics() {
+
+   async _getStadisticsForUsers() {
     const token =  await AsyncStorage.getItem('userToken');
-    fetch(process.env.REACT_APP_API_HOST + "/logged/statistics", {
+    const isAdmin = await AsyncStorage.getItem("isAdmin")
+    fetch(process.env.REACT_APP_API_HOST + "/admin/userstatistic", {
       headers : {
         'Accept' : 'application/json',
         'content-type' : 'application/json',
-        'Authorization' : token
-      },method: 'GET',
+        'Authorization' : token,
+        'IsAdmin' : isAdmin,
+      },
+      method: 'POST',
+       body: JSON.stringify({
+        username: this.state.username
+       }),
       mode: "cors",
+
       })
     .then(async response => {
       const resp = await response.json();
-      this.setState({ estadisticas: resp.estadisticas});
+      this.setState({ statistics: resp});
+      if(this.state.statistics.length===0){
+        alert("No existen estadisticas para el usuario ingresado,\n puede que este no exista")
+      }
       console.log(this.state);
     })
     .catch(error => {
@@ -46,34 +70,48 @@ class StatForUser extends Component {
 
   render () {
         return (
-        	   <div>
-        	  	<Navbar className="bg-light justify-content-between" fixed="top">
-		      		<Navbar.Brand>Estadisticas Por Usuario</Navbar.Brand>
+        	     <div>
+          <Navbar className="bg-light justify-content-between" fixed="top">
+            <Navbar.Brand>Estadisticas Por Usuario</Navbar.Brand>
+            </Navbar>
 
-		      	</Navbar>
-		      	<Row style={{paddingTop: 60}} noGutters="true">
-		        	<Col>
-	            	 {this.state.estadisticas.map((message) =>
-	             	 <div style={{padding:10}}>
-	                	<Card id={message} border="secondary">
-	                 	<Card.Header>{message}
-	                  		<Button variant ="primary" type="submit">
-	                    		  -
-	                  		</Button>
-	                  	</Card.Header>
-	                	</Card>
-	                 </div>
-	            )}
-	        		</Col>
-	        	</Row>
+            <Col>
+              <Navbar variant="dark" bg="dark"className="justify-content-between">
+              <Navbar.Brand>Estadisticas</Navbar.Brand>
+              </Navbar>
 
-            <p></p>
-            <p></p>
-            <Link to="/Stadistics" className="Stadistics">
-            <Button variant="primary" type="submit">
-                 Atras
-            </Button>
-           </Link>
+               <Form onSubmit={this.handleSubmit}>
+              <Form.Group controlId="formBasicEmail">
+                <Form.Label>Ingrese el Username</Form.Label>
+                <Form.Control name="username" type="Username" placeholder="Username" 
+                bsSize="large" username={this.state.username} onChange={this.handleChange}/>
+
+                <Form.Text className="text-muted"></Form.Text>
+              </Form.Group>
+              </Form>
+              <Button variant="primary" type="submit" 
+              onClick={this._getStadisticsForUsers}>
+                 Buscar
+              </Button>
+               <p></p>
+               <p></p>
+                <Link to="/Stadistics" className="Stadistics">
+                    <Button variant="primary" type="submit">
+                         Atras
+                    </Button>
+                   </Link>
+                  {this.state.statistics.map(statistic =>
+                    <li key={statistic.id.toString()}>
+                      <div style={{padding:10}}>
+                       <Card id={statistic.id.toString()} border="primary">
+                         <Card.Header>Usuario : {statistic.user.toString()} | Categoria : {statistic.nombre.toString()}  | Respuestas Corretas : {statistic.correct_answer.toString()} | Respuestas Incorretas : {statistic.incorrect_answer.toString()}
+                         </Card.Header>
+                       </Card>
+                       </div>
+                    </li>
+                  )}
+                </Col>
+           
           </div>
         );
   	}

@@ -42,7 +42,11 @@ export default class PlayScreen extends React.Component {
     return (
       <View style={styles.container}>
       <View style={{margin:20}} />
-        <Text style={styles.welcome}> Select a Category, or Random </Text>
+        <Text style={styles.welcome}> 
+       <Text style={styles.tabBarInfoText}>
+        Seleccionar Categoria
+        </Text> 
+        </Text>
         <View style={{margin:40}} />
           <FlatList
             data={this.state.categories}
@@ -59,6 +63,7 @@ export default class PlayScreen extends React.Component {
 
             }
         />
+         <View style={{margin:20}} />
         <Button
           onPress={() => this.props.navigation.navigate('Question')}
           title="Random"
@@ -69,7 +74,7 @@ export default class PlayScreen extends React.Component {
         <Button
           onPress={() => this.props.navigation.navigate('App')}
           title="Volver"
-          color="#ebee2c"
+          color="#d35400"
         />
       </View>
     );
@@ -89,7 +94,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#48c9b0',
+    backgroundColor: '#1b4f72',
   },
   welcome: {
     fontSize: 20,
@@ -104,6 +109,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#4228F8'
   },
+  tabBarInfoText: {
+    fontSize: 30,
+    color: '#FFFFFF',
+    textAlign: 'center',
+   }, 
   separator: {
     margin: 10
   }

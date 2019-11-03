@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     color: 'rgba(96,100,109, 0.8)',
   },
   codeHighlightContainer: {
-    backgroundColor: '#48c9b0',
+    backgroundColor: '#1b4f72',
     borderRadius: 3,
     paddingHorizontal: 4,
   },
@@ -187,12 +187,12 @@ const styles = StyleSheet.create({
       },
     }),
     alignItems: 'center',
-    backgroundColor: '#48c9b0',
+    backgroundColor: '#1b4f72',
     paddingVertical: 20,
   },
   tabBarInfoText: {
     fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
+    color: '#FFFFFF',
     textAlign: 'center',
   },
   navigationFilename: {

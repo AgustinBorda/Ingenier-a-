@@ -50,24 +50,24 @@ class AllStatistics extends Component {
         return (
        	  <div>
           <Navbar className="bg-light justify-content-between" fixed="top">
-		  <Navbar.Brand>Todas Las Estadisticas</Navbar.Brand>
-		  </Navbar>
-		  <Col>
-	      <Navbar variant="dark" bg="dark"className="justify-content-between">
-	      <Navbar.Brand>Estadisticas</Navbar.Brand>
-	      </Navbar>
+      		  <Navbar.Brand>Todas Las Estadisticas</Navbar.Brand>
+      		  </Navbar>
+      		  <Col>
+      	      <Navbar variant="dark" bg="dark"className="justify-content-between">
+      	      <Navbar.Brand>Estadisticas</Navbar.Brand>
+      	      </Navbar>
 
-            {this.state.statistics.map(statistic =>
-              <li key={statistic.id.toString()}>
-                <div style={{padding:10}}>
-                 <Card id={statistic.id.toString()} border="primary">
-                   <Card.Header>{statistic.nombre.toString()} {statistic.correct_answer.toString()} 
-                   </Card.Header>
-                 </Card>
-                 </div>
-              </li>
-            )}
-        	</Col>
+                  {this.state.statistics.map(statistic =>
+                    <li key={statistic.id.toString()}>
+                      <div style={{padding:10}}>
+                       <Card id={statistic.id.toString()} border="primary">
+                         <Card.Header>Usuario : {statistic.user.toString()} | Categoria : {statistic.nombre.toString()}  | Respuestas Corretas : {statistic.correct_answer.toString()} | Respuestas Incorretas : {statistic.incorrect_answer.toString()}
+                         </Card.Header>
+                       </Card>
+                       </div>
+                    </li>
+                  )}
+              	</Col>
         	
             <Link to="/Stadistics" className="Stadistics">
             <Button variant="primary" type="submit">

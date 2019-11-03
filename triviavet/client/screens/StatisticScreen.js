@@ -65,19 +65,19 @@ export default class QuestionScreen extends React.Component {
 
           <View style={styles.container}>
             <Text style={styles.title}>
-              {item.cat}
+              <Text style={styles.tabBarInfoTextTitle}>{item.cat}</Text>
             </Text>
             <Text style={styles.content}>
-              Respuestas correctas: {item.correct_answer}
+             <Text style={styles.tabBarInfoText}> Respuestas correctas: {item.correct_answer}</Text>
             </Text>
               <Text style={styles.content}>
-              Respuestas incorrectas: {item.incorrect_answer}
+               <Text style={styles.tabBarInfoText}>Respuestas incorrectas: {item.incorrect_answer}</Text>
             </Text>
             <Text style={styles.content}>
-              Respuestas totales: {item.correct_answer+item.incorrect_answer}
+             <Text style={styles.tabBarInfoText}> Respuestas totales: {item.correct_answer+item.incorrect_answer}</Text>
             </Text>
             <Text style={styles.content}>
-              Porcentaje total:
+             <Text style={styles.tabBarInfoText}> Porcentaje total:</Text>
             </Text>
             <Progress.Circle progress={this.state.perc[index]} size={120}
               color="#3498db"
@@ -116,18 +116,19 @@ const styles = StyleSheet.create({
     fontSize: 30,
     textAlign: 'center',
     margin: 20,
+    backgroundColor: '#1b4f72',
   },
   cat: {
     fontSize: 20,
     textAlign: 'center',
     margin: 20,
-    backgroundColor: '#48c9b0',
+    backgroundColor: '#FFFFFF',
   },
   content: {
     fontSize: 15,
     textAlign: 'center',
     margin: 20,
-    backgroundColor: '#48c9b0',
+    backgroundColor: '#1b4f72',
   },
   input: {
     margin: 20,
@@ -135,8 +136,18 @@ const styles = StyleSheet.create({
     padding: 5,
     fontSize: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#4228F8'
+    borderBottomColor: '#FFFFFF'
   },
+  tabBarInfoText: {
+    fontSize: 17,
+    color: '#FFFFFF',
+    textAlign: 'center',
+   }, 
+   tabBarInfoTextTitle: {
+    fontSize: 30,
+    color: '#FFFFFF',
+    textAlign: 'center',
+   }, 
   separator: {
     margin: 10
   }

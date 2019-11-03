@@ -183,8 +183,7 @@ public class AdminRoutes {
 	
 	public static final Route GetSpecificUserStatistics = (req, res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
-		String user = "%"+bodyParams.get("username")+"%";
-		LazyList<UserStatisticsCategory> stats = UserStatisticsCategory.where("user = ?",user);
+		LazyList<UserStatisticsCategory> stats = UserStatisticsCategory.where("user = ?",bodyParams.get("username"));
 		res.status(200);
 		return stats.toJson(true);
 	};
