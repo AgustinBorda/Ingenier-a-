@@ -20,8 +20,8 @@ public class Option extends Model{
 		return this.getBoolean("correct");
 	}
 	
-	public int getQuestionId() {
-		return this.getInteger("question_id");
+	public Object getQuestionId() {
+		return this.get("question_id");
 	}
 	
 	public void setDescription(String desc) {
@@ -32,7 +32,7 @@ public class Option extends Model{
 		this.setBoolean("correct", correct);
 	}
 	
-	public void setQuestionId(int id) {
+	public void setQuestionId(Object id) {
 		this.setInteger("question_id",id);
 	}
 }

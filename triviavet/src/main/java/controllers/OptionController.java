@@ -13,7 +13,7 @@ public class OptionController {
 			Option option = new Option();
 			option.setDescription(item.description);
 			option.setCorrect(item.correct);
-			option.setQuestionId((int) question.getId());
+			option.setQuestionId(question.getId());
 			option.saveIt();
 		}
 	}
