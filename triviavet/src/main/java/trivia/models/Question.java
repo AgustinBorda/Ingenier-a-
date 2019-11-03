@@ -15,6 +15,7 @@ import org.javalite.activejdbc.validation.UniquenessValidator;
 import org.json.JSONObject;
 
 import controllers.OptionController;
+import controllers.QuestionStatisticController;
 import trivia.structures.QuestionParam;
 
 public class Question extends Model {
@@ -43,7 +44,6 @@ public class Question extends Model {
 				questions = Question.findBySQL(
 						"SELECT * FROM questions WHERE id "
 						+ "NOT IN (SELECT id FROM questions "
-
 						+ "INNER JOIN ((SELECT * FROM user_questions WHERE user_id = ?) as contestadas) "
 						+ "ON questions.id = contestadas.question_id) AND category = ?",
 						userId, bodyParams.get("category"));
@@ -94,7 +94,7 @@ public class Question extends Model {
 		Base.openTransaction();
 		try {
 			QuestionStatistic questionStat = QuestionStatistic.findFirst("question_id = ?", this.getInteger("id"));
-			questionStat.updateCorrectAnswer();
+			QuestionStatisticController.updateCorrectAnswer(questionStat);
 			UserStatisticsCategory stat = UserStatisticsCategory.findFirst("user = ? AND nombre = ?",
 					username,this.get("category"));
 			UserQuestions.createUserQuestion(username, this.get("id").toString());
@@ -114,7 +114,7 @@ public class Question extends Model {
 		Base.openTransaction();
 		try {
 			QuestionStatistic questionStat = QuestionStatistic.findFirst("question_id = ?", this.getInteger("id"));
-			questionStat.updateIncorrectAnswer();			
+			QuestionStatisticController.updateIncorrectAnswer(questionStat);			
 			UserStatisticsCategory stat = UserStatisticsCategory.findFirst("user = ? AND nombre = ?",
 					username,this.get("category"));
 			stat.updateIncorrecrAnswer();

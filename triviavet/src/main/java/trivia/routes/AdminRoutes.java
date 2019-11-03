@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import com.google.gson.Gson;
 
 import controllers.CategoryController;
+import controllers.QuestionStatisticController;
 import spark.*;
 import trivia.BasicAuth;
 import trivia.models.*;
@@ -39,7 +40,7 @@ public class AdminRoutes {
 		System.out.println(bodyParams.options);
 		try {
 			question.setQuestion(bodyParams);
-			QuestionStatistic.generateQuestionStatistic((String)bodyParams.description);
+			QuestionStatisticController.generateQuestionStatistic((String)bodyParams.description);
 			Base.commitTransaction();
 			res.status(200);
 		}
