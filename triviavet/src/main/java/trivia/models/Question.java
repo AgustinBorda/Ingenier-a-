@@ -16,6 +16,7 @@ import org.json.JSONObject;
 
 import controllers.OptionController;
 import controllers.QuestionStatisticController;
+import controllers.UserQuestionController;
 import trivia.structures.QuestionParam;
 
 public class Question extends Model {
@@ -97,7 +98,7 @@ public class Question extends Model {
 			QuestionStatisticController.updateCorrectAnswer(questionStat);
 			UserStatisticsCategory stat = UserStatisticsCategory.findFirst("user = ? AND nombre = ?",
 					username,this.get("category"));
-			UserQuestions.createUserQuestion(username, this.get("id").toString());
+			UserQuestionController.createUserQuestion(username, this.get("id").toString());
 			stat.updateCorrectAnswer();
 			Base.commitTransaction();
 			resp.put("answer", "Correcto!");
@@ -123,7 +124,6 @@ public class Question extends Model {
 		}
 		catch(DBException e) {
 			Base.rollbackTransaction();
-			e.printStackTrace();
 			resp.put("answer", "Ocurrio un error inesperado");
 		}
 		return resp;

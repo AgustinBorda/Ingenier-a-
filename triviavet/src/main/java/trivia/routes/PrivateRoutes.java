@@ -70,7 +70,8 @@ public class PrivateRoutes {
 		req.session().removeAttribute("preg_id");
 		JSONObject resp;
 		try {
-			resp = question.answerQuestion(bodyParams.get("answer").toString(), req.session().attribute("username"),req.session().attribute("options"));
+			resp = question.answerQuestion(bodyParams.get("answer").toString(),
+					req.session().attribute("username"),req.session().attribute("options"));
 			res.status(200);
 			return resp;		
 		}

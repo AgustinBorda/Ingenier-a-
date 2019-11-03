@@ -1,7 +1,6 @@
 package trivia.models;
 
 import org.javalite.activejdbc.Model;
-import org.javalite.activejdbc.validation.UniquenessValidator;
 
 public class QuestionStatistic extends Model {
 	
