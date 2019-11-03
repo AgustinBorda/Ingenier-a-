@@ -8,6 +8,11 @@ import java.util.Map;
 import org.javalite.activejdbc.Base;
 import org.json.JSONObject;
 import com.google.gson.Gson;
+
+import controllers.CategoryController;
+import controllers.QuestionController;
+import controllers.QuestionStatisticController;
+import controllers.UserController;
 import spark.*;
 import trivia.BasicAuth;
 import trivia.models.*;
@@ -36,8 +41,8 @@ public class AdminRoutes {
 		Base.openTransaction();
 		System.out.println(bodyParams.options);
 		try {
-			question.setQuestion(bodyParams);
-			QuestionStatistic.generateQuestionStatistic((String)bodyParams.description);
+			QuestionController.setQuestion(bodyParams, question);
+			QuestionStatisticController.generateQuestionStatistic((String)bodyParams.description);
 			Base.commitTransaction();
 			res.status(200);
 		}
@@ -56,7 +61,7 @@ public class AdminRoutes {
 		Question question = Question.findFirst("description = ?", bodyParams.oldDescription);
 		try {
 			Option.delete("question_id = ?",question.getId());
-			question.setQuestion((QuestionParam)bodyParams.modifiedQuestion);
+			QuestionController.setQuestion((QuestionParam)bodyParams.modifiedQuestion, question);
 			Base.commitTransaction();
 			resp.put("Answer", "Modified Question");
 			res.status(200);
@@ -110,7 +115,7 @@ public class AdminRoutes {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 		user = User.findFirst("username = ?", bodyParams.get("username"));
 		try {
-			user.giveAdminPermissions();
+			UserController.giveAdminPermissions(user);
 			resp.put("answer", "OK");
 			res.status(200);
 		}
@@ -126,7 +131,7 @@ public class AdminRoutes {
 		JSONObject resp = new JSONObject();
 		Base.openTransaction();
 		try {
-			Category.createCategory((String)bodyParams.get("name"));
+			CategoryController.createCategory((String)bodyParams.get("name"));
 			Base.commitTransaction();
 			resp.put("answer", "Created category");
 			res.status(200);
@@ -144,7 +149,7 @@ public class AdminRoutes {
 		JSONObject resp = new JSONObject();
 		Base.openTransaction();
 		try {
-			Category.deleteCategory((String)bodyParams.get("name"));
+			CategoryController.deleteCategory((String)bodyParams.get("name"));
 			Base.commitTransaction();
 			resp.put("answer","Category deleted");
 			res.status(200);
@@ -163,7 +168,7 @@ public class AdminRoutes {
 		JSONObject resp = new JSONObject();
 		Base.openTransaction();
 		try {
-			Category.modifyCategory((String)bodyParams.get("old_name"), (String)bodyParams.get("new_name"));
+			CategoryController.modifyCategory((String)bodyParams.get("old_name"), (String)bodyParams.get("new_name"));
 			Base.commitTransaction();
 			resp.put("answer","Category modified");
 			res.status(200);

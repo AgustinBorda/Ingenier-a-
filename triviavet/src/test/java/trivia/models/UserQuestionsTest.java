@@ -26,21 +26,21 @@ public class UserQuestionsTest {
 
   @Test
   public void validatePrecenseOfuser_id(){
-    UserQuestions UserQuestionsTest = new UserQuestions();
+    UserQuestion UserQuestionsTest = new UserQuestion();
     UserQuestionsTest.set("user_id", null);
     assertEquals(UserQuestionsTest.isValid(), false);
   }
   
   @Test
   public void validatePrecenseOfquestion_id(){
-    UserQuestions userQuestionsTest = new UserQuestions();
+    UserQuestion userQuestionsTest = new UserQuestion();
     userQuestionsTest.set("user_id", 1, "question_id", null);
     assertEquals(userQuestionsTest.isValid(), false);
   }
   
   @Test
   public void validatePrecenseOfSomethingIn(){
-    UserQuestions userQuestionsTest = new UserQuestions();
+    UserQuestion userQuestionsTest = new UserQuestion();
     userQuestionsTest.set("user_id", 1,"question_id", 1);
     assertEquals(userQuestionsTest.isValid(), true);
   }

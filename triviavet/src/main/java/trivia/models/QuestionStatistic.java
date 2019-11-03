@@ -3,24 +3,43 @@ package trivia.models;
 import org.javalite.activejdbc.Model;
 
 public class QuestionStatistic extends Model {
-	public static void generateQuestionStatistic(String question) {
-		QuestionStatistic stat = new QuestionStatistic();
-		stat.set("question", question);
-		stat.set("wrong_attempts", 0);
-		stat.set("right_attempts", 0);
-		stat.set("total_attempts", 0);
-		stat.saveIt();
+	
+	static {
+		validatePresenceOf("question").message("The stat must reference a question");
+		validatePresenceOf("wrong_attempts").message("The stat must have a number of wrong attempts");
+		validatePresenceOf("right_attempts").message("The stat must have a number of correct attempts");
+		validatePresenceOf("total_attempts").message("The stat must have a number of wrong attempts");
 	}
 	
-	public void updateCorrectAnswer() {
-		this.set("right_attempts",(int)this.get("right_attempts")+1);
-		this.set("total_attempts",(int)this.get("total_attempts")+1);
-		this.saveIt();
+	public String getQuestion() {
+		return this.getString("question");
 	}
 	
-	public void updateIncorrectAnswer() {
-		this.set("wrong_attempts",(int)this.get("wrong_attempts")+1);
-		this.set("total_attempts",(int)this.get("total_attempts")+1);
-		this.saveIt();
+	public int getWrongAttempts() {
+		return this.getInteger("wrong_attempts");
+	}
+	
+	public int getRightAttempts() {
+		return this.getInteger("right_attempts");
+	}
+	
+	public int getTotalAttempts() {
+		return this.getInteger("total_attempts");
+	}
+	
+	public void setQuestion(String question) {
+		this.setString("question",question);
+	}
+	
+	public void setWrongAttempts(int wrongAttempts) {
+		this.setInteger("wrong_attempts",wrongAttempts);
+	}
+	
+	public void setRightAttempts(int rightAttempts) {
+		this.setInteger("right_attempts",rightAttempts);
+	}
+	
+	public void setTotalAttempts(int attempts) {
+		this.setInteger("total_attempts",attempts);
 	}
 }

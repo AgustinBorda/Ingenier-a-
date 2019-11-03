@@ -1,6 +1,7 @@
 package trivia.structures;
 import org.json.JSONObject;
 
+import controllers.UserStatisticsCategoryController;
 import trivia.models.*;
 
 public class StatisticContainer {
@@ -11,10 +12,10 @@ public class StatisticContainer {
 	double correctPercentage; 
 	
 	public StatisticContainer(UserStatisticsCategory stat) {
-		cat = (String)stat.get("nombre");
-		correctAnswer = (int) stat.get("correct_answer");
-		incorrectAnswer = (int) stat.get("incorrect_answer");
-		level = stat.calculateLevel();
+		cat = stat.getCategory();
+		correctAnswer = stat.getCorrectAnswers();
+		incorrectAnswer = stat.getIncorrectAnswers();
+		level = UserStatisticsCategoryController.calculateLevel(stat);
 		if(correctAnswer+incorrectAnswer != 0){
 			correctPercentage = ((correctAnswer+0.0)/(correctAnswer+incorrectAnswer+0.0));	
 		}

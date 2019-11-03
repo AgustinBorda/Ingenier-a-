@@ -8,14 +8,31 @@ public class Option extends Model{
 
 	static {
 		validatePresenceOf("description").message("Please, provide your description");
+		validatePresenceOf("correct").message("Please, provide if the option is correct or not");
+		validatePresenceOf("question_id").message("The option must have associed a question");
 	}
 	
-	public static void setOptions(ArrayList<OptionParam> options,Question question) {
-		for (OptionParam item : options) {
-			Option option = new Option();
-			option.set("description", item.description).set("correct", item.correct);
-			option.set("question_id", question.getId());
-			option.saveIt();
-		}
+	public String getDescription() {
+		return this.getString("description");
+	}
+	
+	public boolean getCorrect() {
+		return this.getBoolean("correct");
+	}
+	
+	public Object getQuestionId() {
+		return this.get("question_id");
+	}
+	
+	public void setDescription(String desc) {
+		this.setString("description", desc);
+	}
+	
+	public void setCorrect(boolean correct) {
+		this.setBoolean("correct", correct);
+	}
+	
+	public void setQuestionId(Object id) {
+		this.setInteger("question_id",id);
 	}
 }

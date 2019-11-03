@@ -2,6 +2,7 @@ package trivia.routes;
 
 import static spark.Spark.*;
 
+import java.util.List;
 import java.util.Map;
 
 import org.javalite.activejdbc.Base;
@@ -9,6 +10,8 @@ import org.json.JSONObject;
 
 import com.google.gson.Gson;
 
+import controllers.QuestionController;
+import controllers.UserStatisticsCategoryController;
 import spark.*;
 import trivia.BasicAuth;
 import trivia.models.*;
@@ -31,8 +34,9 @@ public class PrivateRoutes {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 		Base.openTransaction();
 		try {
-			Pair<JSONObject, String> answer = Question.getQuestion(bodyParams, req.session().attribute("id").toString());
-			req.session().attribute("preg_id", answer.getSecond());
+			Pair<JSONObject,Pair<String,List<Option>>> answer = QuestionController.getQuestion(bodyParams, req.session().attribute("id").toString());
+			req.session().attribute("preg_id", answer.getSecond().getFirst());
+			req.session().attribute("options", answer.getSecond().getSecond());
 			Base.commitTransaction();
 			res.status(200);
 			return answer.getFirst();
@@ -64,11 +68,12 @@ public class PrivateRoutes {
 
 	public static final Route PostAnswer = (req, res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
-		Question question = Question.getQuestionById(req.session().attribute("preg_id").toString());
+		Question question = QuestionController.getQuestionById(req.session().attribute("preg_id").toString());
 		req.session().removeAttribute("preg_id");
 		JSONObject resp;
 		try {
-			resp = question.answerQuestion(bodyParams.get("answer").toString(), req.session().attribute("username"));
+			resp = QuestionController.answerQuestion(bodyParams.get("answer").toString(),
+					req.session().attribute("username"),req.session().attribute("options"), question);
 			res.status(200);
 			return resp;		
 		}
@@ -84,7 +89,7 @@ public class PrivateRoutes {
 		System.out.println("/loged/statistics");
 		JSONObject resp;
 		try {
-			resp = UserStatisticsCategory.getStatistics(req.session().attribute("username").toString());
+			resp = UserStatisticsCategoryController.getStatistics(req.session().attribute("username").toString());
 			res.status(200);
 		}
 		catch(DBException e) {

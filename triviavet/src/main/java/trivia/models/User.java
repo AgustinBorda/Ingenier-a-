@@ -18,27 +18,36 @@ public class User extends Model {
 		validatePresenceOf("admin").message("Please, provide admin flag");
 	}
 	
-	public static User createUser(Map<String,Object> bodyParams) {
-		User u = new User();
-		u.set("username", bodyParams.get("username"),
-				 "password", bodyParams.get("password"),
-				 "admin", false,
-				 "email", bodyParams.get("email")).saveIt();
-		for (Model c : Category.findAll()) {
-			UserStatisticsCategory.createUserStatistic(u, (Category) c);
-		}
-		return u;
+	public String getUsername() {
+		return this.getString("username");
 	}
 	
-	public void giveAdminPermissions() {
-		this.set("admin", true);
-		this.saveIt();
+	public String getEmail() {
+		return this.getString("email");
 	}
 	
-	public void loadSession(Request req) {
-		req.session().attribute("username", this.get("username"));
-		req.session().attribute("id", this.get("id"));
-		req.session().attribute("admin", this.get("admin"));
+	public String getPassword() {
+		return this.getString("password");
+	}
+	
+	public boolean getAdmin() {
+		return this.getBoolean("admin");
+	}
+	
+	public void setUsername(String user) {
+		this.setString("username", user);
+	}
+	
+	public void setEmail(String email) {
+		this.setString("email", email);
+	}
+	
+	public void setPassword(String password) {
+		this.setString("password", password);
+	}
+	
+	public void setAdmin(boolean admin) {
+		this.setBoolean("admin", admin);
 	}
 
 }
