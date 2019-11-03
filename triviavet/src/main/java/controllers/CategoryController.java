@@ -14,7 +14,7 @@ public class CategoryController {
 		category.saveIt();
 		LazyList<User> users = User.findAll();
 		for(User u : users) {
-			UserStatisticsCategory.createUserStatistic(u,category);
+			UserStatisticsCategoryController.createUserStatistic(u,category);
 		}
 	}
 	
