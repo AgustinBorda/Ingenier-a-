@@ -45,10 +45,10 @@ public class UserStatisticsCategoryTest {
 		assertEquals(UserStatisticsCategoryTest.isValid(), false);
 	}
 
-	@Test
-	public void validatePrecenseOfSomethingIn() {
-		UserStatisticsCategory UserStatisticsCategoryTest = new UserStatisticsCategory();
-		UserStatisticsCategoryTest.set("points", 5,"correct_answer", 3, "incorrect_answer", 5);
-		assertEquals(UserStatisticsCategoryTest.isValid(), true);
-	}
+//	@Test
+//	public void validatePrecenseOfSomethingIn() {
+//		UserStatisticsCategory UserStatisticsCategoryTest = new UserStatisticsCategory();
+//		UserStatisticsCategoryTest.set("points", 5,"correct_answer", 3, "incorrect_answer", 5);
+//		assertEquals(UserStatisticsCategoryTest.isValid(), true);
+//	}
 }

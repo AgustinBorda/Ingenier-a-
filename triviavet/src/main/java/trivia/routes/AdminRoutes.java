@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import com.google.gson.Gson;
 
 import controllers.CategoryController;
+import controllers.QuestionController;
 import controllers.QuestionStatisticController;
 import controllers.UserController;
 import spark.*;
@@ -40,7 +41,7 @@ public class AdminRoutes {
 		Base.openTransaction();
 		System.out.println(bodyParams.options);
 		try {
-			question.setQuestion(bodyParams);
+			QuestionController.setQuestion(bodyParams, question);
 			QuestionStatisticController.generateQuestionStatistic((String)bodyParams.description);
 			Base.commitTransaction();
 			res.status(200);
@@ -60,7 +61,7 @@ public class AdminRoutes {
 		Question question = Question.findFirst("description = ?", bodyParams.oldDescription);
 		try {
 			Option.delete("question_id = ?",question.getId());
-			question.setQuestion((QuestionParam)bodyParams.modifiedQuestion);
+			QuestionController.setQuestion((QuestionParam)bodyParams.modifiedQuestion, question);
 			Base.commitTransaction();
 			resp.put("Answer", "Modified Question");
 			res.status(200);

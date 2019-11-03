@@ -35,7 +35,7 @@ public class App {
 
 		post("/logged/answer", PrivateRoutes.PostAnswer);
 		
-		get("/admin/userstatistic", AdminRoutes.GetSpecificUserStatistics);
+		post("/admin/userstatistic", AdminRoutes.GetSpecificUserStatistics);
 		
 		get("/admin/usersstatistic", AdminRoutes.GetAllUserStatistics);
 		
