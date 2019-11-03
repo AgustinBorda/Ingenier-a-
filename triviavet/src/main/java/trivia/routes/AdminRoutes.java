@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 
 import controllers.CategoryController;
 import controllers.QuestionStatisticController;
+import controllers.UserController;
 import spark.*;
 import trivia.BasicAuth;
 import trivia.models.*;
@@ -113,7 +114,7 @@ public class AdminRoutes {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 		user = User.findFirst("username = ?", bodyParams.get("username"));
 		try {
-			user.giveAdminPermissions();
+			UserController.giveAdminPermissions(user);
 			resp.put("answer", "OK");
 			res.status(200);
 		}

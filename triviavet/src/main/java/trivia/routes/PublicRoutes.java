@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import java.util.Map;
 import com.google.gson.Gson;
 
+import controllers.UserController;
 import trivia.models.User;
 import trivia.utils.Email;
 
@@ -40,7 +41,7 @@ public class PublicRoutes {
 		User user = User.findFirst("username = ? and password = ?", bodyParams.get("username"),
 				bodyParams.get("password"));
 		if (user != null) {
-			user.loadSession(req);
+			UserController.loadSession(req,user);
 			JSONObject resp = new JSONObject();
 			resp.put("isAdmin", user.get("admin"));
 			return resp;
@@ -69,9 +70,9 @@ public class PublicRoutes {
 			res.status(401);
 			return false;
 		}
-		User user = User.createUser(bodyParams);
+		User user = UserController.createUser(bodyParams);
 		System.out.println("Registred: " + user.get("username"));
-		user.loadSession(req);
+		UserController.loadSession(req,user);
 		res.status(200);
 		JSONObject resp = new JSONObject();
 		resp.put("isAdmin", user.get("admin"));
