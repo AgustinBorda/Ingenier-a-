@@ -18,11 +18,11 @@ public class UserQuestion extends Model {
 	}
 	
 	public void setUserId(Object id) {
-		this.set("user_id");
+		this.set("user_id",id);
 	}
 	
 	public void setQuestionId(Object id) {
-		this.set("question_id");
+		this.set("question_id",id);
 	}
 	
 }

@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import controllers.OptionController;
 import controllers.QuestionStatisticController;
 import controllers.UserQuestionController;
+import controllers.UserStatisticsCategoryController;
 import trivia.structures.QuestionParam;
 
 public class Question extends Model {
@@ -99,7 +100,7 @@ public class Question extends Model {
 			UserStatisticsCategory stat = UserStatisticsCategory.findFirst("user = ? AND nombre = ?",
 					username,this.get("category"));
 			UserQuestionController.createUserQuestion(username, this.get("id").toString());
-			stat.updateCorrectAnswer();
+			UserStatisticsCategoryController.updateCorrectAnswer(stat);
 			Base.commitTransaction();
 			resp.put("answer", "Correcto!");
 		}
@@ -118,7 +119,7 @@ public class Question extends Model {
 			QuestionStatisticController.updateIncorrectAnswer(questionStat);			
 			UserStatisticsCategory stat = UserStatisticsCategory.findFirst("user = ? AND nombre = ?",
 					username,this.get("category"));
-			stat.updateIncorrecrAnswer();
+			UserStatisticsCategoryController.updateIncorrecrAnswer(stat);
 			Base.commitTransaction();
 			resp.put("answer", "Incorrecto!");
 		}

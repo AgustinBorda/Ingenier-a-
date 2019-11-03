@@ -7,7 +7,6 @@ import org.javalite.activejdbc.Model;
 import spark.Request;
 import trivia.models.Category;
 import trivia.models.User;
-import trivia.models.UserStatisticsCategory;
 
 public class UserController {
 	
@@ -18,7 +17,7 @@ public class UserController {
 				 "admin", false,
 				 "email", bodyParams.get("email")).saveIt();
 		for (Model c : Category.findAll()) {
-			UserStatisticsCategory.createUserStatistic(u, (Category) c);
+			UserStatisticsCategoryController.createUserStatistic(u, (Category) c);
 		}
 		return u;
 	}

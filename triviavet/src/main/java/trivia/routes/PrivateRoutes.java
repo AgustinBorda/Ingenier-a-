@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import com.google.gson.Gson;
 
+import controllers.UserStatisticsCategoryController;
 import spark.*;
 import trivia.BasicAuth;
 import trivia.models.*;
@@ -87,7 +88,7 @@ public class PrivateRoutes {
 		System.out.println("/loged/statistics");
 		JSONObject resp;
 		try {
-			resp = UserStatisticsCategory.getStatistics(req.session().attribute("username").toString());
+			resp = UserStatisticsCategoryController.getStatistics(req.session().attribute("username").toString());
 			res.status(200);
 		}
 		catch(DBException e) {
