@@ -80,6 +80,7 @@ export default class SignInScreen extends React.Component {
       .then(response => {
         // Handle the JWT response here
         AsyncStorage.setItem('userToken', response.config.headers.Authorization);
+        console.log(response.config.headers.Authorization);
         this.props.navigation.navigate('App');
       })
     .catch((error) => {

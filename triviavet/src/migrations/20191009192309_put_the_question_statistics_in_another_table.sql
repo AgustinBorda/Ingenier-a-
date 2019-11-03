@@ -8,5 +8,5 @@ CREATE TABLE question_statistics(
   wrong_attempts INTEGER NOT NULL,
   right_attempts INTEGER NOT NULL,
   total_attempts INTEGER NOT NULL,
-  FOREIGN KEY (question) REFERENCES questions (description) ON DELETE CASCADE
+  FOREIGN KEY (question) REFERENCES questions (description) ON UPDATE CASCADE ON DELETE CASCADE
 );

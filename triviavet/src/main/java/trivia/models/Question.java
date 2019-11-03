@@ -26,9 +26,8 @@ public class Question extends Model {
 	public void setQuestion(QuestionParam bodyParams) {
 		this.set("description", bodyParams.description);
 		this.set("category", bodyParams.category);
-		Option.setOptions(bodyParams.options, this);
 		this.saveIt();
-		QuestionStatistic.generateQuestionStatistic((String)this.get("question"));
+		Option.setOptions(bodyParams.options, this);
 	}
 
 	public static Pair<JSONObject,String> getQuestion(Map<String,Object> bodyParams,String userId) {
@@ -43,6 +42,7 @@ public class Question extends Model {
 				questions = Question.findBySQL(
 						"SELECT * FROM questions WHERE id "
 						+ "NOT IN (SELECT id FROM questions "
+
 						+ "INNER JOIN ((SELECT * FROM user_questions WHERE user_id = ?) as contestadas) "
 						+ "ON questions.id = contestadas.question_id) AND category = ?",
 						userId, bodyParams.get("category"));

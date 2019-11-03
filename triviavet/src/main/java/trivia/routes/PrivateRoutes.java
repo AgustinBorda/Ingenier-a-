@@ -20,9 +20,11 @@ public class PrivateRoutes {
 
 	public static final Filter CheckSession = (request, response) -> {
 		String headerToken = (String) request.headers("Authorization");
-		if (request.session().attributes().isEmpty() || headerToken == null || headerToken.isEmpty()
-				|| !BasicAuth.authorize(headerToken))
-			halt(401, "Usuario o clave invalidos \n");
+		if (request.requestMethod() != "OPTIONS"){ 
+			if (headerToken == null || headerToken.isEmpty() || !BasicAuth.authorize(headerToken)) {
+				halt(401,"Token invalido \n");
+			}
+		}
 	};
 
 	public static final Route PostQuestion = (req, res) -> {// its a get

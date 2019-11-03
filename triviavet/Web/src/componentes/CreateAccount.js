@@ -6,6 +6,7 @@ import {AsyncStorage} from "AsyncStorage";
 import ReactDOM from "react-dom";
 import Menu from './Menu';
 import {StyleSheet, StyleResolver} from "style-sheet";
+import logo from './logo.png';
 
 
 class CreateAccount extends Component{
@@ -21,9 +22,6 @@ class CreateAccount extends Component{
 			handleChange = (event) => {
 		    this.setState({
 		      [event.target.name]: event.target.value
-		    }, () => {
-		      //updated state
-		      console.log(this.state)
 		    });
 		  }
 
@@ -46,10 +44,12 @@ class CreateAccount extends Component{
 							}),
               mode: "cors"
             })
-            .then(response => {
+            .then(async response => {
 							if(response.ok) {
+        					let res = await response.json();
 									let base64 = require('base-64');
-									AsyncStorage.setItem('userToken', 'Basic ' + base64.encode(this.state.username + ":" + this.state.password));
+        					await AsyncStorage.setItem('isAdmin', res.isAdmin);
+									await AsyncStorage.setItem('userToken', 'Basic ' + base64.encode(this.state.username + ":" + this.state.password));
 									this.props.history.push("/menu")
 							} else {
 								if(response.status == 403) {
@@ -76,8 +76,12 @@ class CreateAccount extends Component{
               fontFamily: "monaco, monospace",
               color: "#1e252d"
             }}>
+            <div>
+              <h1> <img src={logo}
+                height={60}
+                 width={60}/>CreateAccount</h1>
+            </div>
           <form onSubmit={this.handleSubmit}>
-           <h1> CreateAccount</h1>
             <Form>
               <Form.Group controlId="formBasicEmail">
               <Form.Label>Username</Form.Label>
@@ -99,8 +103,7 @@ class CreateAccount extends Component{
                 <Form.Control name="email" type="email" placeholder="Email"
                 password={this.state.email} onChange={this.handleChange}/>
               </Form.Group>
-
-		   <Button onClick={this._createAccount} variant="primary" type="submit">
+		       <Button onClick={this._createAccount} variant="primary" type="submit">
                 Crear Cuenta
            </Button>
            <p></p>
