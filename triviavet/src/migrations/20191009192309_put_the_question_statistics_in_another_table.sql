@@ -4,7 +4,8 @@ ALTER TABLE questions
   DROP COLUMN total_attempts;
 
 CREATE TABLE question_statistics(
-  question VARCHAR(255) PRIMARY KEY,
+  id int(11) auto_increment PRIMARY KEY,
+  question VARCHAR(255) UNIQUE,
   wrong_attempts INTEGER NOT NULL,
   right_attempts INTEGER NOT NULL,
   total_attempts INTEGER NOT NULL,

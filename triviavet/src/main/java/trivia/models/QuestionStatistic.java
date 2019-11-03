@@ -7,7 +7,6 @@ public class QuestionStatistic extends Model {
 	
 	static {
 		validatePresenceOf("question").message("The stat must reference a question");
-		validateWith(new UniquenessValidator("question")).message("Only one stat can reference a question");
 		validatePresenceOf("wrong_attempts").message("The stat must have a number of wrong attempts");
 		validatePresenceOf("right_attempts").message("The stat must have a number of correct attempts");
 		validatePresenceOf("total_attempts").message("The stat must have a number of wrong attempts");

@@ -32,7 +32,7 @@ public class Question extends Model {
 		OptionController.setOptions(bodyParams.options, this);
 	}
 
-	public static Pair<JSONObject,String> getQuestion(Map<String,Object> bodyParams,String userId) {
+	public static Pair<JSONObject,Pair<String,List<Option>>> getQuestion(Map<String,Object> bodyParams,String userId) {
 		Random r = new Random();
 		JSONObject resp = new JSONObject();
 		List<Question> questions;
@@ -66,15 +66,15 @@ public class Question extends Model {
 			resp.put("answer" + i, o.get("description"));
 			i++;
 		}
-		Pair<JSONObject,String> answer = new Pair<JSONObject,String>(resp,question.get("id").toString());
+		Pair<JSONObject,Pair<String,List<Option>>>answer = new Pair<JSONObject,Pair<String,List<Option>>>(resp,
+			new Pair<String,List<Option>>(question.get("id").toString(),options));
 		return answer;
 		
 		
 	}
 	
-	public JSONObject answerQuestion(String answer, String username) {
+	public JSONObject answerQuestion(String answer, String username, List<Option> options) {
 		JSONObject resp;
-		List<Option> options = Option.where("question_id = ?", this.get("id"));
 		int i = Integer.parseInt(answer);
 		Option option = options.get(i - 1);
 		if ((boolean) option.getCorrect()) {
@@ -93,7 +93,7 @@ public class Question extends Model {
 		JSONObject resp = new JSONObject();;
 		Base.openTransaction();
 		try {
-			QuestionStatistic questionStat = QuestionStatistic.findFirst("question_id = ?", this.getInteger("id"));
+			QuestionStatistic questionStat = QuestionStatistic.findFirst("question = ?", this.get("description"));
 			QuestionStatisticController.updateCorrectAnswer(questionStat);
 			UserStatisticsCategory stat = UserStatisticsCategory.findFirst("user = ? AND nombre = ?",
 					username,this.get("category"));
@@ -113,7 +113,7 @@ public class Question extends Model {
 		JSONObject resp = new JSONObject();
 		Base.openTransaction();
 		try {
-			QuestionStatistic questionStat = QuestionStatistic.findFirst("question_id = ?", this.getInteger("id"));
+			QuestionStatistic questionStat = QuestionStatistic.findFirst("question = ?", this.get("description"));
 			QuestionStatisticController.updateIncorrectAnswer(questionStat);			
 			UserStatisticsCategory stat = UserStatisticsCategory.findFirst("user = ? AND nombre = ?",
 					username,this.get("category"));
@@ -123,6 +123,7 @@ public class Question extends Model {
 		}
 		catch(DBException e) {
 			Base.rollbackTransaction();
+			e.printStackTrace();
 			resp.put("answer", "Ocurrio un error inesperado");
 		}
 		return resp;

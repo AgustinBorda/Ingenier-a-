@@ -2,6 +2,7 @@ package trivia.routes;
 
 import static spark.Spark.*;
 
+import java.util.List;
 import java.util.Map;
 
 import org.javalite.activejdbc.Base;
@@ -31,8 +32,9 @@ public class PrivateRoutes {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 		Base.openTransaction();
 		try {
-			Pair<JSONObject, String> answer = Question.getQuestion(bodyParams, req.session().attribute("id").toString());
-			req.session().attribute("preg_id", answer.getSecond());
+			Pair<JSONObject,Pair<String,List<Option>>> answer = Question.getQuestion(bodyParams, req.session().attribute("id").toString());
+			req.session().attribute("preg_id", answer.getSecond().getFirst());
+			req.session().attribute("options", answer.getSecond().getSecond());
 			Base.commitTransaction();
 			res.status(200);
 			return answer.getFirst();
@@ -68,7 +70,7 @@ public class PrivateRoutes {
 		req.session().removeAttribute("preg_id");
 		JSONObject resp;
 		try {
-			resp = question.answerQuestion(bodyParams.get("answer").toString(), req.session().attribute("username"));
+			resp = question.answerQuestion(bodyParams.get("answer").toString(), req.session().attribute("username"),req.session().attribute("options"));
 			res.status(200);
 			return resp;		
 		}
