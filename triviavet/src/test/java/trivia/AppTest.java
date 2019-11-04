@@ -1,5 +1,7 @@
 package trivia;
 
+import org.javalite.activejdbc.annotations.DbName;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -7,6 +9,7 @@ import junit.framework.TestSuite;
 /**
  * Unit test for simple App.
  */
+@DbName("trivia_test")
 public class AppTest
     extends TestCase
 {
