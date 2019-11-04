@@ -205,37 +205,5 @@ public class QuestionControllerTest extends DBSpecAlternative {
 		JSONObject resp = QuestionController.updateWrongAnswer(u.getUsername(), q);
 		assertEquals(resp.get("answer"), "Incorrecto!");
 	}
-	
-	
-//	@Test
-//	public void updateCorrectAnswerTest() {
-//		User u = User.findFirst("username = ?", "Hackerman");
-//		Question q = Question.findFirst("description = ?", "testing");
-//		QuestionController.updateCorrectAnswer(u.getUsername(), q);
-//		UserStatisticsCategory statisticsCategory = UserStatisticsCategory.findFirst("user = ?", "Hackerman");
-//		QuestionStatistic questionStatistic = QuestionStatistic.findFirst("question = ?", q.getDescription());
-//		assertEquals(1, statisticsCategory.getPoints());
-//		assertEquals(1, statisticsCategory.getCorrectAnswers());
-//		assertEquals(0, statisticsCategory.getIncorrectAnswers());
-//		assertEquals(1, questionStatistic.getRightAttempts());
-//		assertEquals(1, questionStatistic.getTotalAttempts());
-//		assertEquals(0, questionStatistic.getWrongAttempts());	
-//	}
-//	
-//	
-//	@Test
-//	public void updateIncorrectAnswerTest() {
-//		User u = User.findFirst("username = ?", "Hackerman");
-//		Question q = Question.findFirst("description = ?", "testing");
-//		QuestionController.updateWrongAnswer(u.getUsername(), q);
-//		UserStatisticsCategory statisticsCategory = UserStatisticsCategory.findFirst("user = ?", "Hackerman");
-//		QuestionStatistic questionStatistic = QuestionStatistic.findFirst("question = ?", q.getDescription());
-//		assertEquals(0, statisticsCategory.getPoints());
-//		assertEquals(0, statisticsCategory.getCorrectAnswers());
-//		assertEquals(1, statisticsCategory.getIncorrectAnswers());
-//		assertEquals(0, questionStatistic.getRightAttempts());
-//		assertEquals(1, questionStatistic.getTotalAttempts());
-//		assertEquals(1, questionStatistic.getWrongAttempts());	
-//	}
 
 }

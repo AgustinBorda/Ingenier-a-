@@ -14,8 +14,8 @@ public class UserStatisticsCategoryController {
 
 	public static void createUserStatistic (User user, Category c) {
 		UserStatisticsCategory usc = new UserStatisticsCategory();
-		usc.set("user", user.get("username"));
-		usc.set("nombre", c.get("nombre"));
+		usc.set("user", user.getUsername());
+		usc.set("nombre", c.getNombre());
 		usc.set("points", 0);
 		usc.set("correct_answer", 0);
 		usc.set("incorrect_answer", 0);

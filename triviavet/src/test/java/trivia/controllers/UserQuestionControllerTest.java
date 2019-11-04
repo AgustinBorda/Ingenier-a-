@@ -13,7 +13,7 @@ import trivia.models.User;
 import trivia.models.UserQuestion;
 import trivia.testUtils.DBSpecAlternative;
 
-public class UserQUestionControllerTest extends DBSpecAlternative {
+public class UserQuestionControllerTest extends DBSpecAlternative {
 	
 	@Before
 	public void setUp() {
