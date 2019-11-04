@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {Component, Suspense} from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Navbar from "react-bootstrap/Navbar";
@@ -19,16 +19,19 @@ class Menu extends Component {
       categories: [],
       questions : [],
       statsquest : [],
-      catSelect: ''
+      catSelect: '',
+      pregSelect: '',
     }
   this._loadCategories = this._loadCategories.bind(this);
   this._deleteCategory = this._deleteCategory.bind(this);
   this._modifyCategory = this._modifyCategory.bind(this);
   this._deleteQuestion = this._deleteQuestion.bind(this);
+  this._loadStats = this._loadStats.bind(this);
   }
 
   componentDidMount(){
     this._loadCategories();
+    this.setState({pregSelect:"."});
   }
 
   async _loadCategories() {
@@ -157,6 +160,10 @@ class Menu extends Component {
     });
   }
 
+  async _loadStats(m){
+    await this.setState({pregSelect: m});
+  }
+
   async _deleteQuestion(message) {
     const token =  await AsyncStorage.getItem('userToken');
     const isAdmin = await AsyncStorage.getItem('isAdmin');
@@ -223,7 +230,6 @@ class Menu extends Component {
                     </Button>
                     </Card.Link>
                   </div>
-
               </Card>
                 </div>
             )}
@@ -239,27 +245,8 @@ class Menu extends Component {
           </Navbar>
           {this.state.questions.map((message) =>
             <div style={{padding:10}}>
-              <Card id={message} border="secondary" className="text-center">
+              <Card id={message} border="secondary" className="text-center" onClick={(x) => this._loadStats(message)} >
                 <Card.Header>{message}</Card.Header>
-
-                {this.state.statsquest.map(function(item){
-                  if (item.question === message) {
-                    return<Col><Row><div style={{
-                        width: 100,
-                        height: 100,
-                        }}> <PieChart
-                      data={[
-                        { title: 'Bien', value: item.right_attempts, color: '#ffffff' },
-                        { title: 'Mal', value: item.wrong_attempts, color: '#2c2f33' },
-                      ]}
-                    /> </div></Row><Row>
-                  <Card.Text>Respuestas totales: {item.total_attempts}</Card.Text>
-                  <Card.Text>Respuestas incorrectas [negro]: {item.wrong_attempts}</Card.Text>
-                  <Card.Text>Respuestas correctas [blanco]: {item.right_attempts}</Card.Text>
-                </Row></Col>;
-                  }
-              })}
-
                 <div>
                   <Card.Link>
                     <Button onClick={() => this._deleteQuestion(message)} variant ="primary" type="submit">
@@ -286,13 +273,27 @@ class Menu extends Component {
              </Link>
           </Navbar>
           <div style={{padding:10}}>
+              <Suspense fallback={<h2>Product list is loading...</h2>}>
             <Card border="primary">
               <Card.Header>Header</Card.Header>
               <Card.Body>
-                <Card.Title>Primary Card Title</Card.Title>
-                <Card.Text>
 
-                </Card.Text>
+                {this.state.statsquest.map(function(item){
+                  if (item.question === this.state.pregSelect) {
+                    return<Col><Row><div style={{width: 100, height: 100}}>
+                      <PieChart data={[
+                        { title: 'Bien', value: item.right_attempts, color: '#ffffff' },
+                        { title: 'Mal', value: item.wrong_attempts, color: '#2c2f33' },
+                      ]}
+                    /> </div></Row><Row>
+                    <Card.Text>Respuestas totales: {item.total_attempts}</Card.Text>
+                  <Card.Text>Respuestas incorrectas [negro]: {item.wrong_attempts}</Card.Text>
+                  <Card.Text>Respuestas correctas [blanco]: {item.right_attempts}</Card.Text>
+                  </Row></Col>;
+                  }
+
+              })}
+            
               </Card.Body>
             </Card>
           </div>
