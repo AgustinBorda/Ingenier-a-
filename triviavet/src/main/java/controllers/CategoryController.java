@@ -20,7 +20,6 @@ public class CategoryController {
 	
 	public static void deleteCategory(String name) {
 		Category cat = Category.findFirst("nombre = ?", name);
-		System.out.println(cat);
 		Category.delete("nombre = ?", cat.getNombre()); //unorthodox, but effective way to delete a category.
 	}
 	

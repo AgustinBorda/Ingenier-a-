@@ -71,16 +71,19 @@ public class PrivateRoutes {
 		Question question = QuestionController.getQuestionById(req.session().attribute("preg_id").toString());
 		req.session().removeAttribute("preg_id");
 		JSONObject resp;
+		Base.openTransaction();
 		try {
 			resp = QuestionController.answerQuestion(bodyParams.get("answer").toString(),
 					req.session().attribute("username"),req.session().attribute("options"), question);
 			res.status(200);
+			Base.commitTransaction();
 			return resp;		
 		}
 		catch(DBException e) {
 			resp = new JSONObject();
 			res.status(401);
 			resp.put("description", "Server Error");
+			Base.rollbackTransaction();
 			return resp;
 		}
 	};

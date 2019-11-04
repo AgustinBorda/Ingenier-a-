@@ -1,7 +1,6 @@
 package trivia.models;
 
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,7 +13,6 @@ public class OptionTest extends DBSpecAlternative{
 
 	@Before
 	public void before(){
-		System.out.println("Option test setup");
 		CategoryController.createCategory("cat"); 
 		Question questionTest = new Question();
 		questionTest.setDescription("algo");
@@ -29,11 +27,6 @@ public class OptionTest extends DBSpecAlternative{
 		o.setBoolean("correct",false);
 		o.set("question_id",questionTest.getId());
 		o.saveIt();
-	}
-
-	@After
-	public void after(){
-		System.out.println("Option test tearDown");
 	}
 
 	@Test

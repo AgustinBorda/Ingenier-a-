@@ -1,7 +1,6 @@
 package trivia.models;
 
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,14 +13,7 @@ public class CategoryTest extends DBSpecAlternative{
   
   @Before
   public void before(){
-    System.out.println("Category test setup");
     CategoryController.createCategory("test");
-  }
-
-  @After
-  public void after(){
-    System.out.println("Category test tearDown");
-
   }
 
   @Test

@@ -1,7 +1,6 @@
 
 package trivia.models;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,7 +14,6 @@ public class UserQuestionsTest extends DBSpecAlternative{
 
 	@Before
 	public void before(){
-		System.out.println("UserQuestions test setup");
 		User u = new User();
 		u.set("username", "jose98523168541", "password", "jose98523168541" , "admin", true, "email", "theemail@gmail.com");
 		u.saveIt();
@@ -30,11 +28,6 @@ public class UserQuestionsTest extends DBSpecAlternative{
 		question2.set("description", "TeJackie","category","cat");
 		question2.saveIt();
 		UserQuestionController.createUserQuestion("Hackerman", question.getId());
-	}
-
-	@After
-	public void after(){
-		System.out.println("UserQuestions test tearDown");
 	}
 
 	@Test

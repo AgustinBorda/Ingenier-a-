@@ -3,7 +3,6 @@ package trivia.models;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,18 +14,12 @@ public class QuestionStatisticTest extends DBSpecAlternative {
 	
 	@Before
 	public void setUp() {
-		System.out.println("QuestionStatisticTest setUp");
 		CategoryController.createCategory("testCat");
 		Question question = new Question();
 		question.setDescription("test");
 		question.setCategory("testCat");
 		question.saveIt();
 		QuestionStatisticController.generateQuestionStatistic("test");
-	}
-	
-	@After
-	public void tearDown() {
-		System.out.println("QuestionStatisticTest tearDown");
 	}
 	
 	@Test
