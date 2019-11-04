@@ -10,6 +10,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { Link } from 'react-router-dom';
 import logo from './logo.png';
+import PieChart from 'react-minimal-pie-chart';
 class Menu extends Component {
 
   constructor(props){
@@ -17,6 +18,7 @@ class Menu extends Component {
     this.state = {
       categories: [],
       questions : [],
+      statsquest : [],
       catSelect: ''
     }
   this._loadCategories = this._loadCategories.bind(this);
@@ -49,6 +51,28 @@ class Menu extends Component {
     });
   }
 
+  async _loadStatistics() {
+    const token =  await AsyncStorage.getItem('userToken');
+    const admin =  await AsyncStorage.getItem('isAdmin');
+      await fetch(process.env.REACT_APP_API_HOST + "/admin/questionsstatistic", {
+      headers : {
+        'Accept' : 'application/json',
+        'content-type' : 'application/json',
+        'Authorization' : token,
+        'IsAdmin': admin
+      },method: 'GET',
+      mode: "cors",
+      })
+    .then(async response => {
+      const resp = await response.json();
+      await this.setState({ statsquest: resp});
+      console.log(this.state);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  }
+
   async _loadQuestions(s) {
     this.setState({catSelect: s});
     const token =  await AsyncStorage.getItem('userToken');
@@ -65,7 +89,8 @@ class Menu extends Component {
       })
     .then(async response => {
       let resp = await response.json();
-      console.log(resp);
+      await this._loadStatistics();
+      console.log(this.state);
       this.setState({ questions: resp.questions});
 
     })
@@ -96,7 +121,6 @@ class Menu extends Component {
     .catch(error => {
       console.log(error);
     });
-
   }
 
   async _modifyCategory(message) {
@@ -186,17 +210,20 @@ class Menu extends Component {
               <div style={{padding:10}}>
 
                 <Card id={message} onClick={(x) => this._loadQuestions(message)} border="secondary">
-
-                  <Card.Header>{message}
+                  <Card.Header>{message}</Card.Header>
                   <div>
+                    <Card.Link>
                     <Button onClick={() => this._deleteCategory(message)} variant ="primary" type="submit">
-                        -
+                        Borrar
                     </Button>
+                    </Card.Link>
+                    <Card.Link>
                     <Button onClick={() => this._modifyCategory(message)} variant ="primary" type="submit">
                         Modificar
                     </Button>
+                    </Card.Link>
                   </div>
-                </Card.Header>
+
               </Card>
                 </div>
             )}
@@ -214,13 +241,37 @@ class Menu extends Component {
             <div style={{padding:10}}>
               <Card id={message} border="secondary" className="text-center">
                 <Card.Header>{message}</Card.Header>
-               <Button onClick={() => this._deleteQuestion(message)} variant ="primary" type="submit">
-                   -
-               </Button>
-               <Button onClick={() => this._modifyQuestion(message)} variant ="primary" type="submit">
-                  Modificar
-               </Button>
 
+                {this.state.statsquest.map(function(item){
+                  if (item.question === message) {
+                    return<Col><Row><div style={{
+                        width: 100,
+                        height: 100,
+                        }}> <PieChart
+                      data={[
+                        { title: 'Bien', value: item.right_attempts, color: '#ffffff' },
+                        { title: 'Mal', value: item.wrong_attempts, color: '#2c2f33' },
+                      ]}
+                    /> </div></Row><Row>
+                  <Card.Text>Respuestas totales: {item.total_attempts}</Card.Text>
+                  <Card.Text>Respuestas incorrectas [negro]: {item.wrong_attempts}</Card.Text>
+                  <Card.Text>Respuestas correctas [blanco]: {item.right_attempts}</Card.Text>
+                </Row></Col>;
+                  }
+              })}
+
+                <div>
+                  <Card.Link>
+                    <Button onClick={() => this._deleteQuestion(message)} variant ="primary" type="submit">
+                      Borrar
+                    </Button>
+                  </Card.Link>
+                  <Card.Link>
+                    <Button onClick={() => this._modifyQuestion(message)} variant ="primary" type="submit">
+                      Modificar
+                    </Button>
+                  </Card.Link>
+                </div>
               </Card>
               </div>
           )}

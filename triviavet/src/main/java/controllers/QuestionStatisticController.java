@@ -4,13 +4,14 @@ import trivia.models.QuestionStatistic;
 
 public class QuestionStatisticController {
 	
-	public static void generateQuestionStatistic(String question) {
+	public static QuestionStatistic generateQuestionStatistic(String question) {
 		QuestionStatistic stat = new QuestionStatistic();
 		stat.setQuestion(question);
 		stat.setWrongAttempts(0);
 		stat.setRightAttempts(0);
 		stat.setTotalAttempts(0);
 		stat.saveIt();
+		return stat;
 	}
 	
 	public static void updateCorrectAnswer(QuestionStatistic stat) {
