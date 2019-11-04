@@ -28,21 +28,21 @@ public class CategoryTest extends DBSpecAlternative{
   public void validatePrecenseOfnombre(){
     Category categoryTest = new Category();
     categoryTest.set("nombre", null);
-    assertEquals(categoryTest.isValid(), false);
+    assertFalse(categoryTest.isValid());
   }
   
   @Test
   public void validatePrecenseOfSomethingInNombre(){
     Category categoryTest = new Category();
     categoryTest.setNombre("test2");
-    assertEquals(categoryTest.isValid(), true);
+    assertTrue(categoryTest.isValid());
   }
 
   @Test
   public void validateUniqueCategory(){
     Category categoryTest = new Category();
     categoryTest.setNombre("test");
-    assertEquals(categoryTest.isValid(), false);
+    assertFalse(categoryTest.isValid());
   }
   
   @Test

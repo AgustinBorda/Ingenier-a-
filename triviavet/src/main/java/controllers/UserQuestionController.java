@@ -5,7 +5,7 @@ import trivia.models.UserQuestion;
 
 public class UserQuestionController {
 
-	public static void createUserQuestion(String username,String preg_id) {
+	public static void createUserQuestion(String username,Object preg_id) {
 		UserQuestion preg = new UserQuestion();
 		User u = User.findFirst("username = ?", username);
 		preg.setUserId(u.getId());
