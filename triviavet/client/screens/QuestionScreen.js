@@ -22,11 +22,15 @@ export default class QuestionScreen extends React.Component {
     super(props);
     this.state = {
       question: "",
+      question1: "",
+      question2: "",
+      question3: "",
+      question4: "",
       option: ""
     }
   }
 
-  async componentWillMount () {
+  async componentDidMount () {
     const cat = await AsyncStorage.getItem('category');
     const token =  await AsyncStorage.getItem('userToken');
     await axios.post(API_HOST+"/logged/question",{
@@ -38,7 +42,11 @@ export default class QuestionScreen extends React.Component {
     .then(response => {
       // Handle the JWT response here
       AsyncStorage.removeItem("category");
-      this.setState({question: response.data})
+      this.setState({question: response.data});
+      this.setState({question1: response.data.answer1,
+                     question2: response.data.answer2,
+                     question3: response.data.answer3,
+                     question4: response.data.answer4});
     })
     .catch((error) => {
       if(error.toString().match(/500/)) {
@@ -82,18 +90,33 @@ export default class QuestionScreen extends React.Component {
           {this.state.question.description}
         </Text>
         </Text>
-        <Text style={styles.answer} onPress={this._getCorrect.bind(this, '1')}>
-          {this.state.question.answer1}
-        </Text>
-        <Text style={styles.answer} onPress={this._getCorrect.bind(this, '2')}>
-          {this.state.question.answer2}
-        </Text>
-        <Text style={styles.answer} onPress={this._getCorrect.bind(this, '3')}>
-          {this.state.question.answer3}
-        </Text>
-         <Text style={styles.answer} onPress={this._getCorrect.bind(this, '4')}>
-          {this.state.question.answer4}
-        </Text>        
+        <Button
+          style={styles.answer}
+          onPress={this._getCorrect.bind(this, '1')}
+          title={this.state.question1}
+          color="#505050"
+        />
+        <Button
+          style={styles.answer}
+          onPress={this._getCorrect.bind(this, '2')}
+          title={this.state.question2}
+          color="#505050"
+        />
+        <Button
+          style={styles.answer}
+          onPress={this._getCorrect.bind(this, '3')}
+          title={this.state.question3}
+          color="#505050"
+        />
+        <Button
+          style={styles.answer}
+          onPress={this._getCorrect.bind(this, '4')}
+          title={this.state.question4}
+          color="#505050"
+          accessibilityLabel="Learn more about this button"
+        />
+
+
         <Button
           onPress={() => this.props.navigation.navigate('Play')}
           title="Volver"
@@ -138,5 +161,5 @@ const styles = StyleSheet.create({
     fontSize: 25,
     color: '#FFFFFF',
     textAlign: 'center',
-   } 
+   }
 })
