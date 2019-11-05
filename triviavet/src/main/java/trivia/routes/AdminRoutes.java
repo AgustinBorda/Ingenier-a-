@@ -25,7 +25,6 @@ public class AdminRoutes {
 
 	public static final Filter CheckAdmin = (request,response) -> {
 		String headerToken = (String) request.headers("Authorization");
-		System.out.println(request.headers("IsAdmin"));
 		if (request.requestMethod() != "OPTIONS"){ 
 			if (headerToken == null || headerToken.isEmpty()
 					|| !BasicAuth.authorize(headerToken) ||
@@ -39,7 +38,6 @@ public class AdminRoutes {
 		QuestionParam bodyParams = new Gson().fromJson(req.body(), QuestionParam.class);
 		Question question = new Question();
 		Base.openTransaction();
-		System.out.println(bodyParams.options);
 		try {
 			QuestionController.setQuestion(bodyParams, question);
 			QuestionStatisticController.generateQuestionStatistic((String)bodyParams.description);
@@ -205,8 +203,6 @@ public class AdminRoutes {
 	public static final Route GetAllQuestionsStatistics = (req, res) -> {
 		LazyList<QuestionStatistic> stats = QuestionStatistic.findAll();
 		res.status(200);
-		System.out.println(stats);
-		System.out.println(stats.toJson(true));
 		return stats.toJson(true);
 	};
 

@@ -89,7 +89,6 @@ public class PrivateRoutes {
 	};
 
 	public static final Route GetStatistics = (req, res) -> {
-		System.out.println("/loged/statistics");
 		JSONObject resp;
 		try {
 			resp = UserStatisticsCategoryController.getStatistics(req.session().attribute("username").toString());
