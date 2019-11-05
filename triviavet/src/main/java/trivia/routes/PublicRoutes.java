@@ -3,28 +3,37 @@ package trivia.routes;
 import spark.*;
 import static spark.Spark.halt;
 import org.javalite.activejdbc.Base;
+import org.json.JSONObject;
 
 import java.util.Map;
 import com.google.gson.Gson;
 
+import controllers.UserController;
 import trivia.models.User;
 import trivia.utils.Email;
 
 public class PublicRoutes {
 
 	public static final Filter BaseOpen = (request, response) -> {
-		if (!Base.hasConnection())
+		if (!Base.hasConnection()) {
 			Base.open();
+		}
 	};
+	
 
 	public static final Filter BaseClose = (request, response) -> {
-		if (Base.hasConnection())
+		if (Base.hasConnection()) {
 			Base.close();
-
+		}
 		response.header("Access-Control-Allow-Origin", "*");
-		response.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
-		response.header("Access-Control-Allow-Headers",
-				"Content-Type,Authorization,X-Requested-With,Content-Length,Accept,Origin,");
+		response.header("Access-Control-Allow-Methods", "*");
+		response.header("Access-Control-Allow-Headers", "*");
+		response.header("Access-Control-Allow-Body", "*");
+		response.header("Content-Type","application/json");
+	};
+	
+	public static final Route SetHeaders = (request, response) -> {	
+        return "OK";
 	};
 
 	public static final Route PostLogin = (req, res) -> {
@@ -32,61 +41,74 @@ public class PublicRoutes {
 		User user = User.findFirst("username = ? and password = ?", bodyParams.get("username"),
 				bodyParams.get("password"));
 		if (user != null) {
-			loadSession(req, user);
-			System.out.println("Loged: " + user.get("username"));
-			return true;
+			UserController.loadSession(req,user);
+			JSONObject resp = new JSONObject();
+			resp.put("isAdmin", user.get("admin"));
+			return resp;
 		}
 		res.status(401);
-		return true;
+		return false;
 	};
 
 	public static final Route PostUsers = (req, res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 		if (!bodyParams.containsKey("username") || !bodyParams.containsKey("password")
 				|| !bodyParams.containsKey("email")) {
-			halt(403, "");
-			return "";
+			res.status(403);
+			return false;
 		}
-
 		if (((String) bodyParams.get("username")).length() == 0 || ((String) bodyParams.get("password")).length() == 0
 				|| ((String) bodyParams.get("email")).length() == 0) {
-			halt(403, "");
-			return "";
+			res.status(403);
+			return false;
 		}
 		if (User.findFirst("Username = ?", bodyParams.get("username")) != null) {
-			halt(401, "");
-			return "";
+			res.status(401);
+			return false;
 		}
 		if (User.findFirst("email = ?", bodyParams.get("email")) != null) {
-			halt(401, "");
-			return "";
+			res.status(401);
+			return false;
 		}
-
-		User user = User.createUser(bodyParams);
+		User user = UserController.createUser(bodyParams);
 		System.out.println("Registred: " + user.get("username"));
-
-		loadSession(req, user);
-		return user.toJson(true);
+		UserController.loadSession(req,user);
+		res.status(200);
+		JSONObject resp = new JSONObject();
+		resp.put("isAdmin", user.get("admin"));
+		return resp;
 	};
 
 
 	public static final Route PostReset = (req, res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
-		User user = User.findFirst("email = ?", bodyParams.get("email"));
+		User user = User.findFirst("username = ?", bodyParams.get("username"));
 		if (user == null) {
-			halt(401, "");
-			return "";
+			System.out.println("Try reset: " + bodyParams.get("username"));
+			res.status(401);
+			return false;
 		}
-		System.out.println("Reset: " + user.get("username"));
-		Email.getSingletonInstance().sendMail((String) bodyParams.get("email"), (String) user.get("username"));
-	
-		return true;
+		else {
+			System.out.println("Reset: " + user.get("username"));
+			Email.getSingletonInstance().sendMail((String) user.get("email"), (String) user.get("username"));
+			res.status(200);
+			return true;
+		}
 	};
 	
+	public static final Route PostNewPass= (req, res) -> {
+		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+		String username = Email.getSingletonInstance().checkCode((String) bodyParams.get("code"));
+		if(username == null) {
+			res.status(401);
+			return false;
+		}
+		else {
+			System.out.println("New pass to: " + username);
+			User.update("password = ?", "username = ?", bodyParams.get("newPass"), username);
+			res.status(200);
+			return true;
+		}
+	};
 
-	private static void loadSession(Request req, User user) {
-		req.session().attribute("username", user.get("username"));
-		req.session().attribute("id", user.get("id"));
-		req.session().attribute("admin", user.get("admin"));
-	}
 }

@@ -6,7 +6,9 @@ import AuthLoadingScreen from '../screens/AuthLoadingScreen';
 import CreateUserScreen from '../screens/CreateUserScreen';
 import PlayScreen from '../screens/PlayScreen';
 import QuestionScreen from '../screens/QuestionScreen';
-import StatisticScreen from '../screens/StatisticScreen'
+import StatisticScreen from '../screens/StatisticScreen';
+import ResetPassScreen from '../screens/ResetPass';
+import InsertCodeScreen from '../screens/InsertCode';
 
 const AppStack = createStackNavigator({ Home: HomeScreen});
 const AuthStack = createStackNavigator({ SignIn: SignInScreen });
@@ -14,6 +16,8 @@ const CreateStack = createStackNavigator({ CreateUser: CreateUserScreen })
 const PlayStack = createStackNavigator({ Play: PlayScreen})
 const QuestionStack = createStackNavigator({Question: QuestionScreen})
 const StatisticStack = createStackNavigator({Statistic: StatisticScreen})
+const ResetPassStack = createStackNavigator({ResetPass: ResetPassScreen})
+const InsertCodeStack = createStackNavigator({ResetPass: InsertCodeScreen})
 
 export default createAppContainer(createSwitchNavigator(
   {
@@ -23,7 +27,9 @@ export default createAppContainer(createSwitchNavigator(
     Create: CreateStack,
     Play: PlayScreen,
     Question: QuestionStack,
-    Statistic: StatisticStack
+    Statistic: StatisticStack,
+    ResetPass: ResetPassStack,
+    InsertCode: InsertCodeStack
   },
   {
     initialRouteName: 'AuthLoading',

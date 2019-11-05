@@ -10,56 +10,51 @@ import trivia.structures.StatisticContainer;
 public class UserStatisticsCategory extends Model {
 
 	static {
+		validatePresenceOf("user").message("The stat must reference a user");
+		validatePresenceOf("nombre").message("The stat must reference a category");
 		validatePresenceOf("points").message("Please, provide points");
 		validatePresenceOf("correct_answer").message("Please, provide correct_answer");
 		validatePresenceOf("incorrect_answer").message("Please, provide incorrect_answer");
 	}
 	
-	public static void createUserStatistic (User user, Category c) {
-		UserStatisticsCategory usc = new UserStatisticsCategory();
-		usc.set("user", user.get("username"));
-		usc.set("nombre", c.get("nombre"));
-		usc.set("points", 0);
-		usc.set("correct_answer", 0);
-		usc.set("incorrect_answer", 0);
-		usc.saveIt();
+	public String getUsername() {
+		return this.getString("user");
 	}
 	
-	public static JSONObject getStatistics(String username) {
-		List<UserStatisticsCategory> estadisticas = UserStatisticsCategory.where("user = ?",
-				username);
-		JSONObject resp = new JSONObject();
-		resp.put("User", username);
-		List<JSONObject> stats = new ArrayList<JSONObject>();
-		for (UserStatisticsCategory e : estadisticas) {
-			stats.add(new StatisticContainer(e).toJSON());			
-		}
-		resp.put("statistics", stats.toArray());
-		return resp;		
+	public String getCategory() {
+		return this.getString("nombre");
 	}
 	
-	public int calculateLevel() {
-		int i = 0;
-		int j = 0;
-		int num = this.getInteger("correct_answer");
-		while(num >= i) {
-			i+=2;
-			num -= i;
-			j++;
-		}
-		return j;
+	public int getPoints() {
+		return this.getInteger("points");
 	}
 	
-	public void updateCorrectAnswer() {
-		int j = (int) this.get("points") + 1;
-		this.set("points", j);
-		j = (int) this.get("correct_answer") + 1;
-		this.set("correct_answer", j);
-		this.saveIt();
+	public int getCorrectAnswers() {
+		return this.getInteger("correct_answer");
 	}
 	
-	public void updateIncorrecrAnswer() {
-		this.set("incorrect_answer", (int) this.get("incorrect_answer") + 1);
-		this.saveIt();
+	public int getIncorrectAnswers() {
+		return this.getInteger("incorrect_answer");
 	}
+	
+	public void setUsername(String username) {
+		this.setString("user", username);
+	}
+	
+	public void setCategory(String cat) {
+		this.setString("nombre", cat);
+	}
+	
+	public void setPoints(int points) {
+		this.setInteger("points", points);
+	}
+	
+	public void setCorrectAnswers(int correctAnswers) {
+		this.setInteger("correct_answer", correctAnswers);
+	}
+	
+	public void setIncorrectAnswers(int incorrectAnswers) {
+		this.setInteger("incorrect_answer", incorrectAnswers);
+	}
+
 }

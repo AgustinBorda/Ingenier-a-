@@ -101,7 +101,6 @@ public class Email {
 			generatedString = RandomStringUtils.random(5, true, true);
 		}
 		recuperationKeys.put(generatedString, username);
-		System.out.println(recuperationKeys.getIfPresent(generatedString));
 		return generatedString;
 	}
 	
