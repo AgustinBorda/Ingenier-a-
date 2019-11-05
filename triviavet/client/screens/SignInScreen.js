@@ -49,12 +49,16 @@ export default class SignInScreen extends React.Component {
         />
 
         <Button title="Sign in" onPress={this._signIn}
-          color = "#ebee2c"
+          color = "#d35400"
         />
          <View style={{margin:20}} />
         <Button title="Create account" onPress={() => this.props.navigation.navigate('Create')}
-          color = "#ebee2c"
+          color = "#d35400"
         />
+        <View style={{margin:20}} />
+       <Button title="Reset password" onPress={() => this.props.navigation.navigate('ResetPass')}
+         color = "#d35400"
+       />
       </View>
     );
   }
@@ -76,6 +80,7 @@ export default class SignInScreen extends React.Component {
       .then(response => {
         // Handle the JWT response here
         AsyncStorage.setItem('userToken', response.config.headers.Authorization);
+        console.log(response.config.headers.Authorization);
         this.props.navigation.navigate('App');
       })
     .catch((error) => {
@@ -93,7 +98,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#48c9b0',
+    backgroundColor: '#1b4f72',
   },
   welcome: {
     fontSize: 20,

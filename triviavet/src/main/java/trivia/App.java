@@ -2,13 +2,15 @@ package trivia;
 
 import static spark.Spark.*;
 import trivia.routes.*;
-import trivia.utils.Email;
 
 public class App {
 
 	public static void main(String[] args) {
 
 		before("*",PublicRoutes.BaseOpen);
+		
+		options("*",PublicRoutes.SetHeaders);
+		
 		after("*", PublicRoutes.BaseClose);
 
 		before("/logged/*", PrivateRoutes.CheckSession);
@@ -20,6 +22,8 @@ public class App {
 		post("/users", PublicRoutes.PostUsers);
 		
 		post("/reset", PublicRoutes.PostReset);
+		
+		post("/newPass", PublicRoutes.PostNewPass);
 
 		get("/logged/category", PrivateRoutes.GetCategory);
 		
@@ -31,7 +35,7 @@ public class App {
 
 		post("/logged/answer", PrivateRoutes.PostAnswer);
 		
-		get("/admin/userstatistic", AdminRoutes.GetSpecificUserStatistics);
+		post("/admin/userstatistic", AdminRoutes.GetSpecificUserStatistics);
 		
 		get("/admin/usersstatistic", AdminRoutes.GetAllUserStatistics);
 		
@@ -44,6 +48,8 @@ public class App {
 		post("/admin/questions", AdminRoutes.CreateQuestions);
 		
 		post("/admin/removequestion", AdminRoutes.RemoveQuestions);
+		
+		post("/admin/listquestion", AdminRoutes.ListQuestions);
 		
 		post("/admin/modifyquestion", AdminRoutes.ModifyQuestions);
 		

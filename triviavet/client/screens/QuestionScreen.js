@@ -13,7 +13,8 @@ import axios from 'axios';
 
 export default class QuestionScreen extends React.Component {
   static navigationOptions = {
-    title: '',
+    title: 'Play',
+
     category: AsyncStorage.getItem('category')
   };
 
@@ -65,6 +66,7 @@ export default class QuestionScreen extends React.Component {
         this.props.navigation.navigate('Play')
       })
       .catch((error) => {
+        console.log("Momento ideal para romperse");
         if(error.toString().match(/500/)) {
           this.props.navigation.navigate('Play')
         }
@@ -76,7 +78,9 @@ export default class QuestionScreen extends React.Component {
     return (
       <View style={styles.container}>
         <Text style={styles.question}>
+        <Text style={styles.tabBarInfoText}>
           {this.state.question.description}
+        </Text>
         </Text>
         <Text style={styles.answer} onPress={this._getCorrect.bind(this, '1')}>
           {this.state.question.answer1}
@@ -86,14 +90,14 @@ export default class QuestionScreen extends React.Component {
         </Text>
         <Text style={styles.answer} onPress={this._getCorrect.bind(this, '3')}>
           {this.state.question.answer3}
-        </Text >
-        <Text style={styles.answer} onPress={this._getCorrect.bind(this, '4')}>
-          {this.state.question.answer4}
         </Text>
+         <Text style={styles.answer} onPress={this._getCorrect.bind(this, '4')}>
+          {this.state.question.answer4}
+        </Text>        
         <Button
           onPress={() => this.props.navigation.navigate('Play')}
-          title="<-"
-          color="#000000"
+          title="Volver"
+          color="#d35400"
           accessibilityLabel="Learn more about this button"
         />
 
@@ -106,19 +110,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#48c9b0',
+    backgroundColor: '#1b4f72',
   },
   question: {
-    fontSize: 30,
+    fontSize: 40,
     textAlign: 'center',
-    margin: 20,
-    backgroundColor: '#FFFFFF',
+    margin: 30,
+    color: '#FFFFFF',
+    backgroundColor: '#1b4f72',
   },
   answer: {
     fontSize: 20,
     textAlign: 'center',
     margin: 20,
-    backgroundColor: '#FFFFFF',
+    color: '#FFFFFF',
+    backgroundColor: '#1b4f72',
   },
   input: {
     margin: 20,
@@ -127,5 +133,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#fff933'
-  }
+  },
+  tabBarInfoText: {
+    fontSize: 25,
+    color: '#FFFFFF',
+    textAlign: 'center',
+   } 
 })

@@ -1,131 +1,137 @@
-import React,{Component,Redirect,alert} from "react";
+import React, {Component} from "react";
 import {AsyncStorage} from "AsyncStorage";
+import {StyleSheet, StyleResolver} from "style-sheet";
 import ReactDOM from "react-dom";
 import Menu from './Menu';
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import CreateAccount from './CreateAccount';
-import { Link } from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
+import logo from './logo.png';
 
+class Login extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: '',
+      password: ''
+    };
 
-
-class Login extends Component{
-    constructor(props) {
-        super(props);
-        this.state = {username: '',password: ''};
-    
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-      }
-    
-      handleChange(event) {
-        this.setState({username: event.target.username, password: event.target.password});
-      }
-    
-      handleSubmit(event) {
-        alert('A user was submitted: ' + this.state.username);
-        event.preventDefault();
-      }
-      
-      componentDidMount(){
-    
-          fetch(process.env.API_HOST+"/login",{
-              method: 'POST', 
-              body: JSON.stringify({username: this.state.username, password: this.state.password}), 
-              mode: "no-cors"
-            }) 
-            .then(response => {
-              console.log(response);
-                AsyncStorage.setItem('userToken', response.config.headers.Authorization);
-                ReactDOM.render(
-                   <Menu/>,
-                    document.getElementById('root')
-                )
-              })
-              .catch(error => {
-                console.log(error)
-              });
-                   
-      }
-
-  render () {
-        return (
-          
-             <form onSubmit={this.handleSubmit}>
-             <h1> Login</h1>
-
-             <Form>
-              <Form.Group controlId="formBasicEmail">
-              <Form.Label>Username</Form.Label>
-              <Form.Control type="Username" placeholder="Enter Username" bsSize="large" 
-              username={this.state.username} onChange={this.handleChange}/>
-              <Form.Text className="text-muted">
-       
-              </Form.Text>
-              </Form.Group>
-
-              <Form.Group controlId="formBasicPassword" >
-                <Form.Label>Password</Form.Label>
-                <Form.Control type="password" placeholder="Password"  
-                password={this.state.password} onChange={this.handleChange}/>
-              </Form.Group>
-      
-               <Button variant="primary" type="submit">
-                  Iniciar Sesion
-              </Button>
-              <html>             
-              <body>
-              <p>   </p>
-              <p>   </p>
-              </body>
-              </html>
-              <Link to="/CreateAccount" className="CreateAccount">
-               <Button variant="primary" type="submit">
-                  Crear Cuenta
-               </Button>
-               </Link>
-            </Form>
-        </form>
-        ); 
+    this._login = this._login.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
-}
+
+  handleChange = (event) => {
+    this.setState({
+      [event.target.name]: event.target.value
+    });
+  }
+  handleSubmit(event) {
+    event.preventDefault();
+  }
+
+   _login() {
+    fetch(process.env.REACT_APP_API_HOST + "/login", {
+      headers : {
+        'Accept' : 'application/json',
+        'content-type' : 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        username: this.state.username,
+         password: this.state.password
+       }),
+      mode: "cors",
+      cache: "default"
+      })
+     .then(async response => {
+      if (response.ok) {
+        let res = await response.json();
+        let base64 = require('base-64');
+        await AsyncStorage.setItem('userToken', 'Basic ' + base64.encode(this.state.username + ":" + this.state.password));
+        await AsyncStorage.setItem('isAdmin', res.isAdmin);
+        this.props.history.push("/menu")
+      } else {
+          alert("El usuario o contraseña no es valido");
+        }
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  }
+
+    render() {
+
+      return (<div className={StyleResolver.resolve([styles.app])}>
 
 
-export default Login;
+        <div className={StyleResolver.resolve([styles.layout, styles.container])}>
+          <div css={{
+              fontFamily: "monaco, monospace",
+              color: "#1e252d"
+            }}>
+            <div>
+              <h1> <img src={logo}
+                height={60}
+                 width={60}/> Login</h1>
+            </div>
+            <Form onSubmit={this.handleSubmit}>
+              <Form.Group controlId="formBasicEmail">
+                <Form.Label>Username</Form.Label>
+                <Form.Control name="username" type="Username" placeholder="Username" bsSize="large" username={this.state.username} onChange={this.handleChange}/>
+                <Form.Text className="text-muted"></Form.Text>
+              </Form.Group>
 
+              <Form.Group controlId="formBasicEmail">
+                <Form.Label>Password</Form.Label>
+                <Form.Control name="password" type="password" placeholder="Password" password={this.state.password} onChange={this.handleChange}/>
+              </Form.Group>
 
-/*
-     <div className="Login">
-     <form onSubmit={this.handleSubmit}>
-      <Form>
-      <Form.Group controlId="formBasicEmail">
-      <Form.Label>Username</Form.Label>
-      <Form.Control type="Username" placeholder="Enter Username" bsSize="large" 
-      username={this.state.username} onChange={this.handleChange}/>
-      <Form.Text className="text-muted">
-       
-      </Form.Text>
-      </Form.Group>
+              <Button onClick={this._login} variant="primary" type="submit">
+                Iniciar Sesion
+              </Button>
 
-      <Form.Group controlId="formBasicPassword">
-        <Form.Label>Password</Form.Label>
-        <Form.Control type="password" placeholder="Password" 
-        password={this.state.password} onChange={this.handleChange}/>
-      </Form.Group>
-      
-       <Button variant="primary" type="submit">
-        Submit
-      </Button>
-  </Form>
- */
- /* <form onSubmit={this.handleSubmit}>
-            <label>
-            username:
-            <input type="text" username={this.state.username} onChange={this.handleChange} />
-            </label>
-            <label>
-            password:
-            <input type="password" password={this.state.password} onChange={this.handleChange} />
-            </label>
-            <button type="submit"> iniciar sesion</button>
-        </form>*/
+              <Link to="/CreateAccount" className="CreateAccount">
+                <Button variant="secondary" type="submit">
+                  Crear Cuenta
+                </Button>
+              </Link>
+            </Form>
+        </div>
+      </div>
+    </div>);
+    }
+
+  }
+
+  export default Login;
+
+  const styles = StyleSheet.create({
+    layout: {
+      width: "100%",
+      maxWidth: "640px"
+    },
+    container: {
+      padding: "2em",
+      border: "1px solid",
+      borderRadius: "3px",
+
+      backgroundColor: "rgba(114,137,218, 0.2)",
+      boxShadow: "0 2px 30px 6px #000000",
+      transition: "transform 0.2s ease-out",
+      "&:hover": {
+        transform: "scale(1.1)"
+      }
+    },
+    app: {
+      background: "radial-gradient(circle, rgba(35,39,42,1) 0%, rgba(44,47,51,1) 100%)",
+      height: "100vh",
+      width: "100vw",
+      padding: "2rem",
+      boxSizing: "border-box",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center"
+    }
+  });

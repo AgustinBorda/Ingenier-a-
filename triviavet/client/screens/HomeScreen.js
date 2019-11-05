@@ -64,7 +64,7 @@ export default class HomeScreen extends React.Component {
             <View style={{margin:20}} />
             <Button onPress={() => this.props.navigation.navigate('Auth')}
              title="Salir"
-             color ="#e0e241"
+             color ="#d35400"
              />
 
 
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
 
   container: {
     flex: 1,
-    backgroundColor: '#48c9b0',
+    backgroundColor: '#1b4f72',
   },
   developmentModeText: {
     marginBottom: 20,
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     color: 'rgba(96,100,109, 0.8)',
   },
   codeHighlightContainer: {
-    backgroundColor: '#48c9b0',
+    backgroundColor: '#1b4f72',
     borderRadius: 3,
     paddingHorizontal: 4,
   },
@@ -187,12 +187,12 @@ const styles = StyleSheet.create({
       },
     }),
     alignItems: 'center',
-    backgroundColor: '#48c9b0',
+    backgroundColor: '#1b4f72',
     paddingVertical: 20,
   },
   tabBarInfoText: {
     fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
+    color: '#FFFFFF',
     textAlign: 'center',
   },
   navigationFilename: {

@@ -2,13 +2,17 @@ package trivia.routes;
 
 import static spark.Spark.*;
 
+import java.util.List;
 import java.util.Map;
 
 import org.javalite.activejdbc.Base;
-
 import org.json.JSONObject;
 import com.google.gson.Gson;
 
+import controllers.CategoryController;
+import controllers.QuestionController;
+import controllers.QuestionStatisticController;
+import controllers.UserController;
 import spark.*;
 import trivia.BasicAuth;
 import trivia.models.*;
@@ -21,32 +25,53 @@ public class AdminRoutes {
 
 	public static final Filter CheckAdmin = (request,response) -> {
 		String headerToken = (String) request.headers("Authorization");
-		if (request.session().attributes().isEmpty() || headerToken == null || headerToken.isEmpty()
-				|| !BasicAuth.authorize(headerToken) || (boolean)request.session().attribute("admin") == false)
-			halt(401, "Usuario o clave invalidos \n");
+		System.out.println(request.headers("IsAdmin"));
+		if (request.requestMethod() != "OPTIONS"){ 
+			if (headerToken == null || headerToken.isEmpty()
+					|| !BasicAuth.authorize(headerToken) ||
+					Boolean.parseBoolean(request.headers("IsAdmin")) == false) {
+				halt(401,"Token invalido \n");
+			}
+		}
 	};
 	
 	public static final Route CreateQuestions = (req, res) -> {
 		QuestionParam bodyParams = new Gson().fromJson(req.body(), QuestionParam.class);
 		Question question = new Question();
-		question.setQuestion(bodyParams);
+		Base.openTransaction();
+		System.out.println(bodyParams.options);
+		try {
+			QuestionController.setQuestion(bodyParams, question);
+			QuestionStatisticController.generateQuestionStatistic((String)bodyParams.description);
+			Base.commitTransaction();
+			res.status(200);
+		}
+		catch (DBException e) {
+			Base.rollbackTransaction();
+			res.status(401);
+		}
+
 		return question.toJson(true);
 	};
 	
 	public static final Route ModifyQuestions = (req,res) -> {
-		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+		ModifyQuestionParam bodyParams = new Gson().fromJson(req.body(), ModifyQuestionParam.class);
 		JSONObject resp = new JSONObject();
 		Base.openTransaction();
-		Question question = Question.findFirst("description = ?", bodyParams.get("oldDescription"));
+		Question question = Question.findFirst("description = ?", bodyParams.oldDescription);
 		try {
-			question.setQuestion((QuestionParam)bodyParams.get("modifiedQuestion"));
+			Option.delete("question_id = ?",question.getId());
+			QuestionController.setQuestion((QuestionParam)bodyParams.modifiedQuestion, question);
 			Base.commitTransaction();
-			resp.put("Answer", "Question Modified");
+			resp.put("Answer", "Modified Question");
+			res.status(200);
 			
 		}
 		catch(DBException e) {
 			Base.rollbackTransaction();
-			resp.put("answer", "Cannot modify question");
+			e.printStackTrace();
+			resp.put("answer", "Cannot modify Question");
+			res.status(401);
 		}
 		return resp;
 	};
@@ -54,9 +79,33 @@ public class AdminRoutes {
 	public static final Route RemoveQuestions = (req,  res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 		Question question = Question.findFirst("description = ?", bodyParams.get("description").toString());
-		question.delete();
 		JSONObject resp = new JSONObject();
-		resp.put("answer", "OK");
+		try {
+			Question.delete("description =?",bodyParams.get("description"));	
+			resp.put("answer", "OK");
+			resp.put("cat", question.get("category"));
+			res.status(200);
+		}
+		catch(DBException e) {
+			resp.put("answer", "Fail");
+			res.status(404);
+		}
+		return resp;
+	};
+	
+	public static final Route ListQuestions = (req,  res) -> {
+		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
+		List<String> question = Question.where("category = ?", bodyParams.get("category").toString()).collect("description");
+		JSONObject resp = new JSONObject();
+		try {
+			resp.put("questions", question.toArray());
+			resp.put("answer", "OK");
+			res.status(200);
+		}
+		catch(DBException e) {
+			resp.put("answer", "Fail");
+			res.status(404);
+		}
 		return resp;
 	};
 	
@@ -65,8 +114,15 @@ public class AdminRoutes {
 		JSONObject resp = new JSONObject();
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 		user = User.findFirst("username = ?", bodyParams.get("username"));
-		user.giveAdminPermissions();
-		resp.put("answer", "OK");
+		try {
+			UserController.giveAdminPermissions(user);
+			resp.put("answer", "OK");
+			res.status(200);
+		}
+		catch (DBException e) {
+			resp.put("answer", "Fail");
+			res.status(404);
+		}
 		return resp;
 	};
 	
@@ -75,13 +131,15 @@ public class AdminRoutes {
 		JSONObject resp = new JSONObject();
 		Base.openTransaction();
 		try {
-			Category.createCategory((String)bodyParams.get("name"));
+			CategoryController.createCategory((String)bodyParams.get("name"));
 			Base.commitTransaction();
 			resp.put("answer", "Created category");
+			res.status(200);
 		}
 		catch(DBException e) {
 			Base.rollbackTransaction();
-			resp.put("answer", "Cannot create category");			
+			resp.put("answer", "Cannot create category");
+			res.status(404);
 		}
 		return resp;
 	};
@@ -91,13 +149,16 @@ public class AdminRoutes {
 		JSONObject resp = new JSONObject();
 		Base.openTransaction();
 		try {
-			Category.deleteCategory((String)bodyParams.get("name"));
+			CategoryController.deleteCategory((String)bodyParams.get("name"));
 			Base.commitTransaction();
 			resp.put("answer","Category deleted");
+			res.status(200);
 		}
 		catch(DBException e) {
 			Base.rollbackTransaction();
+			e.printStackTrace();
 			resp.put("answer", "Cannot delete category");
+			res.status(404);
 		}
 		return resp;
 	};
@@ -107,45 +168,44 @@ public class AdminRoutes {
 		JSONObject resp = new JSONObject();
 		Base.openTransaction();
 		try {
-			Category.modifyCategory((String)bodyParams.get("old_name"), (String)bodyParams.get("new_name"));
+			CategoryController.modifyCategory((String)bodyParams.get("old_name"), (String)bodyParams.get("new_name"));
 			Base.commitTransaction();
-			resp.put("answer","Category modified");	
+			resp.put("answer","Category modified");
+			res.status(200);
 		}
 		catch(DBException e) {
 			Base.rollbackTransaction();
-			resp.put("answer", "Cannot modify category");			
+			resp.put("answer", "Cannot modify category");
+			res.status(404);
 		}
 		return resp;
 	};
 	
 	public static final Route GetSpecificUserStatistics = (req, res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
-		JSONObject resp = new JSONObject();
 		LazyList<UserStatisticsCategory> stats = UserStatisticsCategory.where("user = ?",bodyParams.get("username"));
-		resp.put("stats", stats.toArray());
-		return resp;
+		res.status(200);
+		return stats.toJson(true);
 	};
 	
 	public static final Route GetAllUserStatistics = (req, res) -> {
-		JSONObject resp = new JSONObject();
 		LazyList<UserStatisticsCategory> stats = UserStatisticsCategory.findAll();
-		resp.put("stats", stats.toArray());
-		return resp;
+		res.status(200);
+		return stats.toJson(true);
 	};
 	
 	public static final Route GetSpecificQuestionStatistics = (req, res) -> {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
-		JSONObject resp = new JSONObject();
-		LazyList<QuestionStatistic> stats = QuestionStatistic.where("question = ?",bodyParams.get("question"));
-		resp.put("stats", stats.toArray());
-		return resp;
+		String question = "%"+bodyParams.get("question")+"%";
+		LazyList<QuestionStatistic> stats = QuestionStatistic.where("question = ?",question);
+		res.status(200);
+		return stats.toJson(true);
 	};
 	
 	public static final Route GetAllQuestionsStatistics = (req, res) -> {
-		JSONObject resp = new JSONObject();
 		LazyList<QuestionStatistic> stats = QuestionStatistic.findAll();
-		resp.put("stats", stats.toArray());
-		return resp;
+		res.status(200);
+		return stats.toJson(true);
 	};
 
 }
