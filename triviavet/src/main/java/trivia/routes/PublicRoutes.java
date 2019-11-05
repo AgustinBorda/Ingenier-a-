@@ -71,7 +71,6 @@ public class PublicRoutes {
 			return false;
 		}
 		User user = UserController.createUser(bodyParams);
-		System.out.println("Registred: " + user.get("username"));
 		UserController.loadSession(req,user);
 		res.status(200);
 		JSONObject resp = new JSONObject();
@@ -84,12 +83,10 @@ public class PublicRoutes {
 		Map<String, Object> bodyParams = new Gson().fromJson(req.body(), Map.class);
 		User user = User.findFirst("username = ?", bodyParams.get("username"));
 		if (user == null) {
-			System.out.println("Try reset: " + bodyParams.get("username"));
 			res.status(401);
 			return false;
 		}
 		else {
-			System.out.println("Reset: " + user.get("username"));
 			Email.getSingletonInstance().sendMail((String) user.get("email"), (String) user.get("username"));
 			res.status(200);
 			return true;
@@ -104,7 +101,6 @@ public class PublicRoutes {
 			return false;
 		}
 		else {
-			System.out.println("New pass to: " + username);
 			User.update("password = ?", "username = ?", bodyParams.get("newPass"), username);
 			res.status(200);
 			return true;
