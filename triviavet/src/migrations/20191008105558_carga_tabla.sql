@@ -47,6 +47,7 @@ INSERT INTO questions (id, category, description, wrong_attempts, right_attempts
 	  (39, "Farmacología y Terapéutica", "La dosis de Ivermectina al 1% es:" ,0,0,0),
 	  (40, "Farmacología y Terapéutica", "La dosis de Ivermectina al 3,15% es:" ,0,0,0);
 
+
 INSERT INTO options (id, question_id, description, correct) VALUES
 	(0, 1, "Diarrea", 0),
 	(0, 1, "Pérdida de peso", 0),

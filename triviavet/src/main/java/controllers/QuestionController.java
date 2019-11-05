@@ -15,17 +15,29 @@ import trivia.models.QuestionStatistic;
 import trivia.models.UserStatisticsCategory;
 import trivia.structures.Pair;
 import trivia.structures.QuestionParam;
-
+/**
+ * Class that provides a controller for the Question model.
+ */
 public class QuestionController {
 
-
+	/**
+	 * Set the attributes of a question.
+	 * @param bodyParams, the attributes
+	 * @param question, the question
+	 */
 	public static void setQuestion(QuestionParam bodyParams,Question question) {
 		question.setDescription(bodyParams.description);
 		question.setCategory(bodyParams.category);
 		question.saveIt();
 		OptionController.setOptions(bodyParams.options, question);
 	}
-
+	
+	/**
+	 * Recovery a question from the DB.
+	 * @param bodyParams, the params of the question
+	 * @param userId, the user that requested a question
+	 * @return a Pair with the question, the options, and the id of the question
+	 */
 	public static Pair<JSONObject,Pair<String,List<Option>>> getQuestion(Map<String,Object> bodyParams,String userId) {
 		Random r = new Random();
 		JSONObject resp = new JSONObject();
@@ -66,7 +78,14 @@ public class QuestionController {
 
 
 	}
-
+	/**
+	 * Verifies if the provided answer for a question is correct.
+	 * @param answer, the answer
+	 * @param username, the user that provided the answer
+	 * @param options, all the options for the question
+	 * @param question, the question
+	 * @return a Json that contains a message depending if the answer was correct or not
+	 */
 	public static JSONObject answerQuestion(String answer, String username, List<Option> options, Question question) {
 		JSONObject resp;
 		int i = Integer.parseInt(answer);
@@ -82,10 +101,14 @@ public class QuestionController {
 	public static Question getQuestionById(String id) {
 		return Question.findFirst("id = ?", id);
 	}
-
+	/**
+	 * Updates the statistic of the question
+	 * @param username, the user that provided the answer
+	 * @param question, the answered question
+	 * @return a Json that contains a answer
+	 */
 	public static JSONObject updateCorrectAnswer(String username, Question question) {
 		JSONObject resp = new JSONObject();;
-		Base.openTransaction();
 		try {
 			QuestionStatistic questionStat = QuestionStatistic.findFirst("question = ?", question.getDescription());
 			if (questionStat == null) {
@@ -96,19 +119,22 @@ public class QuestionController {
 					username, question.getCategory());
 			UserQuestionController.createUserQuestion(username, question.getId().toString());
 			UserStatisticsCategoryController.updateCorrectAnswer(stat);
-			Base.commitTransaction();
 			resp.put("answer", "Correcto!");
 		}
 		catch(DBException e) {
-			Base.rollbackTransaction();
 			resp.put("answer", "Ocurrio un error inesperado");
 		}
 		return resp;
 	}
 
+	/**
+	 * Updates the statistic of the question
+	 * @param username, the user that provided the answer
+	 * @param question, the answered question
+	 * @return a Json that contains a answer
+	 */
 	public static JSONObject updateWrongAnswer(String username, Question question) {
 		JSONObject resp = new JSONObject();
-		Base.openTransaction();
 		try {
 			QuestionStatistic questionStat = QuestionStatistic.findFirst("question = ?", question.getDescription());
 			if (questionStat == null) {
@@ -118,11 +144,9 @@ public class QuestionController {
 			UserStatisticsCategory stat = UserStatisticsCategory.findFirst("user = ? AND nombre = ?",
 					username, question.getCategory());
 			UserStatisticsCategoryController.updateIncorrecrAnswer(stat);
-			Base.commitTransaction();
 			resp.put("answer", "Incorrecto!");
 		}
 		catch(DBException e) {
-			Base.rollbackTransaction();
 			resp.put("answer", "Ocurrio un error inesperado");
 		}
 		return resp;
