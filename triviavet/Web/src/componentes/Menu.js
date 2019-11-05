@@ -1,4 +1,4 @@
-import React, {Component, Suspense} from "react";
+import React, {Component} from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Navbar from "react-bootstrap/Navbar";
@@ -8,6 +8,8 @@ import exitlogo from './exit.png';
 import {AsyncStorage} from "AsyncStorage";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import ListGroup from "react-bootstrap/ListGroup";
+import ListGroupItem from "react-bootstrap/ListGroupItem";
 import { Link } from 'react-router-dom';
 import logo from './logo.png';
 import PieChart from 'react-minimal-pie-chart';
@@ -220,14 +222,14 @@ class Menu extends Component {
                   <Card.Header>{message}</Card.Header>
                   <div>
                     <Card.Link>
-                    <Button onClick={() => this._deleteCategory(message)} variant ="primary" type="submit">
-                        Borrar
-                    </Button>
+                      <Button onClick={() => this._deleteCategory(message)} variant ="primary" type="submit">
+                          Borrar
+                      </Button>
                     </Card.Link>
                     <Card.Link>
-                    <Button onClick={() => this._modifyCategory(message)} variant ="primary" type="submit">
-                        Modificar
-                    </Button>
+                      <Button onClick={() => this._modifyCategory(message)} variant ="primary" type="submit">
+                          Modificar
+                      </Button>
                     </Card.Link>
                   </div>
               </Card>
@@ -258,45 +260,29 @@ class Menu extends Component {
                       Modificar
                     </Button>
                   </Card.Link>
+                  {this.state.statsquest.map(function(item){
+                    if (item.question === message) {
+                      return<div><div style={{width: 100, height: 100}}>
+                        <PieChart data={[
+                          { title: 'Bien', value: item.right_attempts, color: '#ffffff' },
+                          { title: 'Mal', value: item.wrong_attempts, color: '#2c2f33' },
+                        ]}/> </div>
+                    
+                      <ListGroup className="list-group-flush">
+                        <ListGroupItem>Respuestas totales: {item.total_attempts}</ListGroupItem>
+                        <ListGroupItem>Respuestas incorrectas [negro]: {item.wrong_attempts}</ListGroupItem>
+                        <ListGroupItem>Respuestas correctas [blanco]: {item.right_attempts}</ListGroupItem>
+                      </ListGroup>
+                    </div>
+                      ;
+                    }
+
+                })}
+
                 </div>
               </Card>
               </div>
           )}
-        </Col>
-        <Col>
-          <Navbar variant="dark" bg="dark" className="justify-content-between">
-            <Navbar.Brand>Estadisticas</Navbar.Brand>
-             <Link to="/Stadistics" className="Stadistics">
-                <Button variant="primary" type="submit">
-                 Ver Estadisticas
-                </Button>
-             </Link>
-          </Navbar>
-          <div style={{padding:10}}>
-              <Suspense fallback={<h2>Product list is loading...</h2>}>
-            <Card border="primary">
-              <Card.Header>Header</Card.Header>
-              <Card.Body>
-
-                {this.state.statsquest.map(function(item){
-                  if (item.question === this.state.pregSelect) {
-                    return<Col><Row><div style={{width: 100, height: 100}}>
-                      <PieChart data={[
-                        { title: 'Bien', value: item.right_attempts, color: '#ffffff' },
-                        { title: 'Mal', value: item.wrong_attempts, color: '#2c2f33' },
-                      ]}
-                    /> </div></Row><Row>
-                    <Card.Text>Respuestas totales: {item.total_attempts}</Card.Text>
-                  <Card.Text>Respuestas incorrectas [negro]: {item.wrong_attempts}</Card.Text>
-                  <Card.Text>Respuestas correctas [blanco]: {item.right_attempts}</Card.Text>
-                  </Row></Col>;
-                  }
-
-              })}
-            
-              </Card.Body>
-            </Card>
-          </div>
         </Col>
       </Row>
       </div>
