@@ -206,7 +206,7 @@ class Menu extends Component {
       </Navbar>
         <Row style={{paddingTop: 60}} noGutters="true">
         <Col>
-          <Navbar variant="dark" bg="dark"className="justify-content-between">
+          <Navbar variant="dark" bg="dark" className="justify-content-between">
             <Navbar.Brand>Categoria</Navbar.Brand>
              <Link to="/NewCategory" className="NewCategory">
                 <Button variant="primary" type="submit">
@@ -217,8 +217,7 @@ class Menu extends Component {
 
             {this.state.categories.map((message) =>
               <div style={{padding:10}}>
-
-                <Card id={message} onClick={(x) => this._loadQuestions(message)} border="secondary">
+                <Card id={message} className="text-center" onClick={(x) => this._loadQuestions(message)} border="secondary">
                   <Card.Header>{message}</Card.Header>
                   <div>
                     <Card.Link>
@@ -260,27 +259,26 @@ class Menu extends Component {
                       Modificar
                     </Button>
                   </Card.Link>
+                </div>
                   {this.state.statsquest.map(function(item){
                     if (item.question === message) {
-                      return<div><div style={{width: 100, height: 100}}>
+                      return<Row style={{paddingLeft:50,paddingRight:50}}><Col><div style={{width: 130, height: 130}}>
                         <PieChart data={[
                           { title: 'Bien', value: item.right_attempts, color: '#ffffff' },
                           { title: 'Mal', value: item.wrong_attempts, color: '#2c2f33' },
                         ]}/> </div>
-                    
+                      </Col>
+
+                      <Col>
                       <ListGroup className="list-group-flush">
                         <ListGroupItem>Respuestas totales: {item.total_attempts}</ListGroupItem>
                         <ListGroupItem>Respuestas incorrectas [negro]: {item.wrong_attempts}</ListGroupItem>
                         <ListGroupItem>Respuestas correctas [blanco]: {item.right_attempts}</ListGroupItem>
                       </ListGroup>
-                    </div>
-                      ;
-                    }
-
-                })}
-
-                </div>
-              </Card>
+                      </Col>
+                    </Row>
+                  ;}})}
+                </Card>
               </div>
           )}
         </Col>
