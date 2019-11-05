@@ -5,7 +5,6 @@ import trivia.models.QuestionStatistic;
  * Class that provides a controller for the QUestionStatistic model.
  */
 public class QuestionStatisticController {
-
 	/**
 	 * Create a QuestionStatistic.
 	 * @param question the question
@@ -17,7 +16,6 @@ public class QuestionStatisticController {
 		stat.setRightAttempts(0);
 		stat.setTotalAttempts(0);
 		stat.saveIt();
-		return stat;
 	}
 	/**
 	 * Update a given stat

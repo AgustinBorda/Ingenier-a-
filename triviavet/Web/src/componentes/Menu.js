@@ -1,4 +1,4 @@
-import React, {Component, Suspense} from "react";
+import React, {Component} from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Navbar from "react-bootstrap/Navbar";
@@ -10,7 +10,6 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { Link } from 'react-router-dom';
 import logo from './logo.png';
-import PieChart from 'react-minimal-pie-chart';
 class Menu extends Component {
 
   constructor(props){
@@ -18,20 +17,16 @@ class Menu extends Component {
     this.state = {
       categories: [],
       questions : [],
-      statsquest : [],
-      catSelect: '',
-      pregSelect: '',
+      catSelect: ''
     }
   this._loadCategories = this._loadCategories.bind(this);
   this._deleteCategory = this._deleteCategory.bind(this);
   this._modifyCategory = this._modifyCategory.bind(this);
   this._deleteQuestion = this._deleteQuestion.bind(this);
-  this._loadStats = this._loadStats.bind(this);
   }
 
   componentDidMount(){
     this._loadCategories();
-    this.setState({pregSelect:"."});
   }
 
   async _loadCategories() {
@@ -54,28 +49,6 @@ class Menu extends Component {
     });
   }
 
-  async _loadStatistics() {
-    const token =  await AsyncStorage.getItem('userToken');
-    const admin =  await AsyncStorage.getItem('isAdmin');
-      await fetch(process.env.REACT_APP_API_HOST + "/admin/questionsstatistic", {
-      headers : {
-        'Accept' : 'application/json',
-        'content-type' : 'application/json',
-        'Authorization' : token,
-        'IsAdmin': admin
-      },method: 'GET',
-      mode: "cors",
-      })
-    .then(async response => {
-      const resp = await response.json();
-      await this.setState({ statsquest: resp});
-      console.log(this.state);
-    })
-    .catch(error => {
-      console.log(error);
-    });
-  }
-
   async _loadQuestions(s) {
     this.setState({catSelect: s});
     const token =  await AsyncStorage.getItem('userToken');
@@ -92,8 +65,7 @@ class Menu extends Component {
       })
     .then(async response => {
       let resp = await response.json();
-      await this._loadStatistics();
-      console.log(this.state);
+      console.log(resp);
       this.setState({ questions: resp.questions});
 
     })
@@ -124,6 +96,7 @@ class Menu extends Component {
     .catch(error => {
       console.log(error);
     });
+
   }
 
   async _modifyCategory(message) {
@@ -158,10 +131,6 @@ class Menu extends Component {
     .catch(error => {
       console.log(error);
     });
-  }
-
-  async _loadStats(m){
-    await this.setState({pregSelect: m});
   }
 
   async _deleteQuestion(message) {
@@ -217,19 +186,17 @@ class Menu extends Component {
               <div style={{padding:10}}>
 
                 <Card id={message} onClick={(x) => this._loadQuestions(message)} border="secondary">
-                  <Card.Header>{message}</Card.Header>
+
+                  <Card.Header>{message}
                   <div>
-                    <Card.Link>
                     <Button onClick={() => this._deleteCategory(message)} variant ="primary" type="submit">
-                        Borrar
+                        -
                     </Button>
-                    </Card.Link>
-                    <Card.Link>
                     <Button onClick={() => this._modifyCategory(message)} variant ="primary" type="submit">
                         Modificar
                     </Button>
-                    </Card.Link>
                   </div>
+                </Card.Header>
               </Card>
                 </div>
             )}
@@ -245,20 +212,15 @@ class Menu extends Component {
           </Navbar>
           {this.state.questions.map((message) =>
             <div style={{padding:10}}>
-              <Card id={message} border="secondary" className="text-center" onClick={(x) => this._loadStats(message)} >
+              <Card id={message} border="secondary" className="text-center">
                 <Card.Header>{message}</Card.Header>
-                <div>
-                  <Card.Link>
-                    <Button onClick={() => this._deleteQuestion(message)} variant ="primary" type="submit">
-                      Borrar
-                    </Button>
-                  </Card.Link>
-                  <Card.Link>
-                    <Button onClick={() => this._modifyQuestion(message)} variant ="primary" type="submit">
-                      Modificar
-                    </Button>
-                  </Card.Link>
-                </div>
+               <Button onClick={() => this._deleteQuestion(message)} variant ="primary" type="submit">
+                   -
+               </Button>
+               <Button onClick={() => this._modifyQuestion(message)} variant ="primary" type="submit">
+                  Modificar
+               </Button>
+
               </Card>
               </div>
           )}
@@ -273,27 +235,13 @@ class Menu extends Component {
              </Link>
           </Navbar>
           <div style={{padding:10}}>
-              <Suspense fallback={<h2>Product list is loading...</h2>}>
             <Card border="primary">
               <Card.Header>Header</Card.Header>
               <Card.Body>
+                <Card.Title>Primary Card Title</Card.Title>
+                <Card.Text>
 
-                {this.state.statsquest.map(function(item){
-                  if (item.question === this.state.pregSelect) {
-                    return<Col><Row><div style={{width: 100, height: 100}}>
-                      <PieChart data={[
-                        { title: 'Bien', value: item.right_attempts, color: '#ffffff' },
-                        { title: 'Mal', value: item.wrong_attempts, color: '#2c2f33' },
-                      ]}
-                    /> </div></Row><Row>
-                    <Card.Text>Respuestas totales: {item.total_attempts}</Card.Text>
-                  <Card.Text>Respuestas incorrectas [negro]: {item.wrong_attempts}</Card.Text>
-                  <Card.Text>Respuestas correctas [blanco]: {item.right_attempts}</Card.Text>
-                  </Row></Col>;
-                  }
-
-              })}
-            
+                </Card.Text>
               </Card.Body>
             </Card>
           </div>
