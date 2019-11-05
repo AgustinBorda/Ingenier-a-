@@ -10,7 +10,7 @@ public class QuestionStatisticController {
 	 * Create a QuestionStatistic.
 	 * @param question the question
 	 */
-	public static void generateQuestionStatistic(String question) {
+	public static QuestionStatistic generateQuestionStatistic(String question) {
 		QuestionStatistic stat = new QuestionStatistic();
 		stat.setQuestion(question);
 		stat.setWrongAttempts(0);
