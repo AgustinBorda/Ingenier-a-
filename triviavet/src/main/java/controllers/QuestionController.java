@@ -111,6 +111,9 @@ public class QuestionController {
 		JSONObject resp = new JSONObject();;
 		try {
 			QuestionStatistic questionStat = QuestionStatistic.findFirst("question = ?", question.getDescription());
+			if (questionStat == null) {
+				questionStat = QuestionStatisticController.generateQuestionStatistic(question.getDescription());
+			}
 			QuestionStatisticController.updateCorrectAnswer(questionStat);
 			UserStatisticsCategory stat = UserStatisticsCategory.findFirst("user = ? AND nombre = ?",
 					username, question.getCategory());
@@ -134,6 +137,9 @@ public class QuestionController {
 		JSONObject resp = new JSONObject();
 		try {
 			QuestionStatistic questionStat = QuestionStatistic.findFirst("question = ?", question.getDescription());
+			if (questionStat == null) {
+				questionStat = QuestionStatisticController.generateQuestionStatistic(question.getDescription());
+			}
 			QuestionStatisticController.updateIncorrectAnswer(questionStat);			
 			UserStatisticsCategory stat = UserStatisticsCategory.findFirst("user = ? AND nombre = ?",
 					username, question.getCategory());

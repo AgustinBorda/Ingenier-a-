@@ -205,6 +205,8 @@ public class AdminRoutes {
 	public static final Route GetAllQuestionsStatistics = (req, res) -> {
 		LazyList<QuestionStatistic> stats = QuestionStatistic.findAll();
 		res.status(200);
+		System.out.println(stats);
+		System.out.println(stats.toJson(true));
 		return stats.toJson(true);
 	};
 

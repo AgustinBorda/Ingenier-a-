@@ -4,10 +4,8 @@
 package controllers;
 
 import org.javalite.activejdbc.LazyList;
-
 import trivia.models.Category;
 import trivia.models.User;
-import trivia.models.UserStatisticsCategory;
 
 public class CategoryController {
 	/**
