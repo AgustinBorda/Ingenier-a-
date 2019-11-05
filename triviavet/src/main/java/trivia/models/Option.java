@@ -11,7 +11,7 @@ import java.util.ArrayList;
  *id int primary key
  *description varchar unique
  *boolean correct not null
- *question id Not null foreign key to questions
+ *question_id int Not null foreign key to questions
  */
 public class Option extends Model{
 	/*Validators*/

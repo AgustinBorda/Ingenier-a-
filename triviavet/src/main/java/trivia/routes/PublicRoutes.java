@@ -88,6 +88,7 @@ public class PublicRoutes {
 		}
 		else {
 			Email.getSingletonInstance().sendMail((String) user.get("email"), (String) user.get("username"));
+			System.out.println("777");
 			res.status(200);
 			return true;
 		}

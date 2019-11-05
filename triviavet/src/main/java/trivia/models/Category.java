@@ -4,7 +4,7 @@ package trivia.models;
  * Category Model
  * Schema info;
  * id int(11) Primary key
- * nombre varchar unique
+ * nombre varchar unique not null
  * 
  */
 import org.javalite.activejdbc.Model;

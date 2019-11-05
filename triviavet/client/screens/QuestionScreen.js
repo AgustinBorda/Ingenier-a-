@@ -90,32 +90,35 @@ export default class QuestionScreen extends React.Component {
           {this.state.question.description}
         </Text>
         </Text>
+        <View style={{margin:20}} />
         <Button
           style={styles.answer}
           onPress={this._getCorrect.bind(this, '1')}
           title={this.state.question1}
           color="#505050"
         />
+        <View style={{margin:20}} />
         <Button
           style={styles.answer}
           onPress={this._getCorrect.bind(this, '2')}
           title={this.state.question2}
           color="#505050"
         />
+        <View style={{margin:20}} />
         <Button
           style={styles.answer}
           onPress={this._getCorrect.bind(this, '3')}
           title={this.state.question3}
           color="#505050"
         />
+        <View style={{margin:20}} />
         <Button
           style={styles.answer}
           onPress={this._getCorrect.bind(this, '4')}
           title={this.state.question4}
           color="#505050"
-          accessibilityLabel="Learn more about this button"
         />
-
+        <View style={{margin:40}} />
 
         <Button
           onPress={() => this.props.navigation.navigate('Play')}
