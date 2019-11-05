@@ -49,11 +49,11 @@ export default class InsertCode extends React.Component {
           <View style={{margin:20}} />
 
         <Button title="Cambiar" onPress={this._sendNewPass}
-          color = "#ebee2c"
+          color = "#d35400"
         />
          <View style={{margin:20}} />
         <Button title="Volver" onPress={() => this.props.navigation.navigate('Auth')}
-          color = "#ebee2c"
+          color = "#d35400"
         />
       </View>
     );
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#48c9b0',
+    backgroundColor: '#1b4f72',
   },
   text: {
     fontSize: 20,
